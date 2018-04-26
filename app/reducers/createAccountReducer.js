@@ -3,10 +3,7 @@ const bip39 = require('bip39')
 const hdkey = require('ethereumjs-wallet/hdkey')
 const util = require('ethereumjs-util')
 const randomBytes = require('randombytes')
-import UserSQLite from '../utils/accountDB'
 
-const sqLite = new UserSQLite()
-let db
 const initState = {
 	isLoading: true,
   accountUserName: '',

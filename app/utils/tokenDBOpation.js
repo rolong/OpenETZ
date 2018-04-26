@@ -58,8 +58,8 @@ async function onFetchToken(options){
 
 
 		let selTokenRes = await accountDB.selectTable({
-			sql: 'select * from token',
-			parame: []
+			sql: 'select * from token where account_addr = ?',
+			parame: [parames.addr]
 		})
 		console.log('返回最新的token列表 (带有余额)==',selTokenRes)
 		fetchTokenSuccess(selTokenRes)
@@ -74,8 +74,8 @@ async function onFetchToken(options){
 async function onDelSelectedToken(options){
 	const { parames, deleteSelected } = options
 	let selRes = await accountDB.updateTable({
-		sql: 'update token set tk_selected = 0 where tk_address = ?',
-		parame: [parames.delAddr]
+		sql: 'update token set tk_selected = 0 where tk_address = ? and account_addr = ?',
+		parame: [parames.delAddr,parames.curaddr]
 	})
 
 	if(selRes === 'success'){
@@ -91,8 +91,8 @@ async function onDelSelectedToken(options){
 async function onAddSelectedToken(options){
 	const { parames, addSelected } = options
 	let selRes = await accountDB.updateTable({
-		sql: 'update token set tk_selected = 1 where tk_address = ?',
-		parame: [parames.addAddr]
+		sql: 'update token set tk_selected = 1 where tk_address = ? and account_addr = ? ',
+		parame: [parames.addAddr,parames.curaddr]
 	})
 
 	if(selRes === 'success'){
@@ -120,15 +120,14 @@ async function onSwitchTokenList(options){
 		sql: 'select * from token where account_addr = ?',
 		parame: [parames.addr]
 	})
-	console.log('切换账号的地址',parames.addr)
-	console.log('切换账号后 selTokenRes==',selTokenRes)
+
 	switchTokenSuc(selTokenRes)
 
 }
 
 
 async function onTokenRefresh(options){
-	const { parames, refreshSuccess,refreshFail } = options
+	const { parames, refreshSuccess,refreshFail,refreshEtz } = options
 	const { tokenlist,addr } = parames
 	for(let i = 0; i < tokenlist.length; i++){
 		let tAdd = tokenlist[i].tk_address//tAdd 代币的合约地址
@@ -151,6 +150,12 @@ async function onTokenRefresh(options){
 		parame: []
 	})
 	if(selTokenRes.length !== 0){
+
+		let balance = await web3.eth.getBalance(`0x${addr}`)
+    	let res = web3.utils.fromWei(balance,'ether')
+
+		refreshEtz(res)
+
 		refreshSuccess(selTokenRes)
 	}else{
 		refreshFail()

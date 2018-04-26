@@ -12,12 +12,7 @@ import { pubS,DetailNavigatorStyle,MainThemeNavColor } from '../../styles/'
 import { setScaleText, scaleSize } from '../../utils/adapter'
 import RecordListItem from './tradingRecord/RecordListItem'
 import { splitNumber,sliceAddress,timeStamp2Date } from '../../utils/splitNumber'
-import TradingSQLite from '../../utils/tradingDB'
-import UserSQLite from '../../utils/accountDB'
-const tradingSqLite = new TradingSQLite()  
-let t_db
-const sqLite = new UserSQLite();  
-let db  
+
 import I18n from 'react-native-i18n'
 import { connect } from 'react-redux'
 import accountDB from '../../db/account_db'
@@ -38,9 +33,10 @@ class AssetlList extends Component{
   async getRecordList(){
     const { currentAccount, globalAccountsList } = this.props.accountManageReducer
     //根据当前账户(0x${currentAccount.address} = tx_sender)地址查找 交易记录
+    //token name
     let selRes = await accountDB.selectTable({
-      sql: 'select * from trading where tx_sender = ?',
-      parame: [`0x${currentAccount.address}`]
+      sql: 'select * from trading where tx_sender = ? and tx_token = ?',
+      parame: [`0x${currentAccount.address}`,this.props.curToken]
     })
 
     this.setState({

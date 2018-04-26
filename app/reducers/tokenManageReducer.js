@@ -1,29 +1,19 @@
 import * as types from '../constants/tokenManageConstant'
-import TokenSQLite from '../utils/tokenDB'
+
 import { contractAbi } from '../utils/contractAbi'
-const tkSqLite = new TokenSQLite()
-let tk_db
+
 
 const initState = {
 	isLoading: true,
-	assetsList: [],
 	selectedList: [],
-	refreshEnd: false,
+	refreshEnd: '',
 	fetchTokenList: [],
+	etzBalance: '0',
 }
 
 
 export default function tokenManageReducer(state=initState,action){
 	switch(action.type){
-		case types.INSERT_TO_TOKEN_DB:
-			return onInsterDB(state,action)
-			break
-		case types.GET_ASSETS_LIST:
-			return getAssetsList(state,action)
-			break
-		// case types.SELECTED_TOKEN_LIST:
-		// 	return onSelectedList(state,action)
-		// 	break
 		case types.DELETE_TOKEN_LIST:
 			return onDelSelected(state,action)
 			break
@@ -60,11 +50,15 @@ export default function tokenManageReducer(state=initState,action){
 		case types.SWITCH_TOKEN_LIST:
 			return onSwitchToken(state,action)
 			break
+		case types.REFRESH_ETZ:
+			return onRefreshEtz(state,action)
+			break
 		default:
 			return state
 			break
 	}
 }
+
 const onSwitchTokenStart = (state,action) => {
 	return {
 		...state,
@@ -87,12 +81,12 @@ const onInitSelectedList = (state,action) => {
 	}
 }
 const onDelSelected = (state,action) => {
-	const { delAddr, } = action.payload
+	const { delAddr,curaddr } = action.payload
 
 	let newState = Object.assign({},state)
 
 	newState.fetchTokenList.map((val,idx) => {
-		if(val.tk_address === delAddr){
+		if(val.tk_address === delAddr && val.account_addr === curaddr){
 			newState.fetchTokenList[idx].tk_selected = 0
 		}
 	})
@@ -101,41 +95,19 @@ const onDelSelected = (state,action) => {
 	return newState
 }
 const onAddSelected = (state,action) => {
-	const { addAddr } = action.payload
+	const { addAddr,curaddr } = action.payload
 
 	let newState = Object.assign({},state)
 
 
 	newState.fetchTokenList.map((val,idx) => {
-		if(val.tk_address === addAddr){
+		if(val.tk_address === addAddr && val.account_addr === curaddr){
 			newState.fetchTokenList[idx].tk_selected = 1
 		}
 	})
 	return newState
 }
 
-const getAssetsList = (state,action) => {
-	if(!tk_db){
-       tk_db = tkSqLite.open()
-    }
-    let resArr = []
-
-    tk_db.transaction((tx) => {
-       tx.executeSql(" select * from token ",[], (tx,results)=>{
-          let len = results.rows.length
-          for(let i = 0; i < len; i ++){
-            resArr.push(results.rows.item(i)) 
-          } 
-       },error => {
-        console.error('search token error',error)
-       })
-    })
-	return {
-		...state,
-		assetsList: resArr,
-		isLoading: false 
-	}
-}
 const globalToken = (state,action) => {
 	const { list } = action.payload
 	return {
@@ -144,15 +116,12 @@ const globalToken = (state,action) => {
 	}
 }
 const onFetchStart = (state,action) => {
-
-	return {
-		...state,
-		fetchTokenList: []
-	}
+	let newState = Object.assign({},state)
+	newState.fetchTokenList = []
+	return newState
 }
 const onFetchSuc = (state,action) => {
 	const { list } = action.payload
-
 	return {
 		...state,
 		fetchTokenList: list
@@ -165,74 +134,37 @@ const onFetchFail = (state,action) => {
 		fetchTokenList: []
 	}
 }
-const onInsterDB = (state,action) => {
-	const { currentAddress } = action.payload
-	if(!tk_db){
-       tk_db = tkSqLite.open()
-	}
-	let insertRes = []
-	let tokenNumber = []
-	tkSqLite.createTable()
-	fetch('http://54.193.114.251/token-list.txt', {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      }
-    }).then(res => res.json())
-    .catch(error => console.error('Error:', error))
-    .then(response => {   	
-    	console.log('接口返回数据response==',response)
-    	for(let i = 0; i < response.length; i++){
-    		let myContract = new web3.eth.Contract(contractAbi, response[i].address)
-    		myContract.methods.balanceOf(currentAddress).call((error,result) => {
-    			let number = result / Math.pow(10,response[i].decimals)
-	    		console.log('number==',number)
-	    		let res = {}
-	    		res.tk_address = response[i].address
-	    		res.tk_decimals = response[i].decimals
-	    		res.tk_name = response[i].name
-	    		res.tk_price = response[i].price
-	    		res.tk_symbol = response[i].symbol
-	    		res.tk_selected = 0
-	    		res.tk_number = number
-	    		insertRes.push(res)
-    		})
-    	}
 
-    	setTimeout(() => {
-	    	tkSqLite.insertTokenListData(insertRes)
-    	},1000)
-
-    })
-
-
-	return {
-		...state,
-		isLoading: false,
-		refreshEnd: true,
-	}
-}
 
 const onRefresh = (state,action) => {
 
 	return {
 		...state,
-		refreshEnd: false
+		refreshEnd: 'start'
 	}
 }
 
 const onRefreshSuc = (state,action) => {
 	const { data } = action.payload
+	
 	return {
 		...state,
 		fetchTokenList: data,
-		refreshEnd: true
+		refreshEnd: 'suc',
+		
 	}
 }
+const onRefreshEtz = (state,action) => {
+	const { data } = action.payload
+	return {
+		...state,
+		etzBalance: data
+	}
+}
+
 const onRefreshFail = (state,action) => {
 	return {
 		...state,
-		refreshEnd: true
+		refreshEnd: 'fail'
 	}
 }

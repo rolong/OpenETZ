@@ -16,11 +16,7 @@ import Modal from 'react-native-modal'
 import QRCode from 'react-native-qrcode'
 import { connect } from 'react-redux'
 import I18n from 'react-native-i18n'
-import UserSQLite from '../../utils/accountDB'
-import TradingSQLite from '../../utils/tradingDB'
 
-const sqLite = new UserSQLite()
-let db
 const wallet = require('ethereumjs-wallet')
 import Toast from 'react-native-toast'
 class Receive extends Component{

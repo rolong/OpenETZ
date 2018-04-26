@@ -14,9 +14,7 @@ import { setScaleText, scaleSize } from '../../utils/adapter'
 import { TextInputComponent,Btn,Loading } from '../../components/'
 import { connect } from 'react-redux'
 import { createAccountAction } from '../../actions/accountManageAction'
-import UserSQLite from '../../utils/accountDB'
-const sqLite = new UserSQLite()
-let db
+
 import I18n from 'react-native-i18n'
 import Toast from 'react-native-toast'
 class CreateAccount extends Component{

@@ -3,10 +3,7 @@ const wallet = require('ethereumjs-wallet')
 const hdkey = require('ethereumjs-wallet/hdkey')
 const util = require('ethereumjs-util')
 const bip39 = require('bip39')
-import UserSQLite from '../utils/accountDB'
 
-const sqLite = new UserSQLite()
-let db
 
 const initState = {
 	accountInfo: [],
@@ -26,9 +23,7 @@ const initState = {
 }
 export default function accountManageReducer (state = initState,action) {
 	switch(action.type){
-		case types.GET_ACCOUNT_INFO:
-			return getAccInfo(state,action)
-			break
+
 		case types.ON_SWITCH_ACCOUNT_START:
 			return onSwitchStart(state,action)
 			break
@@ -52,15 +47,6 @@ export default function accountManageReducer (state = initState,action) {
 			break
 		case types.UPDATE_BACKUP_STATUS_SUCC:
 			return onUpateBackupSuc(state,action)
-			break
-		case types.PASS_ACCOUNTS_INFO_START:
-			return passInfoStart(state,action)
-			break
-		case types.PASS_ACCOUNTS_INFO_SUC:
-			return passInfoSuc(state,action)
-			break
-		case types.PASS_ACCOUNTS_INFO_FAIL:
-			return passInfoFail(state,action)
 			break
 		case types.CREATE_ACCOUNT_START:
 			return accountCreateStart(state,action)
@@ -193,18 +179,22 @@ const onDelSuc = (state,action) => {
 	let newState = Object.assign({},state)
 
 	newState.globalAccountsList.map((list,index) => {
-		console.log('list.id==',list.id)
-		console.log('deleteId==',deleteId)
+		
 		if(list.id === deleteId){
 			newState.globalAccountsList.splice(index,1)
 		}	
 
 	})
 	//删除的是当前账号  is_selected = 1
+	console.log('deleteId==',deleteId)
+	console.log('curId==',curId)
+	console.log('newState.globalAccountsList===',newState.globalAccountsList)
 	let delCur = false 
 	if(deleteId === curId){
-		newState.globalAccountsList[0].is_selected = 1
-		delCur = true
+		if(newState.globalAccountsList.length > 0){
+			newState.globalAccountsList[0].is_selected = 1
+			delCur = true
+		}
 	}
 
 
@@ -226,33 +216,6 @@ const onDelFail = (state,action) => {
 	}
 }
 	
-const getAccInfo = (state,action) => {
-	return {
-		...state,
-		accountInfo: action.payload.info
-	}
-}
-
-const passInfoStart = (state,action) => {
-	return {
-		...state,
-	}
-}
-const passInfoSuc = (state,action) => {
-	const { data } = action.payload
-	console.log('data passInfoSuc====',data)
-	return {
-		...state,
-		accountInfo: data,
-		passAccInfoSuc: 'home',
-	}
-}
-const passInfoFail = (state,action) => {
-	return {
-		...state,
-		passAccInfoSuc: 'login'
-	}
-}
 
 const onSwitchStart = (state,action) => {
 	

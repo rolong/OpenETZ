@@ -45,12 +45,7 @@ class TradingRecordDetail extends Component{
   toWebView = (hash) => {
     this.props.navigator.push({
       screen: 'tx_web_view',
-      navigatorStyle:{
-        navBarHidden: true,
-        statusBarColor: '#fff',
-        screenBackgroundColor: 'white',
-        tabBarHidden: true
-      },
+      navigatorStyle:DetailNavigatorStyle,
       passProps: {
         hash,
       }

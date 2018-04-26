@@ -59,10 +59,10 @@ class AccountManage extends Component{
 
   componentWillReceiveProps(nextProps){
     if(this.props.accountManageReducer.deleteSuc !== nextProps.accountManageReducer.deleteSuc && nextProps.accountManageReducer.deleteSuc){
-      alert('删除成功')
+      //console.log('删除成功')
     }
     if(this.props.accountManageReducer.updateBackupSucc !== nextProps.accountManageReducer.updateBackupSucc && nextProps.accountManageReducer.updateBackupSucc){
-       alert('更新备份状态成功')
+      console.log('更新备份状态成功')
     }
   }
 

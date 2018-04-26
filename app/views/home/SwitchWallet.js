@@ -11,10 +11,9 @@ import { pubS,ScanNavStyle,DetailNavigatorStyle } from '../../styles/'
 import { setScaleText, scaleSize } from '../../utils/adapter'
 import { connect } from 'react-redux'
 import { switchAccountAction } from '../../actions/accountManageAction'
-import { switchTokenAction } from '../../actions/tokenManageAction'
-import { toSplash } from '../../root'
-import TokenSQLite from '../../utils/tokenDB'
-const tkSqLite = new TokenSQLite()
+import { switchTokenAction,refreshTokenAction } from '../../actions/tokenManageAction'
+
+
 import I18n from 'react-native-i18n'
 class SwitchWallet extends Component {
 	constructor(props){
@@ -52,12 +51,16 @@ class SwitchWallet extends Component {
 	    this.props.onCloseSwitchDrawer()
 	}
 	onSwitch = (addr) => {
-		// tkSqLite.deleteData()
-  //   	tkSqLite.dropTable()
-		// this.props.dispatch(insertToTokenAction(addr))
+		const { fetchTokenList } = this.props.tokenManageReducer
+
 		this.props.dispatch(switchAccountAction(addr))
 		//切换账号后 执行一条查询语句  找出切换的账号下的token list  
 		this.props.dispatch(switchTokenAction(addr))
+
+		//刷新 etz和代币数量
+
+		this.props.dispatch(refreshTokenAction(addr,fetchTokenList))
+
 		this.props.onCloseSwitchDrawer()
 	}
 	closeDrawer = () => {
@@ -127,6 +130,7 @@ const styles = StyleSheet.create({
 
 export default connect(
 	state => ({
-		accountManageReducer: state.accountManageReducer
+		accountManageReducer: state.accountManageReducer,
+		tokenManageReducer: state.tokenManageReducer
 	})
 )(SwitchWallet)

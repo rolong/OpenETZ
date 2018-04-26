@@ -100,7 +100,7 @@ class AmountDatabase  {
         })   
     } 
 
-    dropAccountTable(query){  
+    dropTable(query){  
 
         this.conn.transaction( tx => {
             tx.executeSql(query.sql,[],() => {

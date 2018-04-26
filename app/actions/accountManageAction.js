@@ -1,51 +1,7 @@
 import * as types from  '../constants/accountManageConstant'
 import accountDBOpation from '../utils/accountDBOpation'
-const getAccountInfoAction = (info) => {
-	const getInfo = () => {
-		return {
-			type: types.GET_ACCOUNT_INFO,
-			payload: {
-				info,
-			}
-		}
-	}
-	return(dispatch,getState) => {
-		dispatch(getInfo())
-	}
-}
-const passAccountsInfoAction = () => {
-	const passStart = () => {
-		return {
-			type: types.PASS_ACCOUNTS_INFO_START,
-			payload:{
 
-			}
-		}
-	} 
-	const passSuc = (data) => {
-		return {
-			type: types.PASS_ACCOUNTS_INFO_SUC,
-			payload:{
-				data
-			}	
-		}
-	}
-	const passFail = (msg) => {
-		return {
-			type: types.PASS_ACCOUNTS_INFO_FAIL,
-			payload:{
-				msg
-			}
-		}
-	}
-	return(dispatch,getState) => {
-		dispatch(passStart())
-		accountDBOpation.passAccountsInfo({
-			passAccInfoSuc: (data) => {dispatch(passSuc(data))},
-			passAccInfoFail: (msg) => {dispatch(passFail(msg))},
-		})
-	}
-}
+
 const switchAccountAction = (addr) => {
 	const switchStart = () => {
 		return {
@@ -287,13 +243,11 @@ const globalCurrentAccountInfoAction = (currinfos) => {
 }
 
 export {
-	getAccountInfoAction,
 	switchAccountAction,
 	importAccountAction,
 	deleteAccountAction,
 	resetDeleteStatusAction,
 	updateBackupStatusAction,
-	passAccountsInfoAction,
 	createAccountAction,
 	deleteMnemonicAction,
 	globalAllAccountsInfoAction,

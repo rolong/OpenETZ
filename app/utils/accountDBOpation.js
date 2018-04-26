@@ -4,12 +4,10 @@ const util = require('ethereumjs-util')
 const bip39 = require('bip39')
 const randomBytes = require('randombytes')
 
-import UserSQLite from '../utils/accountDB'
 
 import accountDB from '../db/account_db'
 
-const sqLite = new UserSQLite()
-let db
+
 
 async function onImportAccount(options){
 	const { importSuccess, importFailure, parames } = options
@@ -138,10 +136,13 @@ async function onDelAccount(options){
 			sql: 'select account_name from account',
 			parame: []
 		})
-		let updateRes = await accountDB.updateTable({
-			sql: 'update account set is_selected = 1 where account_name = ?',
-			parame: [selectRes[0].account_name]
-		})
+		let updateRes = ''
+		if(selectRes.length !== 0){
+			updateRes = await accountDB.updateTable({
+				sql: 'update account set is_selected = 1 where account_name = ?',
+				parame: [selectRes[0].account_name]
+			})
+		}
 		if(updateRes === 'success'){
 			console.log('successful===删除的是当前账号  更新 将另一个账号 is_selected=1')
 		}else{
@@ -152,30 +153,6 @@ async function onDelAccount(options){
 	}
 }
 
-async function onPassAccInfo(options) {
-	const { passAccInfoSuc, passAccInfoFail} = options
-	if(!db){  
-        db = sqLite.open();  
-      }  
-      db.transaction((tx) => {
-        tx.executeSql("select * from account ", [], (tx,results) => {
-
-          let len = results.rows.length 
-          let allAccounts = [] 
-          for(let i=0; i<len; i++){  
-            let u = results.rows.item(i)
-            allAccounts.push(u)
-
-            // updateAssetsTotal(u,options)
-          } 
-
-            passAccInfoSuc(allAccounts)
-
-        },(error) => {
-        	passAccInfoFail(error)
-        })
-      }) 
-}
 
 async function onCreateAccount(options){
 	const { parames, createSuccess, } = options
@@ -303,9 +280,7 @@ const accountDBOpation = {
 	deleteAccount:(options) => {
 		onDelAccount(options)
 	},
-	passAccountsInfo:(options) => {
-		onPassAccInfo(options)
-	},
+
 	createAccount:(options) => {
 		onCreateAccount(options)
 	},
