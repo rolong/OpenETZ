@@ -1,18 +1,6 @@
 import * as types from '../constants/tokenManageConstant'
 import tokenDBOpation from '../utils/tokenDBOpation'
-const insertToTokenAction = (addr) => {
-	const onInsert = () => {
-		return {
-			type: types.INSERT_TO_TOKEN_DB,
-			payload: {	
-				currentAddress: addr
-			}
-		}
-	}
-	return(dispatch,getState) => {
-		dispatch(onInsert())
-	}
-}
+
 const gloablTokenList = (list) => {
 	const getList = () => {
 		return {
@@ -62,24 +50,15 @@ const fetchTokenAction = (addr) => {
 		})
 	}
 }
-const getAssetsListAction = () => {
-	const onGet = () => {
-		return {
-			type: types.GET_ASSETS_LIST,
-		}
-	}
-	return(dispatch,getState) => {
-		dispatch(onGet())
-	}
-}
 
 
-const deleteSelectedToListAction = (delAddr) => {
+const deleteSelectedToListAction = (delAddr,curaddr) => {
 	const onDelete = () => {
 		return {
 			type: types.DELETE_TOKEN_LIST,
 			payload:{
 				delAddr,
+				curaddr,
 			}
 		}
 	}
@@ -87,26 +66,29 @@ const deleteSelectedToListAction = (delAddr) => {
 	return(dispatch,getState) => {
 		tokenDBOpation.deleteSelectedToken({
 			parames: {
-				delAddr
+				delAddr,
+				curaddr
 			},
 			deleteSelected: (data) => {dispatch(onDelete(data))}
 		})
 	}
 }
 
-const addSelectedToListAction = (addAddr) => {
+const addSelectedToListAction = (addAddr,curaddr) => {
 	const onAdd = () => {
 		return {
 			type: types.ADD_TOKEN_LIST,
 			payload:{
-				addAddr
+				addAddr,
+				curaddr
 			}
 		}
 	}
 	return(dispatch,getState) => {
 		tokenDBOpation.addSelectedToken({
 			parames: {
-				addAddr
+				addAddr,
+				curaddr
 			},
 			addSelected: (data) => {dispatch(onAdd(data))}
 		})
@@ -144,7 +126,8 @@ const refreshTokenAction = (addr,tokenlist) => {
 		return {
 			type: types.REFRESH_TOKEN_SUCCESS,
 			payload: {
-				data
+				data,
+				
 			}
 		}
 	}
@@ -156,6 +139,14 @@ const refreshTokenAction = (addr,tokenlist) => {
 			}
 		}
 	}
+	const etz = (data) => {
+		return {
+			type: types.REFRESH_ETZ,
+			payload: {
+				data
+			}
+		}
+	}
 	return(dispatch,getState) => {
 		dispatch(onRef())
 		tokenDBOpation.tokenRefresh({
@@ -163,6 +154,7 @@ const refreshTokenAction = (addr,tokenlist) => {
 				addr,
 				tokenlist
 			},
+			refreshEtz: (data) => { dispatch(etz(data))},
 			refreshSuccess: (data) => { dispatch(suc(data))},
 			refreshFail: (msg) => { dispatch(fail(msg))}
 		})
@@ -193,9 +185,9 @@ const switchTokenAction = (addr) => {
 		})
 	}
 }
+
+
 export {
-	insertToTokenAction,
-	getAssetsListAction,
 	deleteSelectedToListAction,
 	addSelectedToListAction,
 	initSelectedListAction,

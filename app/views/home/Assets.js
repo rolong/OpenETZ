@@ -17,16 +17,12 @@ import { pubS,DetailNavigatorStyle,MainThemeNavColor,ScanNavStyle } from '../../
 import { setScaleText, scaleSize } from '../../utils/adapter'
 import Drawer from 'react-native-drawer'
 import { connect } from 'react-redux'
-import { onSwitchDrawerAction } from '../../actions/onSwitchDrawerAction'
 import SwitchWallet from './SwitchWallet'
 import { switchDrawer } from '../../utils/switchDrawer'
-import TokenSQLite from '../../utils/tokenDB'
-import { toSplash } from '../../root'
+
 import { splitDecimal } from '../../utils/splitNumber'
-const tkSqLite = new TokenSQLite()
-let tk_db
+
 import { insertToTokenAction,initSelectedListAction,refreshTokenAction,fetchTokenAction } from '../../actions/tokenManageAction'
-let etzTitle = "ETZ"
 import I18n from 'react-native-i18n'
 import Toast from 'react-native-toast'
 
@@ -35,15 +31,17 @@ import { onExitApp } from '../../utils/exitApp'
 import accountDB from '../../db/account_db'
 
 import { globalAllAccountsInfoAction,globalCurrentAccountInfoAction } from '../../actions/accountManageAction'
+let etzTitle = "ETZ"
+
 class Assets extends Component{
   constructor(props){
     super(props)
     this.state = {
-      etzBalance: '0',
       navTitle: '',
       selectedAssetsList: [],
       isRefreshing: false,
       curAddr: '',
+      currencySymbol: '',
     }
   }
 
@@ -61,14 +59,44 @@ class Assets extends Component{
       isRefreshing: false
     })
     
+    localStorage.load({
+      key: 'lang',
+      autoSync: true,
+    }).then( ret => {
+      this.setCurrencySymbol(ret.selectedLan)
+    }).catch (err => {
+
+    })
+
     this.getAllAccounts()
   }
 
   componentWillUnmount () {
     BackHandler.removeEventListener('hardwareBackPress',this.onBack)
   }
-
+  setCurrencySymbol(symbol){
+    switch(symbol){
+      case 'zh-CN':
+        this.setState({
+          currencySymbol: '¥',
+        })
+        break
+      case 'en-US':
+        this.setState({
+          currencySymbol: '$',
+        })
+        break
+      case 'ru-RU':
+        this.setState({
+          currencySymbol: '₽',
+        })
+        break
+      default:
+        break
+    }
+  }
   async getAllAccounts(){
+    const { fetchTokenList } = this.props.tokenManageReducer
     //所有的账户数据
     let findAccountsList = await accountDB.selectTable({
       sql: 'select * from account',
@@ -78,12 +106,11 @@ class Assets extends Component{
 
     findAccountsList.map((value,index) => {
       if(value.is_selected === 1){
-        
-        this.getEtzBalance(`0x${value.address}`)
-
+        this.props.dispatch(refreshTokenAction(value.address,fetchTokenList))
         this.setState({
           navTitle: value.account_name,
           curAddr: value.address,
+          isRefreshing: true
         })
         //当前账户信息
         this.props.dispatch(globalCurrentAccountInfoAction(value))
@@ -93,12 +120,7 @@ class Assets extends Component{
     })
   }
 
-  async getEtzBalance(address){
-    let res = await web3.eth.getBalance(address)
-    this.setState({
-      etzBalance: web3.utils.fromWei(res,'ether')
-    })
-  }
+
 
   onBack(){
     onExitApp()
@@ -106,16 +128,28 @@ class Assets extends Component{
 
   componentWillReceiveProps(nextProps){
  
-    const { fetchTokenList, refreshEnd } = this.props.tokenManageReducer
+    const { fetchTokenList } = this.props.tokenManageReducer
 
     //刷新
-    if(refreshEnd !== nextProps.tokenManageReducer.refreshEnd && nextProps.tokenManageReducer.refreshEnd){
-      this.setState({
-        isRefreshing: false
-      })
+    const { refreshEnd} = nextProps.tokenManageReducer
 
-      
-
+    switch(refreshEnd){
+      case 'start':
+        this.setState({
+          isRefreshing: true
+        })
+        break
+      case 'suc':
+        this.setState({
+          isRefreshing: false
+        })
+        break
+      case 'fail':
+        this.setState({
+          isRefreshing: false
+        })
+        default:
+          break
     }
     
     //删除了当前账号
@@ -129,7 +163,8 @@ class Assets extends Component{
     //切换账号
     if(this.props.accountManageReducer.currentAccount.account_name !== currentAccount.account_name){
       this.setState({
-        navTitle: currentAccount.account_name
+        navTitle: currentAccount.account_name,
+        curAddr: currentAccount.address
       })
     }
   }
@@ -247,18 +282,17 @@ class Assets extends Component{
         isRefreshing: true
     })
     //这里的下拉刷新  更新etz和代币的余额
-    this.getEtzBalance(this.state.curAddr)
     this.props.dispatch(refreshTokenAction(this.state.curAddr,fetchTokenList))
   }
   render(){
-    const { selectedAssetsList,etzBalance, isRefreshing} = this.state
+    const { selectedAssetsList, isRefreshing, currencySymbol} = this.state
     
     const { currentAccount, globalAccountsList } = this.props.accountManageReducer
-    const { fetchTokenList } = this.props.tokenManageReducer
+    const { fetchTokenList,etzBalance } = this.props.tokenManageReducer
 
     console.log('首页fetchTokenList===',fetchTokenList)
     console.log('当前账户',currentAccount)
-    console.log('所有账户',globalAccountsList)
+    // console.log('所有账户',globalAccountsList)
     return(
       <View style={{backgroundColor:'#F5F7FB',flex:1}}>
         {
@@ -305,8 +339,8 @@ class Assets extends Component{
             </View>
             <View>
               <View style={[styles.assetsTotalView,pubS.center,{height: Platform.OS === 'ios' ? scaleSize(260) : scaleSize(300)}]}>
-                  <Text style={pubS.font72_1}>≈0</Text>
-                  <Text style={pubS.font26_3}>{I18n.t('total_assets')}(¥)</Text>
+                  <Text style={pubS.font72_1}>{splitDecimal(etzBalance)}</Text>
+                  <Text style={pubS.font26_3}>{I18n.t('total_assets')}({currencySymbol})</Text>
               </View>
 
               <View style={[styles.optionView,pubS.center]}>
@@ -339,7 +373,9 @@ class Assets extends Component{
             />
             {
               fetchTokenList.map((res,index) => {
-                if(res.tk_selected === 1){
+                // console.log('res.account_addr===',res.account_addr)
+                // console.log('currentAccount.address=',currentAccount.address)
+                if(res.tk_selected === 1 && (res.account_addr === currentAccount.address)){
                   return(
                     <AssetsItem
                       key={index}

@@ -13,10 +13,8 @@ import { pubS,DetailNavigatorStyle } from '../../styles/'
 import { setScaleText, scaleSize } from '../../utils/adapter'
 import { connect } from 'react-redux'
 import { Loading } from '../../components/'
-import { getAssetsListAction,deleteSelectedToListAction, addSelectedToListAction,fetchTokenAction,gloablTokenList } from '../../actions/tokenManageAction'
-import TokenSQLite from '../../utils/tokenDB'
-const tkSqLite = new TokenSQLite()
-let tk_db
+import { deleteSelectedToListAction, addSelectedToListAction,fetchTokenAction,gloablTokenList } from '../../actions/tokenManageAction'
+
 import I18n from 'react-native-i18n'
 import accountDB from '../../db/account_db'
 
@@ -35,20 +33,26 @@ class AddAssets extends Component{
   async onFetch(){
     //fetch token列表 并通过当前账户地址得到 token账户余额
     const { currentAccount } = this.props.accountManageReducer
-    console.log('添加资产当前账号currentAccount===',currentAccount)
+    // console.log('添加资产当前账号currentAccount===',currentAccount)
     let selTokenRes = await accountDB.selectTable({
       sql: 'select * from token where account_addr = ?',
       parame: [currentAccount.address]
     })
     //如果token list已经有数据  那么不需要再去 fetch数据  不需要再去插入数据  只需要将查询到的selTokenRes放在reducers中 全局使用
     //切换账号后需要更新  当前账号下的token list
-    console.log('selTokenRes11111111===',selTokenRes)
+    // console.log('selTokenRes11111111===',selTokenRes)
     if(selTokenRes.length === 0){
       this.props.dispatch(fetchTokenAction(currentAccount.address))
     }else{
       this.props.dispatch(gloablTokenList(selTokenRes))
     }
 
+    // const { fetchTokenList } = this.props.tokenManageReducer
+    // if(fetchTokenList.length === 0){
+    //   this.props.dispatch(fetchTokenAction(currentAccount.address))
+    // }else{
+    //   this.props.dispatch(gloablTokenList(fetchTokenList))
+    // }
   }
   onNavigatorEvent(event){
     if (event.type == 'NavBarButtonPress') {
@@ -59,10 +63,11 @@ class AddAssets extends Component{
   }
 
   onPressSelect = (pressAddr,selected) => {
+    const { currentAccount } = this.props.accountManageReducer
     if(selected){
-      this.props.dispatch(deleteSelectedToListAction(pressAddr))
+      this.props.dispatch(deleteSelectedToListAction(pressAddr,currentAccount.address))
     }else{
-      this.props.dispatch(addSelectedToListAction(pressAddr))
+      this.props.dispatch(addSelectedToListAction(pressAddr,currentAccount.address))
     }
   }
 

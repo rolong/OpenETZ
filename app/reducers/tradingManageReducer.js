@@ -1,11 +1,5 @@
 import * as types from '../constants/tradingManageConstant'
-import TradingSQLite from '../utils/tradingDB'
-import UserSQLite from '../utils/accountDB'
-const tradingSqLite = new TradingSQLite()  
-let t_db
 
-const sqLite = new UserSQLite();  
-let db  
 
 const initState = {
 	saveRecordSuc: false

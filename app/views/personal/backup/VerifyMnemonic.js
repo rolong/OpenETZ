@@ -13,10 +13,7 @@ import { setScaleText, scaleSize } from '../../../utils/adapter'
 import { Btn } from '../../../components/'
 import { deleteMnemonicAction, resetDeleteStatusAction } from '../../../actions/accountManageAction'
 import Modal from 'react-native-modal'
-import { connect } from 'react-redux'
-import UserSQLite from '../../../utils/accountDB'
-const sqLite = new UserSQLite()  
-let db  
+import { connect } from 'react-redux' 
 import I18n from 'react-native-i18n'
 import Toast from 'react-native-toast'
 class VerifyMnemonic extends Component{

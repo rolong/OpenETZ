@@ -19,15 +19,14 @@ import Modal from 'react-native-modal'
 import Picker from 'react-native-picker'
 import { insert2TradingDBAction } from '../../actions/tradingManageAction'
 import { refreshTokenAction } from '../../actions/tokenManageAction'
-import UserSQLite from '../../utils/accountDB'
+
 import { contractAbi } from '../../utils/contractAbi'
 import I18n from 'react-native-i18n'
 const EthUtil = require('ethereumjs-util')
 const Wallet = require('ethereumjs-wallet')
 const EthereumTx = require('ethereumjs-tx')
 const BigNumber = require('big-number')
-const sqLite = new UserSQLite()  
-let db 
+ 
 
 let self = null
 
@@ -58,7 +57,7 @@ class Payment extends Component{
   constructor(props){
     super(props)
     this.state={
-      receiverAddress: '0xec80a9fe89b05e337efa9c801c07c8444d9cb32e',
+      receiverAddress: '0x1ec79157f606d942ac19ce21231c1572aef8bb5d',
       payTotalVal: '',
       noteVal: '',
       payAddressWarning: '',
@@ -98,6 +97,14 @@ class Payment extends Component{
 
   componentWillMount(){
 
+
+    // const { fetchTokenList } = this.props.tokenManageReducer 
+    // this.props.dispatch(refreshTokenAction('ec80a9fe89b05e337efa9c801c07c8444d9cb32e',fetchTokenList))
+    // Toast.showLongBottom(I18n.t('send_successful'))
+             //更新etz数量
+
+
+
     const { currentAccount } = this.props.accountManageReducer
     if(this.props.curToken !== 'ETZ'){
       this.setState({
@@ -134,7 +141,7 @@ class Payment extends Component{
       }
     }
     this.setState({
-      senderAddress: `0x${currentAccount.address}`,//也就是当前账户地址
+      senderAddress: currentAccount.address,//也就是当前账户地址
       keyStore: ks,
       currentAccountName: currentAccount.account_name
     })
@@ -144,7 +151,7 @@ class Payment extends Component{
     const tokenPickerData = ["ETZ"]
     const { fetchTokenList } = this.props.tokenManageReducer 
     fetchTokenList.map((val,idx) => {
-      if(val.tk_selected === 1){
+      if(val.tk_selected === 1 && val.account_addr === this.state.senderAddress){
         tokenPickerData.push(val.tk_symbol)
       }
     })
@@ -214,7 +221,7 @@ class Payment extends Component{
     if(receiverAddress.length === 42 && newTotal.length > 0){
         let valWei = web3.utils.toWei(`${newTotal}`,'ether')
         let estObj = {
-            from:senderAddress,
+            from:`0x${senderAddress}`,
             to: receiverAddress,
             value: sanitizeHex(decimalToHex(valWei)),
             data: currentTokenName === 'ETZ' ? '' : sanitizeHex(tokenData)
@@ -229,14 +236,15 @@ class Payment extends Component{
     }
   }
   getTokenDataValue(){
-    const { selectedList } = this.props.tokenManageReducer 
+    const { fetchTokenList } = this.props.tokenManageReducer 
+
     const { currentTokenName, payTotalVal, currentTokenDecimals,receiverAddress } = this.state
     let contractAddress = ''
 
     if(receiverAddress.length === 42 && payTotalVal.length > 0 && currentTokenName !== 'ETZ'){
-      for(let i = 0; i < selectedList.length; i++){
-        if(selectedList[i].tk_symbol === currentTokenName){
-          contractAddress = selectedList[i].tk_address
+      for(let i = 0; i < fetchTokenList.length; i++){
+        if(fetchTokenList[i].tk_symbol === currentTokenName){
+          contractAddress = fetchTokenList[i].tk_address
         }
       } 
 
@@ -405,7 +413,7 @@ class Payment extends Component{
       console.log('privKey==',privKey)
       let bufPrivKey = new Buffer(privKey, 'hex')
       // console.log('bufPrivKey==',bufPrivKey)
-      let nonceNumber = await web3.eth.getTransactionCount(senderAddress)
+      let nonceNumber = await web3.eth.getTransactionCount(`0x${senderAddress}`)
 
       console.log('payTotalVal==',payTotalVal)
       let totalValue = web3.utils.toWei(payTotalVal,'ether')
@@ -447,9 +455,11 @@ class Payment extends Component{
           console.log('receipt==',receipt)
           let sendResult = 1
           if(receipt.status==="0x1"){
-             Toast.showLongBottom(I18n.t('send_successful'))
              //更新etz数量
-             
+              self.props.dispatch(refreshTokenAction(senderAddress,fetchTokenList))
+              setTimeout(() => {
+                Toast.showLongBottom(I18n.t('send_successful'))
+              },1000)
           }else{
             sendResult = 0
             Alert.alert(
@@ -464,12 +474,12 @@ class Payment extends Component{
           self.props.dispatch(insert2TradingDBAction({
             tx_hash: hashVal,
             tx_value: payTotalVal,
-            tx_sender: senderAddress,
+            tx_sender: `0x${senderAddress}`,
             tx_receiver: receiverAddress,
             tx_note: noteVal,
             tx_token: "ETZ",
             tx_result: sendResult,
-            currentAccountName: senderAddress
+            currentAccountName: `0x${senderAddress}`
           }))
       })
       // .on('confirmation', function(confirmationNumber, receipt){ 
@@ -503,8 +513,8 @@ class Payment extends Component{
       let newWallet = await Wallet.fromV3(this.state.keyStore,payPsdVal)
       let privKey = await newWallet._privKey.toString('hex')
      
-
-      web3.eth.getTransactionCount(senderAddress, function(error, nonce) {
+      console.log('合约地址',contractAddr)
+      web3.eth.getTransactionCount(`0x${senderAddress}`, function(error, nonce) {
 
         const txParams = {
             nonce: web3.utils.toHex(nonce),
@@ -516,8 +526,7 @@ class Payment extends Component{
             data: tokenData,
             chainId: "0x58"
         }
-
-        console.log('txParams====',txParams)
+        console.log("txParams:", txParams)
 
         const tx = new EthereumTx(txParams)
         // 通过明文私钥初始化钱包对象key
@@ -532,7 +541,6 @@ class Payment extends Component{
 
         console.log("serializedTx: ", serializedTx)
         
-        console.log("txParams:", txParams)
         let hashVal = ''
         web3.eth.sendSignedTransaction(serializedTx).on('transactionHash', function(hash){
             console.log('transactionHash:', hash)
@@ -554,8 +562,10 @@ class Payment extends Component{
             console.log('receipt:', receipt)
             let sendResult = 1
             if(receipt.status==="0x1"){//"0x1" succ "0x0" fail
-              Toast.showLongBottom(I18n.t('send_successful'))
-              this.props.dispatch(refreshTokenAction(senderAddress,fetchTokenList))
+              self.props.dispatch(refreshTokenAction(senderAddress,fetchTokenList))
+              setTimeout(() => {
+                Toast.showLongBottom(I18n.t('send_successful'))
+              },1000)
             }else{
               sendResult = 0
               Alert.alert(
@@ -570,22 +580,22 @@ class Payment extends Component{
             self.props.dispatch(insert2TradingDBAction({
               tx_hash: hashVal,
               tx_value: payTotalVal,
-              tx_sender: senderAddress,
+              tx_sender: `0x${senderAddress}`,
               tx_receiver: receiverAddress,
               tx_note: noteVal,
               tx_token: currentTokenName,
               tx_result: sendResult,
-              currentAccountName: senderAddress
+              currentAccountName: `0x${senderAddress}`
             }))
             self.props.dispatch(insert2TradingDBAction({
               tx_hash: hashVal,
               tx_value: '0.00',
-              tx_sender: senderAddress,
+              tx_sender: `0x${senderAddress}`,
               tx_receiver: receiverAddress,
               tx_note: noteVal,
               tx_token: "ETZ",
               tx_result: sendResult,
-              currentAccountName: senderAddress
+              currentAccountName: `0x${senderAddress}`
             }))
 
         }).on('error', (error) => {
@@ -690,7 +700,7 @@ class Payment extends Component{
                 />
                 <RowText
                   rowTitle={I18n.t('from_address')}
-                  rowContent={senderAddress}
+                  rowContent={`0x${senderAddress}`}
                 />
                 <RowText
                   rowTitle={I18n.t('amount_1')}

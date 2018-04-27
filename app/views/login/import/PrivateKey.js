@@ -13,7 +13,7 @@ import { pubS } from '../../../styles/'
 import { setScaleText, scaleSize } from '../../../utils/adapter'
 import ScrollableTabView, { DefaultTabBar, ScrollableTabBar } from 'react-native-scrollable-tab-view'
 import { TextInputComponent,Btn,Loading } from '../../../components/'
-import { toSplash } from '../../../root'
+import { toHome } from '../../../root'
 import { importAccountAction,resetDeleteStatusAction } from '../../../actions/accountManageAction'
 import { connect } from 'react-redux'
 import { Navigation } from 'react-native-navigation'
@@ -35,6 +35,9 @@ class PrivateKey extends Component{
       visible: false,
     }
   }
+  componentWillMount(){
+    this.props.dispatch(resetDeleteStatusAction())
+  }
   componentWillReceiveProps(nextProps){
     if(nextProps.accountManageReducer.importStatus !== this.props.accountManageReducer.importStatus){
       this.setState({
@@ -43,7 +46,7 @@ class PrivateKey extends Component{
       if(nextProps.accountManageReducer.importStatus === 'success'){
         Toast.showLongBottom(I18n.t('import_successful'))
         setTimeout(() => {
-          toSplash()
+          toHome()
         },100)
       }else{
         if(nextProps.accountManageReducer.importStatus === 'fail'){

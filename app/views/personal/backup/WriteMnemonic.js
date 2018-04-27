@@ -12,9 +12,6 @@ import { pubS,DetailNavigatorStyle } from '../../../styles/'
 import { setScaleText, scaleSize } from '../../../utils/adapter'
 import { connect } from 'react-redux'
 import { Btn } from '../../../components/'
-import UserSQLite from '../../../utils/accountDB'
-const sqLite = new UserSQLite()  
-let db  
 import I18n from 'react-native-i18n'
 
 class WriteMnemonic extends Component{

@@ -108,7 +108,10 @@ class BackUpAccount extends Component{
         setTimeout(() => {
           toLogin()
         },1000)
-        accountDB.dropAccountTable() 
+        accountDB.dropTable({
+          sql: 'drop table account'
+        })
+
       }else{
         setTimeout(() => {
           this.props.navigator.pop()
