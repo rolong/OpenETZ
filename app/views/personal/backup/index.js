@@ -232,7 +232,8 @@ class BackUpAccount extends Component{
         }
         this.onHide()
       } catch (err) {
-        Toast.showLongBottom(I18n.t('password_is_wrong'))
+        Alert.alert(I18n.t('password_is_wrong'))       
+
         this.setState({
           psdVal: '',
           visible: false,
@@ -296,7 +297,8 @@ class BackUpAccount extends Component{
         <View style={{position:'absolute',bottom: scaleSize(40)}}>
           <Btn
             btnPress={ mncBackuped ? () => {return} : () => this.backupMnemonicBtn() }
-            bgColor={mncBackuped ? '#BDC0C6' : '#2B8AFF'}
+            // bgColor={mncBackuped ? '#BDC0C6' : '#2B8AFF'}
+            bgColor={'#2B8AFF'}
             opacity={mncBackuped ? 1 : .7}
             btnText={I18n.t('backup_mnemonic_1')}
             btnMarginTop={scaleSize(150)}
@@ -310,7 +312,8 @@ class BackUpAccount extends Component{
           />
           <Btn
             btnPress={privBackuped ? () => {return} : () => this.backUpPrivBtn() }
-            bgColor={privBackuped ? '#BDC0C6' : '#2B8AFF'}
+            // bgColor={privBackuped ? '#BDC0C6' : '#2B8AFF'}
+            bgColor={'#2B8AFF'}
             opacity={privBackuped ? 1 : .7}
             btnText={I18n.t('backup_private_key')}
             btnMarginTop={scaleSize(20)}

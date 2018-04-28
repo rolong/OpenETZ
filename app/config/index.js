@@ -1,6 +1,6 @@
-import { StyleSheet, View, Text, Image } from 'react-native'
+import { BackHandler } from 'react-native'
 import { Navigation, ScreenVisibilityListener } from 'react-native-navigation'
-
+import { onExitApp } from '../utils/exitApp'
 import store from '../store/'
 import { Provider } from 'react-redux'
 
@@ -30,13 +30,13 @@ import Receive from '../views/home/Receive'
 import Payment from '../views/home/Payment'
 import TradingRecord from '../views/home/tradingRecord/'
 import ScanQrCode from '../views/home/ScanQrCode'
-import AssetlList from '../views/home/AssetlList'
+import TxRecordlList from '../views/home/TxRecordlList'
 import TradingRecordDetail from '../views/home/TradingRecordDetail'
 import TxWebView from '../views/home/TxWebView'
 import SwitchWallet from '../views/home/SwitchWallet'
 import AddAssets from '../views/home/AddAssets'
 
-export function registerScreens() {
+function registerScreens() {
   Navigation.registerComponent('splash', () => Splash,store,Provider)
   Navigation.registerComponent('login', () => Login,store,Provider)
   Navigation.registerComponent('create_account', () => CreateAccount,store,Provider)
@@ -53,7 +53,7 @@ export function registerScreens() {
   Navigation.registerComponent('on_receive', () => Receive,store,Provider)
   Navigation.registerComponent('trading_record', () => TradingRecord,store,Provider)
   Navigation.registerComponent('scan_qr_code', () => ScanQrCode,store,Provider)
-  Navigation.registerComponent('asset_detail_list', () => AssetlList,store,Provider)
+  Navigation.registerComponent('tx_record_list', () => TxRecordlList,store,Provider)
   Navigation.registerComponent('trading_record_detail', () => TradingRecordDetail,store,Provider)
   Navigation.registerComponent('support', () => Support,store,Provider)
   Navigation.registerComponent('help_center', () => HelpCenter,store,Provider)
@@ -67,11 +67,32 @@ export function registerScreens() {
 }
 
 // 注册页面切换监听器
-export function registerScreenVisibilityListener() {
+function registerScreenVisibilityListener() {
   new ScreenVisibilityListener({
-    // willAppear: ({screen}) => console.log(`Displaying screen ${screen}`),
+    // willAppear: ({screen}) => addFunc(screen),
     // didAppear: ({screen, startTime, endTime, commandType}) => console.log('screenVisibility', `Screen ${screen} displayed in ${endTime - startTime} millis [${commandType}]`),
-    // willDisappear: ({screen}) => console.log(`Screen will disappear ${screen}`),
+    // willDisappear: ({screen}) => removeFunc(screen),
     // didDisappear: ({screen}) => console.log(`Screen disappeared ${screen}`)
   }).register()
+}
+
+// function addFunc(screen){
+//   if(screen === 'home_assets'){
+//     BackHandler.addEventListener('hardwareBackPress',() => {
+//       onExitApp()
+//     })
+//   }
+// }
+// function removeFunc(screen){
+//   if(screen === 'home_assets'){
+//     BackHandler.removeEventListener('hardwareBackPress',() => {
+//       onExitApp()
+//     })
+//   }
+// }
+
+
+export {
+  registerScreens,
+  registerScreenVisibilityListener
 }

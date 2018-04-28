@@ -71,26 +71,31 @@ class SwitchLanguage extends Component{
 	  	}
 	}
 	componentWillMount(){
-  		localStorage.load({
-  			key:'lang',
-  			autoSync: true,
-  		}).then( ret => {
-  			switch(ret.selectedLan){
-  				case 'zh-CN':
-  					this.onSelectZh()
-  					break
-  				case 'en-US':
-  					this.onSelectEn()
-  					break
-  				case 'ru-RU':
-  					this.onSelectRu()
-  					break
-  				default:
-  					break
-  			}
-  		}).catch( err => {
+		// console.log('languages======',I18n.currentLocale())
 
-  		})
+  // 		localStorage.load({
+  // 			key:'lang',
+  // 			autoSync: true,
+  // 		}).then( ret => {
+  			
+  // 		}).catch( err => {
+
+  // 		})
+
+  		switch(I18n.currentLocale()){
+			case 'zh-CN':
+				this.onSelectZh()
+				break
+			case 'en-US':
+				this.onSelectEn()
+				break
+			case 'ru-RU':
+				this.onSelectRu()
+				break
+			default:
+				break
+		}
+  			
   	}
 
 	onSelectZh = () => {
@@ -125,22 +130,22 @@ class SwitchLanguage extends Component{
 			})
 		}
 	}
-	// onSelectRu = () => {
-	// 	if(!this.state.select_ru){
-	// 		this.setState({
-	// 			select_zh: false,
-	// 	  		select_en: false,
-	// 	  		select_ru: true,
-				// bgColorZh: '#fff',
-				// bgColorEn: '#fff',
-				// bgColorRu: '#eee',
-	// 		},() => {
-	// 			this.setState({
-	// 				selectedLan: 'ru-RU'
-	// 			})
-	// 		})
-	// 	}
-	// }
+	onSelectRu = () => {
+		if(!this.state.select_ru){
+			this.setState({
+				select_zh: false,
+		  		select_en: false,
+		  		select_ru: true,
+				bgColorZh: '#fff',
+				bgColorEn: '#fff',
+				bgColorRu: '#eee',
+			},() => {
+				this.setState({
+					selectedLan: 'ru-RU'
+				})
+			})
+		}
+	}
   	render(){
   		const { select_zh, select_en, select_ru,bgColorZh, bgColorEn, bgColorRu } = this.state
 	    return(
@@ -158,12 +163,12 @@ class SwitchLanguage extends Component{
 	      		bgColor={bgColorEn}
 	      	/>
 	      	{
-		      	// <Language
-		      	// 	languageText={'Русский язык'}
-		      	// 	isSelected={select_ru}
-		      	// 	onSelect={this.onSelectRu}
-		      		// bgColor={bgColorRu}
-		      	// />
+		      	<Language
+		      		languageText={'Русский язык'}
+		      		isSelected={select_ru}
+		      		onSelect={this.onSelectRu}
+		      		bgColor={bgColorRu}
+		      	/>
 	      	}
 	      </View>
 	    )

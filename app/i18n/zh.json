@@ -124,4 +124,6 @@
   "input_receive_address":"请输入收款方地址",
   "click_again":"再次点击退出程序",
   "send_failure":"转账失败",
+  "enter_number":"请输入数字",
+  
 }	

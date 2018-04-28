@@ -10,7 +10,6 @@ import {
   Platform,
   RefreshControl,
   Button,
-  BackHandler,
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle,MainThemeNavColor,ScanNavStyle } from '../../styles/'
@@ -26,7 +25,7 @@ import { insertToTokenAction,initSelectedListAction,refreshTokenAction,fetchToke
 import I18n from 'react-native-i18n'
 import Toast from 'react-native-toast'
 
-import { onExitApp } from '../../utils/exitApp'
+
 
 import accountDB from '../../db/account_db'
 
@@ -46,7 +45,6 @@ class Assets extends Component{
   }
 
   componentWillMount(){
-    BackHandler.addEventListener('hardwareBackPress',this.onBack)
     this.props.navigator.setTabButton({
       tabIndex: 0,
       label: I18n.t('assets')
@@ -71,9 +69,7 @@ class Assets extends Component{
     this.getAllAccounts()
   }
 
-  componentWillUnmount () {
-    BackHandler.removeEventListener('hardwareBackPress',this.onBack)
-  }
+
   setCurrencySymbol(symbol){
     switch(symbol){
       case 'zh-CN':
@@ -122,9 +118,6 @@ class Assets extends Component{
 
 
 
-  onBack(){
-    onExitApp()
-  }
 
   componentWillReceiveProps(nextProps){
  
@@ -171,15 +164,16 @@ class Assets extends Component{
 
 
  
-  toAssetsDetail = (title,balance,token) => {
+  toTxRecordList = (title,balance,token) => {
     this.props.navigator.push({
-      screen: 'asset_detail_list',
+      screen: 'tx_record_list',
       title,
       navigatorStyle: MainThemeNavColor,
       passProps:{
         etzBalance: balance,
         etz2rmb: 0,
         curToken: token,
+        currencySymbol: this.state.currencySymbol
       }
     })
   }
@@ -369,7 +363,8 @@ class Assets extends Component{
               fullName={'EtherZero'}
               coinNumber={splitDecimal(etzBalance)}
               price2rmb={0}
-              onPressItem={() => this.toAssetsDetail(etzTitle,splitDecimal(etzBalance),'ETZ')}
+              symbol={this.state.currencySymbol}
+              onPressItem={() => this.toTxRecordList(etzTitle,splitDecimal(etzBalance),'ETZ')}
             />
             {
               fetchTokenList.map((res,index) => {
@@ -383,7 +378,8 @@ class Assets extends Component{
                       fullName={res.tk_name}
                       coinNumber={splitDecimal(res.tk_number)}
                       price2rmb={0}
-                      onPressItem={() => this.toAssetsDetail(res.tk_symbol,splitDecimal(res.tk_number),res.tk_symbol)}
+                      symbol={this.state.currencySymbol}
+                      onPressItem={() => this.toTxRecordList(res.tk_symbol,splitDecimal(res.tk_number),res.tk_symbol)}
                     />
                   )
                 }
@@ -414,7 +410,7 @@ class AssetsItem extends Component {
           </View>
           <View style={pubS.rowCenterJus}>
             <Text style={pubS.font24_2}>{fullName}</Text>
-            <Text style={pubS.font24_2}>{`≈ ¥${price2rmb}`}</Text>
+            <Text style={pubS.font24_2}>{`≈ ${this.props.symbol}${price2rmb}`}</Text>
           </View>
         </View>
       </TouchableOpacity>

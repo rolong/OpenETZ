@@ -33,14 +33,16 @@ class VerifyMnemonic extends Component{
 		let arr = [],
 			mneArr = [];
 		arr = this.props.mnemonicText.split(" ")
+        console.log('arr===',arr)
 		for(let i = 0; i < arr.length; i ++){
                mneArr.push({
                        idx:i,
                        val: arr[i]
                })
         }
+        console.log('mneArr===',mneArr)
         let newMnemonic = this.shuffle(mneArr)
-
+        console.log('newMnemonic===',newMnemonic)
 		this.setState({
 			mnemonicArr: newMnemonic
 		})
@@ -51,17 +53,28 @@ class VerifyMnemonic extends Component{
 			this.props.dispatch(resetDeleteStatusAction())
 			this.props.navigator.pop()
 		}
-	}
+	}	
 	
-	shuffle = (arr) => {
-	    let i = arr.length;
-	    while (i) {
-	        let j = Math.floor(Math.random() * i--)
-	        [arr[j], arr[i]] = [arr[i], arr[j]]
-			
-	    }
-	    return arr
+	shuffle = (array) => {
+	  var currentIndex = array.length, temporaryValue, randomIndex;
+
+	  // While there remain elements to shuffle...
+	  while (0 !== currentIndex) {
+
+	    // Pick a remaining element...
+	    randomIndex = Math.floor(Math.random() * currentIndex);
+	    currentIndex -= 1;
+
+	    // And swap it with the current element.
+	    temporaryValue = array[currentIndex];
+	    array[currentIndex] = array[randomIndex];
+	    array[randomIndex] = temporaryValue;
+	  }
+
+	  return array;
 	}
+
+
 
 	onSelectItem = (item,selected) => {
 		const { selectedContainer,selectedString, compareString } = this.state

@@ -16,7 +16,7 @@ import { splitNumber,sliceAddress,timeStamp2Date } from '../../utils/splitNumber
 import I18n from 'react-native-i18n'
 import { connect } from 'react-redux'
 import accountDB from '../../db/account_db'
-class AssetlList extends Component{
+class TxRecordlList extends Component{
   constructor(props){
     super(props)
     this.state = {
@@ -51,7 +51,8 @@ class AssetlList extends Component{
       title:I18n.t('tx_records_1'),
       navigatorStyle: MainThemeNavColor,
       passProps: {
-        detailInfo: res
+        detailInfo: res,
+        fromList: 'list'
       }
     })
   }
@@ -77,7 +78,7 @@ class AssetlList extends Component{
       return(
         <View style={[styles.listViewStyle,pubS.center]}>
           <Text style={pubS.font72_1}>{splitNumber(etzBalance)}</Text>
-          <Text style={pubS.font26_3}>{`≈ ¥ 0`}</Text>
+          <Text style={pubS.font26_3}>{this.props.currencySymbol}</Text>
         </View>
       ) 
   }
@@ -152,4 +153,4 @@ export default connect(
     tradingManageReducer: state.tradingManageReducer,
     accountManageReducer: state.accountManageReducer,
   })
-)(AssetlList)
+)(TxRecordlList)

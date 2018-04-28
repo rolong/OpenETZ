@@ -4,15 +4,6 @@ const insert2TradingDBAction = (data) => {
 	const start = () => {
 		return {
 			type: types.SAVE_TO_RECORD_START,
-			payload: {
-				// tx_hash: data.tx_hash,
-				// tx_value: data.tx_value,
-				// tx_sender: data.tx_sender,
-				// tx_receiver: data.tx_receiver,
-				// tx_note: data.tx_note,
-				// tx_token: data.tx_token,
-				// tx_result: data.tx_result,
-			}
 		}
 	}
 	const suc = (sucdata) => {

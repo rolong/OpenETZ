@@ -97,11 +97,24 @@ class Payment extends Component{
 
   componentWillMount(){
 
-
-    // const { fetchTokenList } = this.props.tokenManageReducer 
-    // this.props.dispatch(refreshTokenAction('ec80a9fe89b05e337efa9c801c07c8444d9cb32e',fetchTokenList))
-    // Toast.showLongBottom(I18n.t('send_successful'))
-             //更新etz数量
+      // let passDetailInfo = {
+      //     tx_value: 'payTotalVal',                         
+      //     tx_token: 'ETZ',                               
+      //     tx_sender: `0xlfasdkl;fjsadk`,               
+      //     tx_receiver: 'receiverAddress',                  
+      //     tx_note: 'noteVal',                              
+      //     tx_hash: '0x3a37a911f93503e0f4f4590c9a31a5ae94d55e019d7760eba7194609e835afe7',                              
+      //     tx_block_number: 0,                            
+      //     tx_time: '',  
+      //   }
+      // this.props.navigator.push({                          
+      //    screen: 'trading_record_detail',                   
+      //    title:I18n.t('tx_records_1'),                      
+      //    navigatorStyle: MainThemeNavColor, 
+      //    passProps: {  
+      //     detailInfo:passDetailInfo,
+      //    }                                                  
+      //  }) 
 
 
 
@@ -226,7 +239,7 @@ class Payment extends Component{
             value: sanitizeHex(decimalToHex(valWei)),
             data: currentTokenName === 'ETZ' ? '' : sanitizeHex(tokenData)
         }
-        console.log('estObj===',estObj)
+        // console.log('estObj===',estObj)
         web3.eth.estimateGas(estObj).then( gas => {
           this.setState({
             gasValue: gas
@@ -240,7 +253,7 @@ class Payment extends Component{
 
     const { currentTokenName, payTotalVal, currentTokenDecimals,receiverAddress } = this.state
     let contractAddress = ''
-
+    // console.log('payTotalVal=',payTotalVal)
     if(receiverAddress.length === 42 && payTotalVal.length > 0 && currentTokenName !== 'ETZ'){
       for(let i = 0; i < fetchTokenList.length; i++){
         if(fetchTokenList[i].tk_symbol === currentTokenName){
@@ -251,6 +264,9 @@ class Payment extends Component{
       let txNumber = parseInt(parseFloat(payTotalVal) *  Math.pow(10,currentTokenDecimals))
 
       let hex16 = parseInt(txNumber).toString(16)
+
+      // console.log('hex16==',hex16)
+      
 
       let myContract = new web3.eth.Contract(contractAbi, contractAddress)
 
@@ -267,7 +283,7 @@ class Payment extends Component{
       },1000)
     }
   }
-  onChangePaTotalText = (val) => {
+  onChangePayTotalText = (val) => {
     this.setState({
       payTotalVal: val,
       payTotalWarning: ''
@@ -440,15 +456,29 @@ class Payment extends Component{
       let hashVal = ''
       web3.eth.sendSignedTransaction(`0x${serializedTx.toString('hex')}`)
       .on('transactionHash', function(hash){
-         console.log('hash==',hash)
+        console.log('hash==',hash)
         hashVal = hash
+        let passDetailInfo = {
+          tx_value: payTotalVal,                         
+          tx_token: 'ETZ',                               
+          tx_sender: `0x${senderAddress}`,               
+          tx_receiver: receiverAddress,                  
+          tx_note: noteVal,                              
+          tx_hash: hash,                              
+          tx_block_number: 0,                            
+          tx_time: '',  
+          tx_result: 1
+        }
         self.onPressClose()
-        setTimeout(() => {
-          self.props.navigator.popToRoot({
-            animated: true,
-            animationType: 'fade',
-          })
-        },1000)
+       self.props.navigator.push({                          
+         screen: 'trading_record_detail',                   
+         title:I18n.t('tx_records_1'),                      
+         navigatorStyle: MainThemeNavColor, 
+         passProps: {  
+          detailInfo:passDetailInfo,
+         }                                                  
+       })                                                   
+
 
       })
       .on('receipt', function(receipt){
@@ -545,13 +575,29 @@ class Payment extends Component{
         web3.eth.sendSignedTransaction(serializedTx).on('transactionHash', function(hash){
             console.log('transactionHash:', hash)
             hashVal = hash
+
+            let passDetailInfo = {
+              tx_value: payTotalVal,                         
+              tx_token: currentTokenName,                               
+              tx_sender: `0x${senderAddress}`,               
+              tx_receiver: receiverAddress,                  
+              tx_note: noteVal,                              
+              tx_hash: hash,                              
+              tx_block_number: 0,                            
+              tx_time: '',  
+              tx_result: 1
+            }
+
             self.onPressClose()
-            setTimeout(() => {
-              self.props.navigator.popToRoot({
-                animated: true,
-                animationType: 'fade',
-              })
-            },1000)
+
+            self.props.navigator.push({                          
+               screen: 'trading_record_detail',                   
+               title:I18n.t('tx_records_1'),                      
+               navigatorStyle: MainThemeNavColor, 
+               passProps: {  
+                detailInfo:passDetailInfo,
+               }                                                  
+            })
 
         })
         // .on('confirmation', function(confirmationNumber, receipt){
@@ -568,13 +614,7 @@ class Payment extends Component{
               },1000)
             }else{
               sendResult = 0
-              Alert.alert(
-                  '',
-                  I18n.t('send_failure'),
-                  [
-                    {text: I18n.t('ok'), onPress:() => {console.log('1')}},
-                  ],
-              )
+              Alert.alert(I18n.t('send_failure'))
             }
 
             self.props.dispatch(insert2TradingDBAction({
@@ -602,13 +642,7 @@ class Payment extends Component{
           console.error(error)
           self.onPressClose()
           self.props.navigator.pop()
-          Alert.alert(
-            '',
-            `${error}`,
-            [
-              {text: I18n.t('ok'), onPress:() => {console.log('1')}},
-            ],
-          )
+          Alert.alert(`${error}`,)
 
           // alert(error)
         });
@@ -650,7 +684,7 @@ class Payment extends Component{
         <TextInputComponent
           placeholder={I18n.t('amount')}
           value={payTotalVal}
-          onChangeText={this.onChangePaTotalText}
+          onChangeText={this.onChangePayTotalText}
           warningText={payTotalWarning}
           keyboardType={'numeric'}
         />

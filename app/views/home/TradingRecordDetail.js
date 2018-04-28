@@ -37,10 +37,44 @@ class TradingRecordDetail extends Component{
   constructor(props){
     super(props)
     this.state = {
-   
+      txDetail:{}
     }
   }
 
+  componentDidMount(){
+
+    this.setState({
+        txDetail: this.props.detailInfo
+    })
+  }
+  // fromSendPage(){
+  //   const { tx_value, tx_token, tx_sender, tx_receiver, tx_note, tx_hash, tx_block_number, tx_time } = this.props.detailInfo
+  //   console.log('this.props============',this.props.detailInfo)
+
+  //   web3.eth.getTransaction(tx_hash).then((tx) => {
+  //     console.log('tx1111111111111',tx)
+  //     web3.eth.getBlock(tx.blockNumber).then((txBlock) => {
+  //       console.log('txBlock1111111111111',txBlock)
+  //       let block = txBlock.number
+
+  //       let time = txBlock.timestamp
+
+  //       this.setState({
+  //         txDetail:{
+  //           tx_value: tx_value,
+  //           tx_token: tx_token,
+  //           tx_sender: tx_sender,
+  //           tx_receiver: tx_receiver,
+  //           tx_note: tx_note,
+  //           tx_hash: tx_hash,
+  //           tx_block_number: block,
+  //           tx_time: `${time}`,
+  //           tx_result: 1
+  //         }
+  //       })
+  //     })
+  //   })
+  // }
 
   toWebView = (hash) => {
     this.props.navigator.push({
@@ -58,28 +92,28 @@ class TradingRecordDetail extends Component{
 
   
   render(){
-    const { detailInfo} = this.props
-
+    const { txDetail } = this.state
+    console.log('txDetail==222222222222=',txDetail)
     return(
       <View style={pubS.container}>
-        <Image source={require('../../images/xhdpi/ico_selectasset_transactionrecords_succeed.png')} style={styles.iocnStyle}/>
+        <Image source={ txDetail.tx_result === 1 ? require('../../images/xhdpi/ico_selectasset_transactionrecords_succeed.png') : require('../../images/xhdpi/ico_selectasset_transactionrecords_error.png')} style={styles.iocnStyle}/>
         <View style={styles.topView}></View>
         <View style={styles.mainStyle}>
           <View style={[styles.accountStyle,pubS.rowCenter2]}>
-            <Text style={pubS.font60_1}>{detailInfo.tx_value}</Text>
-            <Text style={[pubS.font22_3,{marginLeft: scaleSize(18),marginTop: scaleSize(28)}]}>{detailInfo.tx_token}</Text>
+            <Text style={pubS.font60_1}>{txDetail.tx_value}</Text>
+            <Text style={[pubS.font22_3,{marginLeft: scaleSize(18),marginTop: scaleSize(28)}]}>{txDetail.tx_token}</Text>
           </View>
           <TextInstructions
             title={I18n.t('payer')}
-            instructions={detailInfo.tx_sender}
+            instructions={txDetail.tx_sender}
           />
           <TextInstructions
             title={I18n.t('payee')}
-            instructions={detailInfo.tx_receiver}
+            instructions={txDetail.tx_receiver}
           />
           <TextInstructions
             title={I18n.t('note')}
-            instructions={detailInfo.tx_note}
+            instructions={txDetail.tx_note}
           />
 
           <View style={[{width: scaleSize(680),alignSelf:'center',marginTop: scaleSize(30),marginBottom: scaleSize(10)},pubS.bottomStyle]}></View>
@@ -87,22 +121,22 @@ class TradingRecordDetail extends Component{
             <View>
               <TextInstructions
                 title={I18n.t('tx_number')}
-                instructions={sliceAddress(detailInfo.tx_hash)} 
+                instructions={ Object.keys(txDetail).length > 0 ? sliceAddress(txDetail.tx_hash,12) : ''}
                 inColor={'#2B8AFF'}
-                onPressText={() => this.toWebView(detailInfo.tx_hash)}
-                />
+                onPressText={() => this.toWebView(txDetail.tx_hash)}
+              />
               <TextInstructions
                 title={I18n.t('block')}
-                instructions={detailInfo.tx_block_number}
-                />
+                instructions={txDetail.tx_block_number}
+              />
               <TextInstructions
                 title={I18n.t('tx_time')}
-                instructions={timeStamp2FullDate(detailInfo.tx_time)}
-                />
+                instructions={ Object.keys(txDetail).length > 0 ? timeStamp2FullDate(txDetail.tx_time) : null }
+              />
             </View>
             <View style={{marginTop: scaleSize(40)}}>
               <QRCode
-                value={detailInfo.tx_receiver}
+                value={txDetail.tx_receiver}
                 size={scaleSize(170)}
                 bgColor='#000'
                 fgColor='#fff'
