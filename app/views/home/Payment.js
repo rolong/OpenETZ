@@ -8,7 +8,8 @@ import {
   ScrollView,
   Alert,
   Platform,
-  Keyboard
+  Keyboard,
+  StatusBar
 } from 'react-native'
 
 

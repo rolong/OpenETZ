@@ -5,7 +5,8 @@ import {
   Image,
   Button,
   Platform,
-  NativeModules
+  NativeModules,
+  StatusBar
 } from 'react-native'
 import { toHome, toLogin} from '../root'
 import { connect } from 'react-redux'
@@ -114,6 +115,7 @@ class Splash extends Component{
   render(){
   	return(
       <View style={{flex:1}}>
+      <StatusBar backgroundColor="#FFFFFF"  barStyle="light-content" hidden={true} />
          {
            Platform.OS == 'ios' ?
            null :
