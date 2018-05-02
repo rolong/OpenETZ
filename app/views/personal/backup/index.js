@@ -11,6 +11,7 @@ import {
   BackHandler,
   Clipboard,
   Share,
+  Button,
 } from 'react-native'
 import { Navigation } from 'react-native-navigation'
 import { pubS,DetailNavigatorStyle } from '../../../styles/'
@@ -30,6 +31,7 @@ import Toast from 'react-native-toast'
 
 import accountDB from '../../../db/account_db'
 
+import { fromV3 } from '../../../utils/fromV3'
 class BackUpAccount extends Component{
   constructor(props){
     super(props)
@@ -206,8 +208,8 @@ class BackUpAccount extends Component{
     })  
     setTimeout(() => {
       try {
-        const newWallet = Wallet.fromV3(keyStore,psdVal)
-        let priv = newWallet._privKey.toString('hex')
+        const newWallet = fromV3(keyStore,psdVal)
+        let priv = newWallet.privKey.toString('hex')
         if(backupMnemonic){
           this.props.navigator.push({
             screen: 'write_mnemonic',
@@ -240,7 +242,7 @@ class BackUpAccount extends Component{
           loadingText: '',
         })
       }
-    },1000)
+    },500)
   }
 
 
@@ -289,7 +291,6 @@ class BackUpAccount extends Component{
         <Loading loadingVisible={this.state.visible} loadingText={this.state.loadingText}/>
         <Image source={require('../../../images/xhdpi/Penguin.png')} style={styles.avateStyle}/>
         <Text style={pubS.font26_5}>{sliceAddress(this.props.address,10)}</Text>
-        
         <View style={[styles.userNameViewStyle,pubS.rowCenterJus,pubS.bottomStyle]}>
           <Text style={pubS.font26_4}>{I18n.t('account_name')}</Text>
           <Text style={pubS.font26_4}>{this.props.userName}</Text>
@@ -342,6 +343,7 @@ class BackUpAccount extends Component{
               textAlignVertical={'center'}
               secureTextEntry={true}
               style={styles.textIptStyle}
+              autoFocus={true}
             />
             <View style={[pubS.rowCenter,pubS.topBorderStyle,{height: scaleSize(88),marginTop: scaleSize(25),width: '100%'}]}>
               <TouchableOpacity activeOpacity={.7} onPress={this.onHide} style={[pubS.center,styles.modalBtnStyle]}>

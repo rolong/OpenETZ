@@ -349,7 +349,7 @@ class Payment extends Component{
       const txParams = {
           nonce: `0x${nonceNumber.toString(16)}`,
           gasPrice: '0x09184e72a000', 
-          gasLimit: `0x${parseInt(gasValue).toString(16)}`,
+          gasLimit: `0x${parseFloat(gasValue).toString(16)}`,
           to: receiverAddress,
           value: `0x${hex16}`,
           data: '',
@@ -465,7 +465,7 @@ class Payment extends Component{
         const txParams = {
             nonce: web3.utils.toHex(nonce),
             gasPrice:"0x098bca5a00",
-            gasLimit: `0x${parseInt(gasValue).toString(16)}`,
+            gasLimit: `0x${parseFloat(gasValue).toString(16)}`,
             to: currentTokenAddress,
             value :"0x0",
             data: data,
