@@ -22,48 +22,26 @@ import { refreshTokenAction } from '../../actions/tokenManageAction'
 
 import { contractAbi } from '../../utils/contractAbi'
 import I18n from 'react-native-i18n'
-const EthUtil = require('ethereumjs-util')
+import { getTokenGas, getGeneralGas } from '../../utils/getGas'
 const Wallet = require('ethereumjs-wallet')
 const EthereumTx = require('ethereumjs-tx')
-const BigNumber = require('big-number')
- 
 
 let self = null
 
 import Toast from 'react-native-toast'
 
- function padLeftEven (hex) {
-  hex = hex.length % 2 != 0 ? '0' + hex : hex;
-  return hex;
-}
-function sanitizeHex(hex) {
-    hex = hex.substring(0, 2) == '0x' ? hex.substring(2) : hex;
-    if (hex == "") return "";
-    return '0x' + padLeftEven(hex);
-}
 
-function decimalToHex(dec) {
-    return new BigNumber(dec).toString(16);
-}
-function stripscript(s) {
-    let pattern = new RegExp("[`~!@#$^%&*()=+|{}':;',\\-\\[\\]<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]");
-    let rs = "";
-    for (let i = 0; i < s.length; i++) {
-        rs = rs+s.substr(i, 1).replace(pattern, '');
-    }
-    return rs;
-}
 class Payment extends Component{
   constructor(props){
     super(props)
     this.state={
-      receiverAddress: '0x1ec79157f606d942ac19ce21231c1572aef8bb5d',
-      payTotalVal: '',
+      receiverAddress: '',
+      txValue: '',
       noteVal: '',
-      payAddressWarning: '',
-      payTotalWarning: '',
-      payPsdWarning: '',
-      payPsdVal: '',
+      txAddrWarning: '',
+      txValueWarning: '',
+      txPsdWarning: '',
+      txPsdVal: '',
       visible: false,
       modalTitleText:I18n.t('send_detail'),
       modalTitleIcon: require('../../images/xhdpi/nav_ico_paymentdetails_close_def.png'),
@@ -76,9 +54,8 @@ class Payment extends Component{
       loadingVisible: false,
       loadingText: '',
       gasValue: '',
-      tokenData: '',
-      contractAddress:'',
       currentAccountName: '',
+      currentTokenAddress: '',
     }
     self = this
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
@@ -96,27 +73,6 @@ class Payment extends Component{
   } 
 
   componentWillMount(){
-
-      // let passDetailInfo = {
-      //     tx_value: 'payTotalVal',                         
-      //     tx_token: 'ETZ',                               
-      //     tx_sender: `0xlfasdkl;fjsadk`,               
-      //     tx_receiver: 'receiverAddress',                  
-      //     tx_note: 'noteVal',                              
-      //     tx_hash: '0x3a37a911f93503e0f4f4590c9a31a5ae94d55e019d7760eba7194609e835afe7',                              
-      //     tx_block_number: 0,                            
-      //     tx_time: '',  
-      //   }
-      // this.props.navigator.push({                          
-      //    screen: 'trading_record_detail',                   
-      //    title:I18n.t('tx_records_1'),                      
-      //    navigatorStyle: MainThemeNavColor, 
-      //    passProps: {  
-      //     detailInfo:passDetailInfo,
-      //    }                                                  
-      //  }) 
-
-
 
     const { currentAccount } = this.props.accountManageReducer
     if(this.props.curToken !== 'ETZ'){
@@ -183,11 +139,8 @@ class Payment extends Component{
       onPickerConfirm: pickedValue => {
         this.setState({
           currentTokenName: pickedValue[0],
+          gasValue: ''
         })
-        setTimeout(() => {
-          this.getGas()
-          this.getTokenDataValue()
-        },500)
         if(pickedValue[0] !== 'ETZ'){
           this.setState({
             isToken: true
@@ -196,12 +149,12 @@ class Payment extends Component{
         fetchTokenList.map((val,idx) => {
           if(val.tk_symbol === this.state.currentTokenName){
             this.setState({
-              currentTokenDecimals: val.tk_decimals
+              currentTokenDecimals: val.tk_decimals,
+              currentTokenAddress: val.tk_address
             })
           }
         })
-
-
+        this.getGasValue()
       },
     })
   }
@@ -211,109 +164,65 @@ class Payment extends Component{
     // this.onPressClose()
     Picker.hide()
   }
-  onChangePayAddrText = (val) => {
-    
+
+  onChangeToAddr = (val) => {
     this.setState({
       receiverAddress: val.trim(),
-      payAddressWarning: ''
+      txAddrWarning: ''
     })  
-    setTimeout(() => {
-      if(this.state.receiverAddress.length === 42){
-        this.getGas()
-        this.getTokenDataValue()
-      }
-    },500)
-
+    this.getGasValue()
   }
 
-  getGas(){
-    const { receiverAddress, currentTokenName, payTotalVal, tokenData, senderAddress} = this.state
 
-    let newTotal = stripscript(payTotalVal)
-
-    if(receiverAddress.length === 42 && newTotal.length > 0){
-        let valWei = web3.utils.toWei(`${newTotal}`,'ether')
-        let estObj = {
-            from:`0x${senderAddress}`,
-            to: receiverAddress,
-            value: sanitizeHex(decimalToHex(valWei)),
-            data: currentTokenName === 'ETZ' ? '' : sanitizeHex(tokenData)
-        }
-        // console.log('estObj===',estObj)
-        web3.eth.estimateGas(estObj).then( gas => {
-          this.setState({
-            gasValue: gas
-          })
-        })
-      
-    }
-  }
-  getTokenDataValue(){
-    const { fetchTokenList } = this.props.tokenManageReducer 
-
-    const { currentTokenName, payTotalVal, currentTokenDecimals,receiverAddress } = this.state
-    let contractAddress = ''
-    // console.log('payTotalVal=',payTotalVal)
-    if(receiverAddress.length === 42 && payTotalVal.length > 0 && currentTokenName !== 'ETZ'){
-      for(let i = 0; i < fetchTokenList.length; i++){
-        if(fetchTokenList[i].tk_symbol === currentTokenName){
-          contractAddress = fetchTokenList[i].tk_address
-        }
-      } 
-
-      let txNumber = parseInt(parseFloat(payTotalVal) *  Math.pow(10,currentTokenDecimals))
-
-      let hex16 = parseInt(txNumber).toString(16)
-
-      // console.log('hex16==',hex16)
-      
-
-      let myContract = new web3.eth.Contract(contractAbi, contractAddress)
-
-      let data = myContract.methods.transfer(receiverAddress, `0x${hex16}`).encodeABI()
-
-      // console.log('data值',data)
-
-      this.setState({
-        tokenData: data,
-        contractAddr: contractAddress,
-      })
-      setTimeout(() => {
-        this.getGas()
-      },1000)
-    }
-  }
-  onChangePayTotalText = (val) => {
+  
+  onChangeTxValue = (val) => {
     this.setState({
-      payTotalVal: val,
-      payTotalWarning: ''
+      txValue: val,
+      txValueWarning: ''
     })
-    //payTotalVal不能有
-    if(val.length > 0){
-      setTimeout(() => {
-        this.getGas()
-        this.getTokenDataValue()
-      },500)
-    }
+    setTimeout(() => {
+      this.getGasValue()
+    },500)
   }
+
   onChangeNoteText = (val) => {
     this.setState({
       noteVal: val.trim(),
     })
   }
+  async getGasValue(){
+    const { receiverAddress,txValue,senderAddress, currentTokenName, currentTokenDecimals, currentTokenAddress } = this.state
+    if(receiverAddress.length === 42 && txValue.length > 0){
+      if(this.state.currentTokenName === 'ETZ'){
 
+        let genGasValue = await getGeneralGas(txValue,senderAddress,receiverAddress)
+
+        // console.log('genGasValue==',genGasValue)
+        this.setState({
+          gasValue: genGasValue,
+        })
+
+      }else{
+        let tokenGasValue = await getTokenGas(senderAddress,receiverAddress,currentTokenName,currentTokenDecimals,txValue,currentTokenAddress)
+        // console.log('tokenGasValue==',tokenGasValue)
+        this.setState({
+          gasValue: tokenGasValue,
+        })
+      }
+    }
+  }
   onNextStep = () => {
-    const { receiverAddress, payTotalVal, noteVal, } = this.state
+    const { receiverAddress, txValue, noteVal, } = this.state
     let addressReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{42}$/
     if(!addressReg.test(receiverAddress)){
       this.setState({
-        payAddressWarning: I18n.t('input_receive_address'),
+        txAddrWarning: I18n.t('input_receive_address'),
       })
       return
     }else{
-      if(payTotalVal.length === 0){
+      if(txValue.length === 0){
         this.setState({
-          payTotalWarning: I18n.t('input_send_account')
+          txValueWarning: I18n.t('input_send_account')
         })
         return
       }else{
@@ -343,7 +252,7 @@ class Payment extends Component{
     this.setState({
       visible: false,
       modalSetp1: true,
-      payPsdVal: '',
+      txPsdVal: '',
       loadingText: '',
       loadingVisible: false,
     })
@@ -370,10 +279,10 @@ class Payment extends Component{
   }
   onPressPayBtn = () => {
     
-    const { payPsdVal, payPsdWarning, loadingText,loadingVisible } = this.state
-    if(payPsdVal.length === 0){
+    const { txPsdVal, txPsdWarning, loadingText,loadingVisible } = this.state
+    if(txPsdVal.length === 0){
       this.setState({
-        payPsdWarning: I18n.t('input_password'),
+        txPsdWarning: I18n.t('input_password'),
         loadingText: '',
         loadingVisible: false,
       })
@@ -406,8 +315,8 @@ class Payment extends Component{
         //出错时  
         visible: false,
         modalSetp1: true,
-        payPsdVal: '',
-        payPsdWarning: I18n.t('password_is_wrong'),
+        txPsdVal: '',
+        txPsdWarning: I18n.t('password_is_wrong'),
         loadingText: '',
         loadingVisible: false,
       })
@@ -421,18 +330,18 @@ class Payment extends Component{
       }
   }
   async makeTransactByETZ(){
-    const { payPsdVal,senderAddress,payTotalVal,receiverAddress,noteVal,gasValue } = this.state
+    const { txPsdVal,senderAddress,txValue,receiverAddress,noteVal,gasValue } = this.state
     const { fetchTokenList } = this.props.tokenManageReducer 
     try{  
-      let newWallet = await Wallet.fromV3(this.state.keyStore,payPsdVal)
+      let newWallet = await Wallet.fromV3(this.state.keyStore,txPsdVal)
       let privKey = await newWallet._privKey.toString('hex')
       console.log('privKey==',privKey)
       let bufPrivKey = new Buffer(privKey, 'hex')
       // console.log('bufPrivKey==',bufPrivKey)
       let nonceNumber = await web3.eth.getTransactionCount(`0x${senderAddress}`)
 
-      console.log('payTotalVal==',payTotalVal)
-      let totalValue = web3.utils.toWei(payTotalVal,'ether')
+      console.log('txValue==',txValue)
+      let totalValue = web3.utils.toWei(txValue,'ether')
       let hex16 = parseInt(totalValue).toString(16)
 
       
@@ -459,7 +368,7 @@ class Payment extends Component{
         console.log('hash==',hash)
         hashVal = hash
         let passDetailInfo = {
-          tx_value: payTotalVal,                         
+          tx_value: txValue,                         
           tx_token: 'ETZ',                               
           tx_sender: `0x${senderAddress}`,               
           tx_receiver: receiverAddress,                  
@@ -503,7 +412,7 @@ class Payment extends Component{
 
           self.props.dispatch(insert2TradingDBAction({
             tx_hash: hashVal,
-            tx_value: payTotalVal,
+            tx_value: txValue,
             tx_sender: `0x${senderAddress}`,
             tx_receiver: receiverAddress,
             tx_note: noteVal,
@@ -536,24 +445,30 @@ class Payment extends Component{
   }
   async makeTransactByToken(){
     
-    const { payPsdVal,senderAddress,payTotalVal,receiverAddress,noteVal,currentTokenName,currentTokenDecimals, gasValue,tokenData, contractAddr } = this.state
+    const { txPsdVal,senderAddress,txValue,receiverAddress,noteVal,currentTokenName,currentTokenDecimals,currentTokenAddress,gasValue } = this.state
     const { fetchTokenList } = this.props.tokenManageReducer 
 
     try{
-      let newWallet = await Wallet.fromV3(this.state.keyStore,payPsdVal)
+      let newWallet = await Wallet.fromV3(this.state.keyStore,txPsdVal)
       let privKey = await newWallet._privKey.toString('hex')
      
-      console.log('合约地址',contractAddr)
+      let txNumber = parseInt(parseFloat(txValue) *  Math.pow(10,currentTokenDecimals))
+
+      let hex16 = parseInt(txNumber).toString(16)      
+
+      let myContract = new web3.eth.Contract(contractAbi, currentTokenAddress)
+
+      let data = myContract.methods.transfer(receiverAddress, `0x${hex16}`).encodeABI()
+
       web3.eth.getTransactionCount(`0x${senderAddress}`, function(error, nonce) {
 
         const txParams = {
             nonce: web3.utils.toHex(nonce),
             gasPrice:"0x098bca5a00",
-            // gasLimit: `0x${parseInt(gasValue).toString(16)}`,
-            gasLimit: `0x7a120`,
-            to: contractAddr,
+            gasLimit: `0x${parseInt(gasValue).toString(16)}`,
+            to: currentTokenAddress,
             value :"0x0",
-            data: tokenData,
+            data: data,
             chainId: "0x58"
         }
         console.log("txParams:", txParams)
@@ -577,7 +492,7 @@ class Payment extends Component{
             hashVal = hash
 
             let passDetailInfo = {
-              tx_value: payTotalVal,                         
+              tx_value: txValue,                         
               tx_token: currentTokenName,                               
               tx_sender: `0x${senderAddress}`,               
               tx_receiver: receiverAddress,                  
@@ -619,7 +534,7 @@ class Payment extends Component{
 
             self.props.dispatch(insert2TradingDBAction({
               tx_hash: hashVal,
-              tx_value: payTotalVal,
+              tx_value: txValue,
               tx_sender: `0x${senderAddress}`,
               tx_receiver: receiverAddress,
               tx_note: noteVal,
@@ -656,13 +571,13 @@ class Payment extends Component{
   }
   onChangePayPsdText = (val) => {
     this.setState({
-      payPsdVal: val,
-      payPsdWarning: ''
+      txPsdVal: val,
+      txPsdWarning: ''
     })
   }
   render(){
-    const { receiverAddress, payTotalVal, noteVal,visible,modalTitleText,modalTitleIcon,payPsdVal,
-            modalSetp1,payAddressWarning,payTotalWarning,senderAddress,payPsdWarning,currentTokenName, gasValue } = this.state
+    const { receiverAddress, txValue, noteVal,visible,modalTitleText,modalTitleIcon,txPsdVal,
+            modalSetp1,txAddrWarning,txValueWarning,senderAddress,txPsdWarning,currentTokenName, gasValue } = this.state
     return(
       <View style={pubS.container}>
         <Loading loadingVisible={this.state.loadingVisible} loadingText={this.state.loadingText}/>
@@ -676,16 +591,16 @@ class Payment extends Component{
         <TextInputComponent
           placeholder={I18n.t('receiver_address')}
           value={receiverAddress}
-          onChangeText={this.onChangePayAddrText}
-          warningText={payAddressWarning}
+          onChangeText={this.onChangeToAddr}
+          warningText={txAddrWarning}
           isScan={true}
           onPressIptRight={this.toScan}
         />
         <TextInputComponent
           placeholder={I18n.t('amount')}
-          value={payTotalVal}
-          onChangeText={this.onChangePayTotalText}
-          warningText={payTotalWarning}
+          value={txValue}
+          onChangeText={this.onChangeTxValue}
+          warningText={txValueWarning}
           keyboardType={'numeric'}
         />
         <TextInputComponent
@@ -693,14 +608,10 @@ class Payment extends Component{
           value={noteVal}
           onChangeText={this.onChangeNoteText}
         />
-        {
-          currentTokenName === 'ETZ' ?
-          <View style={[styles.gasViewStyle,pubS.rowCenterJus]}>
-            <Text style={{color:'#C7CACF',fontSize: setScaleText(26)}}>Gas:</Text>
-            <Text>{gasValue}</Text>
-          </View>
-          : null
-        }
+        <View style={[styles.gasViewStyle,pubS.rowCenterJus]}>
+          <Text style={{color:'#C7CACF',fontSize: setScaleText(26)}}>Gas:</Text>
+          <Text>{gasValue}</Text>
+        </View>
         <Btn
           btnMarginTop={scaleSize(60)}
           btnPress={this.onNextStep}
@@ -738,7 +649,7 @@ class Payment extends Component{
                 />
                 <RowText
                   rowTitle={I18n.t('amount_1')}
-                  rowContent={payTotalVal}
+                  rowContent={txValue}
                   rowUnit={currentTokenName}
                 />
 
@@ -752,9 +663,9 @@ class Payment extends Component{
               <View>
                 <TextInputComponent
                   placeholder={I18n.t('password')}
-                  value={payPsdVal}
+                  value={txPsdVal}
                   onChangeText={this.onChangePayPsdText}
-                  warningText={payPsdWarning}
+                  warningText={txPsdWarning}
                   secureTextEntry={true}
                 />
                 <Btn

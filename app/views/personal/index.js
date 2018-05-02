@@ -87,7 +87,7 @@ class Personal extends Component{
               arrowOnPress={this.toHelpCenter}
             />
             <ArrowToDetail
-              arrowText={`${I18n.t('support')} v1.0.6`}
+              arrowText={`${I18n.t('support')} v1.0.7`}
               arrowIcon={require('../../images/xhdpi/ico_personalcenter_contact_def.png')}
               arrowOnPress={this.toContactService}
             />

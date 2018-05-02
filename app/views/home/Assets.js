@@ -284,8 +284,8 @@ class Assets extends Component{
     const { currentAccount, globalAccountsList } = this.props.accountManageReducer
     const { fetchTokenList,etzBalance } = this.props.tokenManageReducer
 
-    console.log('首页fetchTokenList===',fetchTokenList)
-    console.log('当前账户',currentAccount)
+    // console.log('首页fetchTokenList===',fetchTokenList)
+    // console.log('当前账户',currentAccount)
     // console.log('所有账户',globalAccountsList)
     return(
       <View style={{backgroundColor:'#F5F7FB',flex:1}}>

@@ -11,6 +11,7 @@
     "assert": "^1.4.1",
     "big-number": "^0.4.0",
     "bip39": "^2.5.0",
+    "bignumber.js": "^4.0.2",
     "browserify-zlib": "^0.1.4",
     "btoa": "^1.2.1",
     "buffer": "^5.1.0",
