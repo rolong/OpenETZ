@@ -73,7 +73,7 @@ class Payment extends Component{
   } 
 
   componentWillMount(){
-
+    const { fetchTokenList } = this.props.tokenManageReducer 
     const { currentAccount } = this.props.accountManageReducer
     if(this.props.curToken !== 'ETZ'){
       this.setState({
@@ -87,6 +87,14 @@ class Payment extends Component{
       })
     } 
 
+    fetchTokenList.map((val,idx) => {
+      if(val.tk_symbol === this.props.curToken){
+        this.setState({
+          currentTokenDecimals: val.tk_decimals,
+          currentTokenAddress: val.tk_address
+        })
+      }
+    })
 
     let ks =  {
       "version": currentAccount.version,
@@ -192,6 +200,7 @@ class Payment extends Component{
   }
   async getGasValue(){
     const { receiverAddress,txValue,senderAddress, currentTokenName, currentTokenDecimals, currentTokenAddress } = this.state
+
     if(receiverAddress.length === 42 && txValue.length > 0){
       if(this.state.currentTokenName === 'ETZ'){
 

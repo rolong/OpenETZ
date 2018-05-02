@@ -38,7 +38,7 @@ class Splash extends Component{
     }).then( ret => {
       I18n.locale  = `${ret.selectedLan}`
     }).catch (err => {
-      this.setDefaultLang()
+      // this.setDefaultLang()
     })
   }
 
@@ -97,15 +97,15 @@ class Splash extends Component{
       console.log('还没有更新完')
     }
   }
-  setDefaultLang = () => {
-    I18n.locale  = 'en-US'
-    localStorage.save({
-      key: 'lang',
-      data:{
-        selectedLan: 'en-US'
-      }
-    })
-  }
+  // setDefaultLang = () => {
+  //   I18n.locale  = 'en-US'
+  //   localStorage.save({
+  //     key: 'lang',
+  //     data:{
+  //       selectedLan: 'en-US'
+  //     }
+  //   })
+  // }
 
 
   render(){

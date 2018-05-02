@@ -149,14 +149,16 @@ async function onTokenRefresh(options){
 		sql: 'select * from token',
 		parame: []
 	})
+	
+	let balance = await web3.eth.getBalance(`0x${addr}`)
+	let res = web3.utils.fromWei(balance,'ether')
+
+	refreshEtz(res)
+
+	refreshSuccess(selTokenRes)
+
 	if(selTokenRes.length !== 0){
 
-		let balance = await web3.eth.getBalance(`0x${addr}`)
-    	let res = web3.utils.fromWei(balance,'ether')
-
-		refreshEtz(res)
-
-		refreshSuccess(selTokenRes)
 	}else{
 		refreshFail()
 	}
