@@ -6,13 +6,16 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Alert
+  Alert,
+  Platform,
+  Keyboard,
+  StatusBar
 } from 'react-native'
 
 
 
 import { pubS,DetailNavigatorStyle,MainThemeNavColor,ScanNavStyle } from '../../styles/'
-import { setScaleText, scaleSize } from '../../utils/adapter'
+import { setScaleText, scaleSize, ifIphoneX } from '../../utils/adapter'
 import { TextInputComponent,Btn,Loading, } from '../../components/'
 import { connect } from 'react-redux'
 import Modal from 'react-native-modal'
@@ -23,19 +26,21 @@ import { refreshTokenAction } from '../../actions/tokenManageAction'
 import { contractAbi } from '../../utils/contractAbi'
 import I18n from 'react-native-i18n'
 import { getTokenGas, getGeneralGas } from '../../utils/getGas'
+const EthUtil = require('ethereumjs-util')
 const Wallet = require('ethereumjs-wallet')
 const EthereumTx = require('ethereumjs-tx')
 
 let self = null
 
 import Toast from 'react-native-toast'
+import { platform } from 'os';
 
 
 class Payment extends Component{
   constructor(props){
     super(props)
     this.state={
-      receiverAddress: '',
+      receiverAddress: '0x1ec79157f606d942ac19ce21231c1572aef8bb5d',
       txValue: '',
       noteVal: '',
       txAddrWarning: '',
@@ -74,11 +79,13 @@ class Payment extends Component{
 
   componentWillMount(){
     const { fetchTokenList } = this.props.tokenManageReducer 
+
     const { currentAccount } = this.props.accountManageReducer
     if(this.props.curToken !== 'ETZ'){
       this.setState({
         isToken: true,
-        currentTokenName: this.props.curToken
+        currentTokenName: this.props.curToken,
+        currentTokenDecimals: this.props.curDecimals
       })
     }
     if(this.props.receive_address){
@@ -179,10 +186,7 @@ class Payment extends Component{
       txAddrWarning: ''
     })  
     this.getGasValue()
-  }
-
-
-  
+  }  
   onChangeTxValue = (val) => {
     this.setState({
       txValue: val,
@@ -245,7 +249,9 @@ class Payment extends Component{
   toScan = () => {
     this.props.navigator.push({
       screen: 'scan_qr_code',
-      title:'Scan',
+      title:I18n.t('scan'),
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle: Object.assign({},DetailNavigatorStyle,{
         navBarTextColor:'#fff',
         navBarBackgroundColor:'#000',
@@ -258,6 +264,7 @@ class Payment extends Component{
     Picker.show()
   }
   onPressClose = () => {
+    Keyboard.dismiss()
     this.setState({
       visible: false,
       modalSetp1: true,
@@ -290,6 +297,7 @@ class Payment extends Component{
     
     const { txPsdVal, txPsdWarning, loadingText,loadingVisible } = this.state
     if(txPsdVal.length === 0){
+      Keyboard.dismiss();
       this.setState({
         txPsdWarning: I18n.t('input_password'),
         loadingText: '',
@@ -318,10 +326,6 @@ class Payment extends Component{
     } catch(err){
       console.error('psd error',err)
       this.setState({
-        // visible: true,
-        // modalSetp1: false,
-
-        //出错时  
         visible: false,
         modalSetp1: true,
         txPsdVal: '',
@@ -403,21 +407,16 @@ class Payment extends Component{
           console.log('receipt==',receipt)
           let sendResult = 1
           if(receipt.status==="0x1"){
-             //更新etz数量
-              self.props.dispatch(refreshTokenAction(senderAddress,fetchTokenList))
-              setTimeout(() => {
-                Toast.showLongBottom(I18n.t('send_successful'))
-              },1000)
-          }else{
-            sendResult = 0
-            Alert.alert(
-                '',
-                I18n.t('send_failure'),
-                [
-                  {text: I18n.t('ok'), onPress:() => {console.log('1')}},
-                ],
-            )
-          }
+              //更新etz数量
+               self.props.dispatch(refreshTokenAction(senderAddress,fetchTokenList))
+               setTimeout(() => {
+                 Toast.showLongBottom(I18n.t('send_successful'))
+               },1000)
+           }else{
+             sendResult = 0
+             Alert.alert(I18n.t('send_failure'))
+           }
+          
 
           self.props.dispatch(insert2TradingDBAction({
             tx_hash: hashVal,
@@ -435,17 +434,9 @@ class Payment extends Component{
       // })
       .on('error', (error) => {
         console.log('error==',error)
-        Alert.alert(
-            '',
-            `${error}`,
-            [
-              {text: I18n.t('ok'), onPress:() => {console.log('1')}},
-            ],
-        )
-
+        Alert.alert(`${error}`)
         self.onPressClose()
         self.props.navigator.pop()
-        // alert(error)
       })
     }catch(error){
       this.onPressClose()
@@ -530,16 +521,17 @@ class Payment extends Component{
         // })
         .on('receipt', function(receipt){
             console.log('receipt:', receipt)
-            let sendResult = 1
-            if(receipt.status==="0x1"){//"0x1" succ "0x0" fail
+            let sendResult = 0
+            if(receipt.status==="0x1"){
+              sendResult = 1
               self.props.dispatch(refreshTokenAction(senderAddress,fetchTokenList))
               setTimeout(() => {
                 Toast.showLongBottom(I18n.t('send_successful'))
               },1000)
             }else{
-              sendResult = 0
               Alert.alert(I18n.t('send_failure'))
             }
+            
 
             self.props.dispatch(insert2TradingDBAction({
               tx_hash: hashVal,
@@ -584,49 +576,51 @@ class Payment extends Component{
       txPsdWarning: ''
     })
   }
+
   render(){
     const { receiverAddress, txValue, noteVal,visible,modalTitleText,modalTitleIcon,txPsdVal,
             modalSetp1,txAddrWarning,txValueWarning,senderAddress,txPsdWarning,currentTokenName, gasValue } = this.state
     return(
       <View style={pubS.container}>
-        <Loading loadingVisible={this.state.loadingVisible} loadingText={this.state.loadingText}/>
-        <TextInputComponent
-          value ={currentTokenName}
-          editable={false}
-          toMore={true}
-          touchable={true}
-          onPressTouch={this.showTokenPicker}
-        />
-        <TextInputComponent
-          placeholder={I18n.t('receiver_address')}
-          value={receiverAddress}
-          onChangeText={this.onChangeToAddr}
-          warningText={txAddrWarning}
-          isScan={true}
-          onPressIptRight={this.toScan}
-        />
-        <TextInputComponent
-          placeholder={I18n.t('amount')}
-          value={txValue}
-          onChangeText={this.onChangeTxValue}
-          warningText={txValueWarning}
-          keyboardType={'numeric'}
-        />
-        <TextInputComponent
-          placeholder={I18n.t('note_1')}
-          value={noteVal}
-          onChangeText={this.onChangeNoteText}
-        />
-        <View style={[styles.gasViewStyle,pubS.rowCenterJus]}>
-          <Text style={{color:'#C7CACF',fontSize: setScaleText(26)}}>Gas:</Text>
-          <Text>{gasValue}</Text>
-        </View>
+        <Loading loadingVisible={this.state.loadingVisible} loadingText={this.state.loadingText}/>          
+          <TextInputComponent
+            value ={currentTokenName}
+            editable={false}
+            toMore={true}
+            touchable={true}
+            onPressTouch={this.showTokenPicker}
+          />
+          <TextInputComponent
+            placeholder={I18n.t('receiver_address')}
+            value={receiverAddress}
+            onChangeText={this.onChangeToAddr}
+            warningText={txAddrWarning}
+            isScan={true}
+            onPressIptRight={this.toScan}
+          />
+          <TextInputComponent
+            placeholder={I18n.t('amount')}
+            value={txValue}
+            onChangeText={this.onChangeTxValue}
+            warningText={txValueWarning}
+            keyboardType={'numeric'}
+          />
+          <TextInputComponent
+            placeholder={I18n.t('note_1')}
+            value={noteVal}
+            onChangeText={this.onChangeNoteText}
+          />
+          <View style={[styles.gasViewStyle,pubS.rowCenterJus]}>
+            <Text style={{color:'#C7CACF',fontSize: setScaleText(26)}}>Gas:</Text>
+            <Text>{gasValue}</Text>
+          </View>
+
         <Btn
           btnMarginTop={scaleSize(60)}
           btnPress={this.onNextStep}
           btnText={I18n.t('next')}
         />
-
+        
         <Modal
           isVisible={visible}
           onBackButtonPress={this.onPressClose}
@@ -636,7 +630,7 @@ class Payment extends Component{
         >
           <View style={styles.modalView}>
             <View style={[styles.modalTitle,pubS.center]}>
-              <TouchableOpacity onPress={this.onPressCloseIcon} activeOpacity={.7} style={{position:'absolute',left: scaleSize(24),top: scaleSize(29)}}>
+              <TouchableOpacity onPress={this.onPressCloseIcon} activeOpacity={.7} style={styles.modalClose}>
                 <Image source={modalTitleIcon} style={{height: scaleSize(30),width: scaleSize(30)}}/>
               </TouchableOpacity>
               <Text style={pubS.font26_4}>{modalTitleText}</Text>
@@ -676,6 +670,7 @@ class Payment extends Component{
                   onChangeText={this.onChangePayPsdText}
                   warningText={txPsdWarning}
                   secureTextEntry={true}
+                  autoFocus={true}
                 />
                 <Btn
                   btnPress={this.onPressPayBtn}
@@ -685,7 +680,7 @@ class Payment extends Component{
               </View>
             }
           </View>
-        </Modal>
+        </Modal>         
       </View>
     )
   }
@@ -713,19 +708,59 @@ class RowText extends Component{
 }
 const styles = StyleSheet.create({
     gasViewStyle:{
-      paddingLeft: 4,
-      alignSelf:'center',
-      width: scaleSize(680),
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      borderColor:'#DBDFE6',
-      height: scaleSize(99)
+      ...ifIphoneX(
+        {
+          paddingLeft: 4,
+          alignSelf:'center',
+          width: 355,
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderColor:'#DBDFE6',
+          height: scaleSize(99)
+        },
+        {
+          paddingLeft: 4,
+          alignSelf:'center',
+          width: scaleSize(680),
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderColor:'#DBDFE6',
+          height: scaleSize(99)
+        },
+        {
+          paddingLeft: 4,
+          alignSelf:'center',
+          width: scaleSize(680),
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderColor:'#DBDFE6',
+          height: scaleSize(99)
+        }
+      )
+
     },
     rowTextView:{
-        width: scaleSize(680),
-        height: scaleSize(88),
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderColor: '#DBDFE6',
-        alignSelf:'center'
+      ...ifIphoneX(
+        {
+          width: 345,
+          height: scaleSize(88),
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderColor: '#DBDFE6',
+          alignSelf:'center'
+        },
+        {
+          width: scaleSize(680),
+          height: scaleSize(88),
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderColor: '#DBDFE6',
+          alignSelf:'center'
+        },
+        {
+          width: scaleSize(680),
+          height: scaleSize(88),
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderColor: '#DBDFE6',
+          alignSelf:'center'
+        }
+      )
+
     },
     modalTitle:{
       height: scaleSize(88),
@@ -742,6 +777,13 @@ const styles = StyleSheet.create({
 	    alignSelf: 'center',
 	    backgroundColor:'#fff',
     },
+    modalClose:{
+      ...ifIphoneX(
+        {position:'absolute',left: 50,top: scaleSize(29)},
+        {position:'absolute',left: scaleSize(24),top: scaleSize(29)},
+        {position:'absolute',left: scaleSize(24),top: scaleSize(29)}
+      )
+    }
 })
 
 export default connect(

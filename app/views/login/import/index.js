@@ -3,11 +3,12 @@ import {
   View,
   Text,
   StyleSheet,
-  ToastAndroid
+  StatusBar,
+  Platform
 } from 'react-native'
 
 import { pubS } from '../../../styles/'
-import { setScaleText, scaleSize } from '../../../utils/adapter'
+import { setScaleText, scaleSize, ifIphoneX } from '../../../utils/adapter'
 import ScrollableTabView, { DefaultTabBar, ScrollableTabBar } from 'react-native-scrollable-tab-view'
 import  PrivateKey from './PrivateKey'
 import KeyStore from './KeyStore'
@@ -31,11 +32,17 @@ class ImportAccount extends Component{
     return(
       <View style={pubS.container}>
         {
+          Platform.OS === 'ios' ?
+            <StatusBar backgroundColor="#000000"  barStyle="dark-content" animated={true} />
+          : null
+        }
+
+        {
           // <Loading loadingVisible={importSucc} loadingText={'importing account'}/>
           
         }
         <ScrollableTabView
-          style={{ width: scaleSize(750)}}
+          style={styles.TabViewStyle}
           tabBarActiveTextColor={'#2B8AFF'}
           tabBarInactiveTextColor={'#CACED4'}
           tabBarTextStyle={{fontSize: setScaleText(26)}}
@@ -44,7 +51,7 @@ class ImportAccount extends Component{
             <DefaultTabBar
               underlineStyle={[styles.underlineStyle]}  
               tabBarBackgroundColor={'#fff'}
-              style={{ alignItems: 'center', backgroundColor: '#fff',borderColor:'transparent',marginBottom:-1,}}
+              style={styles.tabBarStyle}
               tabStyle={{ paddingTop: 10, height: 45, zIndex: 999, }}
             />
           )}
@@ -59,11 +66,47 @@ class ImportAccount extends Component{
 }
 
 const styles = StyleSheet.create({
+  TabViewStyle:{
+    ...ifIphoneX(
+      {
+        width:375
+      },
+      {
+        width: scaleSize(750)
+      },
+      {
+        width: scaleSize(750)
+      }
+    )
+  },
   underlineStyle: {
     borderColor: '#2B8AFF',
     backgroundColor: '#2B8AFF',
     borderBottomWidth:3,
     height:0,
+  },
+  tabBarStyle:{
+    ...ifIphoneX(
+      {
+         width: 375,
+         alignItems: 'center',
+         backgroundColor: '#fff',
+         borderColor:'transparent',
+         marginBottom:-1
+      },
+      {
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        borderColor:'transparent',
+        marginBottom:-1
+      },
+      {
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        borderColor:'transparent',
+        marginBottom:-1
+      }
+    )
   }
 })
 

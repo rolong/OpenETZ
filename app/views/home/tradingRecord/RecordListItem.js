@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../../styles/'
-import { setScaleText, scaleSize } from '../../../utils/adapter'
+import { setScaleText, scaleSize,ifIphoneX } from '../../../utils/adapter'
 
 class RecordListItem extends Component{
   static defaultProps = {
@@ -31,7 +31,7 @@ class RecordListItem extends Component{
             <Text style={pubS.font24_4}>{receiverTime}</Text>
           </View>
 
-          <View style={[{height:'100%',justifyContent:'space-between',alignItems:'flex-end'},pubS.paddingCloumn20,payFail ? null : pubS.center]}>
+          <View style={[styles.sendPrice,pubS.paddingCloumn20,payFail ? null : pubS.center]}>
             <Text style={{fontSize: setScaleText(28),color:moneyTextColor}}>{`${receiverVal} ${unit}`}</Text>
             {
               payFail ?
@@ -47,16 +47,53 @@ class RecordListItem extends Component{
 
 const styles = StyleSheet.create({
   listItemTextView:{
-    width: scaleSize(600),
-    height: scaleSize(130),
-    marginLeft: scaleSize(18)
-    // borderWidth:1,
-  },
-  container: {
-    height: scaleSize(130),
-    width: scaleSize(750),
-    backgroundColor:'#fff',
+    ...ifIphoneX(
+      {
+        width: 375,
+        height: scaleSize(130),
+        marginLeft: scaleSize(18)
+        // borderWidth:1,
+      },
+      {
+        width: scaleSize(600),
+        height: scaleSize(130),
+        marginLeft: scaleSize(18)
+        // borderWidth:1,
+      },
+      {
+        width: scaleSize(600),
+        height: scaleSize(130),
+        marginLeft: scaleSize(18)
+        // borderWidth:1,
+      }
+    )
 
   },
+  container: {
+    ...ifIphoneX(
+      {
+        height: scaleSize(130),
+        width: 375,
+        backgroundColor:'#fff',
+      },
+      {
+        height: scaleSize(130),
+        width: scaleSize(750),
+        backgroundColor:'#fff',
+      },
+      {
+        height: scaleSize(130),
+        width: scaleSize(750),
+        backgroundColor:'#fff',
+      }
+    )
+  },
+  sendPrice:{
+    ...ifIphoneX(
+      {height:'100%',justifyContent:'space-between',alignItems:'flex-end',marginRight:80},
+      {height:'100%',justifyContent:'space-between',alignItems:'flex-end'},
+      {height:'100%',justifyContent:'space-between',alignItems:'flex-end'},
+    )
+  }
 })
 export default RecordListItem

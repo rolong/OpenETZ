@@ -3,7 +3,10 @@ import {
   View,
   Text,
   Image,
-  Button
+  Button,
+  Platform,
+  NativeModules,
+  StatusBar
 } from 'react-native'
 import { toHome, toLogin} from '../root'
 import { connect } from 'react-redux'
@@ -13,6 +16,7 @@ import { DetailNavigatorStyle} from '../styles/'
 import I18n from 'react-native-i18n'
 
 import accountDB from '../db/account_db'
+import { platform } from 'os';
 
 class Splash extends Component{
   constructor(props){
@@ -111,7 +115,16 @@ class Splash extends Component{
   render(){
   	return(
       <View style={{flex:1}}>
-      	 <Image source={require('../images/xhdpi/splash.png')} style={{width: '100%', height:'100%'}}/>
+        {
+          Platform.OS === 'ios' ?
+          <StatusBar backgroundColor="#FFFFFF"  barStyle="light-content" hidden={true} />
+          : null
+        }
+         {
+           Platform.OS == 'ios' ?
+           null :
+           <Image source={require('../images/xhdpi/splash.png')} style={{width: '100%', height:'100%'}}/>
+         }
       </View>
   	)
   }

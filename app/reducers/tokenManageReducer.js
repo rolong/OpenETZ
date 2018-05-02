@@ -156,6 +156,7 @@ const onRefreshSuc = (state,action) => {
 }
 const onRefreshEtz = (state,action) => {
 	const { data } = action.payload
+	
 	return {
 		...state,
 		etzBalance: data

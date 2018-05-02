@@ -1,5 +1,5 @@
 import { setScaleText, scaleSize } from '../utils/adapter'
-import { StyleSheet } from 'react-native'
+import { StyleSheet,ifIphoneX } from 'react-native'
 import { switchDrawer } from '../utils/switchDrawer'
 import { Platform } from 'react-native'
 //main theme color:   #144396
@@ -66,16 +66,23 @@ const MainThemeNavColor = Object.assign({},DetailNavigatorStyle,{
   statusBarColor:'#144396',
   statusBarTextColorScheme:'light'
 })
-
+const TabBarIOSStyle = {
+  tabBarHidden: false, // make the tab bar hidden
+  tabBarButtonColor: '#C7CAD0', // change the color of the tab icons and text (also unselected)
+  tabBarSelectedButtonColor: '#2B8AFF', // change the color of the selected tab icon and text (only selected)
+  tabBarBackgroundColor: '#fff', // change the background color of the tab bar
+  tabBarTranslucent: false, // change the translucent of the tab bar to false
+  // tabBarTextFontFamily: 'Avenir-Medium', //change the tab font family
+  // tabBarLabelColor: '#ffb700', // iOS only. change the color of tab text
+  // tabBarSelectedLabelColor: 'red', // iOS only. change the color of the selected tab text
+  forceTitlesDisplay: true, // Android only. If true - Show all bottom tab labels. If false - only the selected tab's label is visible.
+  tabBarHideShadow: true // Remove default tab bar top shadow (hairline)
+}
 const TabBarAppStyle = {
   tabBarHidden: false, // make the tab bar hidden
-
-  //ios bug
   tabBarButtonColor: '#C7CAD0',
   tabBarSelectedButtonColor: '#2B8AFF', 
   tabBarBackgroundColor: '#fff',
-  //ios bug
-
   tabBarTranslucent: false, // change the translucent of the tab bar to false
   forceTitlesDisplay: true, // Android only. If true - Show all bottom tab labels. If false - only the selected tab's label is visible.
   tabBarHideShadow: true, // iOS only. Remove default tab bar top shadow (hairline)
@@ -390,5 +397,6 @@ export {
   AssetsNavStyle,
   MainThemeNavColor,
   TabBarAppStyle,
-  ScanNavStyle
+  ScanNavStyle,
+  TabBarIOSStyle
 }

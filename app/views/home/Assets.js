@@ -10,10 +10,12 @@ import {
   Platform,
   RefreshControl,
   Button,
+  BackHandler,
+  StatusBar
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle,MainThemeNavColor,ScanNavStyle } from '../../styles/'
-import { setScaleText, scaleSize } from '../../utils/adapter'
+import { setScaleText, scaleSize,ifIphoneX } from '../../utils/adapter'
 import Drawer from 'react-native-drawer'
 import { connect } from 'react-redux'
 import SwitchWallet from './SwitchWallet'
@@ -102,12 +104,16 @@ class Assets extends Component{
 
     findAccountsList.map((value,index) => {
       if(value.is_selected === 1){
+        
         this.props.dispatch(refreshTokenAction(value.address,fetchTokenList))
+       
         this.setState({
           navTitle: value.account_name,
           curAddr: value.address,
           isRefreshing: true
         })
+
+        
         //当前账户信息
         this.props.dispatch(globalCurrentAccountInfoAction(value))
         //初始化 已经选择的token list (选中之后 再退出) 也就是初始化 fetchTokenList
@@ -164,16 +170,19 @@ class Assets extends Component{
 
 
  
-  toTxRecordList = (title,balance,token) => {
+  toAssetsDetail = (title,balance,token,deci) => {
     this.props.navigator.push({
       screen: 'tx_record_list',
       title,
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle: MainThemeNavColor,
       passProps:{
         etzBalance: balance,
         etz2rmb: 0,
         curToken: token,
-        currencySymbol: this.state.currencySymbol
+        currencySymbol: this.state.currencySymbol,
+        curDecimals: deci
       }
     })
   }
@@ -182,6 +191,8 @@ class Assets extends Component{
     this.props.navigator.push({
       screen: 'scan_qr_code',
       title:I18n.t('scan'),
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle: Object.assign({},DetailNavigatorStyle,{
         navBarTextColor:'#fff',
         navBarBackgroundColor:'#000',
@@ -195,6 +206,8 @@ class Assets extends Component{
     this.props.navigator.push({
       screen: 'on_payment',
       title:I18n.t('send'),
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle: DetailNavigatorStyle,
       passProps:{
         curToken: 'ETZ'
@@ -205,6 +218,8 @@ class Assets extends Component{
     this.props.navigator.push({
       screen: 'on_receive',
       title:I18n.t('receive'),
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle: DetailNavigatorStyle,
     })
   }
@@ -212,6 +227,8 @@ class Assets extends Component{
     this.props.navigator.push({
       screen: 'trading_record',
       title:I18n.t('tx_records'),
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle: Object.assign({},MainThemeNavColor,{navBarNoBorder:true}),
       // navigatorButtons: {
       //   rightButtons: [
@@ -229,7 +246,8 @@ class Assets extends Component{
       screen: 'add_assets',
       title:I18n.t('add_assets'),
       navigatorStyle: DetailNavigatorStyle,
-      
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       // navigatorButtons: {
       //   rightButtons: [
       //     {
@@ -255,6 +273,8 @@ class Assets extends Component{
       screen:'msg_center_list',
       title:I18n.t('msg_center'),
       navigatorStyle: DetailNavigatorStyle,
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorButtons: {
         rightButtons: [
           {
@@ -283,17 +303,13 @@ class Assets extends Component{
     
     const { currentAccount, globalAccountsList } = this.props.accountManageReducer
     const { fetchTokenList,etzBalance } = this.props.tokenManageReducer
-
-    // console.log('首页fetchTokenList===',fetchTokenList)
-    // console.log('当前账户',currentAccount)
-    // console.log('所有账户',globalAccountsList)
     return(
-      <View style={{backgroundColor:'#F5F7FB',flex:1}}>
+      <View style={styles.containerView}>
         {
           Platform.OS === 'ios' ? 
-          <View style={{height: scaleSize(40),backgroundColor:'#144396'}}/>
+          <View style={styles.stateBar}/>
           : null
-        }
+        }     
         <Drawer
           ref={(ref) => this._drawer = ref}
           type="overlay"
@@ -338,7 +354,7 @@ class Assets extends Component{
               </View>
 
               <View style={[styles.optionView,pubS.center]}>
-                  <View style={[pubS.rowCenterJus,{width: scaleSize(650)}]}>
+                  <View style={[pubS.rowCenterJus,styles.listItemBox]}>
                     <TouchableOpacity activeOpacity={.7} onPress={this.onScan} style={[styles.optionItem]}>
                       <Image source={require('../../images/xhdpi/btn_ico_home_scan_def.png')} style={styles.itemImageStyle}/>
                       <Text style={[pubS.font24_2,]}>{I18n.t('scan')}</Text>
@@ -364,7 +380,7 @@ class Assets extends Component{
               coinNumber={splitDecimal(etzBalance)}
               price2rmb={0}
               symbol={this.state.currencySymbol}
-              onPressItem={() => this.toTxRecordList(etzTitle,splitDecimal(etzBalance),'ETZ')}
+              onPressItem={() => this.toAssetsDetail(etzTitle,splitDecimal(etzBalance),'ETZ',0)}
             />
             {
               fetchTokenList.map((res,index) => {
@@ -379,7 +395,7 @@ class Assets extends Component{
                       coinNumber={splitDecimal(res.tk_number)}
                       price2rmb={0}
                       symbol={this.state.currencySymbol}
-                      onPressItem={() => this.toTxRecordList(res.tk_symbol,splitDecimal(res.tk_number),res.tk_symbol)}
+                      onPressItem={() => this.toAssetsDetail(res.tk_symbol,splitDecimal(res.tk_number),res.tk_symbol,res.tk_decimals)}
                     />
                   )
                 }
@@ -418,6 +434,22 @@ class AssetsItem extends Component {
   }
 }
 const styles = StyleSheet.create({
+  containerView:{
+    backgroundColor:'#F5F7FB',
+    flex:1,
+  },
+  stateBar:{ 
+    ...ifIphoneX(
+      {
+        height: 44,
+        backgroundColor:'#144396'
+      },
+      {
+        height: scaleSize(40),
+        backgroundColor:'#144396'
+      }
+    )
+  },
   drawerStyle:{
     // borderColor:'#fff',
     // borderWidth:1,
@@ -445,22 +477,85 @@ const styles = StyleSheet.create({
     marginTop: scaleSize(20),
     alignSelf:'center',
   },
+  logoStyle:{
+    ...ifIphoneX({
+      width: 27,
+      height:27,
+      marginTop: 16
+    },
+    {
+      width: scaleSize(44),
+      height:scaleSize(44),
+      marginTop: scaleSize(22)
+    },
+    {
+      width: scaleSize(44),
+      height:scaleSize(44),
+      marginTop: scaleSize(22)
+    }
+    )
+  },
   whStyle: {
-    height: scaleSize(120),
-    width: scaleSize(702),
+    ...ifIphoneX(
+      {
+        width:350
+      },
+      {
+        width:scaleSize(702)
+      },
+      {
+        width:scaleSize(702)
+      }
+    ),
+    height: scaleSize(120)
   },
   listItemTextView:{
-    width: scaleSize(618),
-    marginLeft:scaleSize(18),
-    paddingTop: scaleSize(15),
-    paddingBottom: scaleSize(22),
+    ...ifIphoneX(
+      {
+        width: 293,
+        marginLeft:scaleSize(18),
+        paddingTop: scaleSize(15),
+        paddingBottom: scaleSize(22),
+      },
+      {
+        width: scaleSize(618),
+        marginLeft:scaleSize(18),
+        paddingTop: scaleSize(15),
+        paddingBottom: scaleSize(22),
+      },
+      {
+        width: scaleSize(618),
+        marginLeft:scaleSize(18),
+        paddingTop: scaleSize(15),
+        paddingBottom: scaleSize(22),
+      }
+    )
+    
     // borderColor:'red',
     // borderWidth:1,
   },
+  listItemBox:{
+    ...ifIphoneX(
+      {
+        width:345,
+        alignSelf:'center',
+        flex:1,
+      },
+      {
+        width:345,
+        alignSelf:'center',
+        flex:1,
+      },
+      {
+        width:345,
+        alignSelf:'center',
+        flex:1,
+      }
+  )
+  },
   listItemView:{
     backgroundColor:'#fff',
-    paddingLeft: scaleSize(22),
-    paddingRight: scaleSize(22),
+    ...ifIphoneX({marginLeft:30,marginRight:30},{paddingLeft: scaleSize(22),paddingRight: scaleSize(22)},{paddingLeft: scaleSize(22),paddingRight: scaleSize(22)}),
     justifyContent:'center',
     flexDirection:'row',
     borderRadius: 4,
@@ -484,6 +579,10 @@ const styles = StyleSheet.create({
     backgroundColor:'#fff',
     // borderColor:'red',
     // borderWidth:1,
+    ...ifIphoneX({
+      width: 375,
+      alignSelf:'center'
+    })
   },
   assetsTotalView: {
     

@@ -23,6 +23,8 @@ class ScanQrCode extends Component{
     this.props.navigator.push({
       screen: 'on_payment',
       title:I18n.t('send'),
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle: DetailNavigatorStyle,
       overrideBackPress: true,
       passProps: {

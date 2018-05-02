@@ -125,5 +125,6 @@
   "click_again":"Click the exit program again",
   "send_failure":"send failure",
   "enter_number":"please enter number",
-  
+  "sended":"Send",
+  "back":"back"
 }	

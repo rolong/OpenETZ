@@ -7,6 +7,8 @@ import {
   StyleSheet,
   ScrollView,
   Clipboard,
+  StatusBar,
+  Platform
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../styles/'
@@ -140,6 +142,8 @@ class Receive extends Component{
     this.props.navigator.push({
       screen: 'back_up_account',
       title: currentAccount.account_name,
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle: DetailNavigatorStyle,
       passProps: {
         userName: currentAccount.account_name,
@@ -161,6 +165,12 @@ class Receive extends Component{
     const { payTotalVal,visible,addressText, backupBtnStyle_height,backupBtnStyle_width, whileView_height, blueView_height, modalView_width, modalView_height,modalView_top,blueView_padding } = this.state
     return(
       <View style={[pubS.container,{paddingTop: scaleSize(35)}]}>
+      {
+          Platform.OS === 'ios' ?
+          <StatusBar backgroundColor="#000000"  barStyle="dark-content" animated={true} />
+          : null
+      }
+      
         {
         // <TextInputComponent
         //   placeholder={'Enter receive amount (Optional)'}

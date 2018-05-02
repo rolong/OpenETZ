@@ -41,7 +41,9 @@ class WriteMnemonic extends Component{
 		const { mnemonicText,originMneStr } = this.state
 		this.props.navigator.push({
 	      screen: 'verify_mnemonic',
-	      title: I18n.t('verify_mnemonic'),
+		  title: I18n.t('verify_mnemonic'),
+		  backButtonTitle:I18n.t('back'),
+          backButtonHidden:false,
 	      navigatorStyle: DetailNavigatorStyle,
 	      passProps: {
 	      	mnemonicText: originMneStr,

@@ -100,8 +100,8 @@ class TradingRecord extends Component{
             />
           )}
         >
-            <RecordAll key={1} tabLabel={'All'} list={tradingList}/>
-            <RecordPay key={2} tabLabel={'Send'} list={tradingList}/>
+            <RecordAll key={1} tabLabel={I18n.t('all')} list={tradingList}/>
+            <RecordPay key={2} tabLabel={I18n.t('sended')} list={tradingList}/>
             {
               //<RecordCollection key={3} tabLabel={'Receive'}/>
             }

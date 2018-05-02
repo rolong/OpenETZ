@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 
 import { pubS } from '../../../styles/'
-import { setScaleText, scaleSize } from '../../../utils/adapter'
+import { setScaleText, scaleSize,ifIphoneX,isIphoneX } from '../../../utils/adapter'
 import ScrollableTabView, { DefaultTabBar, ScrollableTabBar } from 'react-native-scrollable-tab-view'
 import { TextInputComponent,Btn,Loading } from '../../../components/'
 import { toHome } from '../../../root'
@@ -135,7 +135,10 @@ class PrivateKey extends Component{
     })
   }
   render(){
-    const { privKeyVal, psdVal, repeadPsdVal, promptVal, privKeyWarning, psdWarning, rePsdWarning,userNameVal, userNameWarning } = this.state
+    isIphoneX() ?    //判断IPONEX
+    this.state.DEFULT_IPONEX = 345
+    : this.state.DEFULT_IPONEX = scaleSize(680);
+    const { privKeyVal, psdVal, repeadPsdVal, promptVal, privKeyWarning, psdWarning, rePsdWarning,userNameVal, userNameWarning,DEFULT_IPONEX } = this.state
     return(
       <View>
         <Loading loadingVisible={this.state.visible} loadingText={I18n.t('loading_importing_account')}/>
@@ -179,6 +182,7 @@ class PrivateKey extends Component{
           btnMarginTop={scaleSize(60)}
           btnPress={this.onPressImport}
           btnText={I18n.t('import')}
+          btnWidth={DEFULT_IPONEX}
         />
       </View>
     )

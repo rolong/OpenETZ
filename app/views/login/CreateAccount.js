@@ -7,6 +7,8 @@ import {
   StyleSheet,
   TextInput,
   Alert,
+  StatusBar,
+  Platform
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../styles/'
@@ -50,6 +52,8 @@ class CreateAccount extends Component{
       this.props.navigator.push({
         screen: 'create_account_success',
         navigatorStyle: DetailNavigatorStyle,
+        backButtonTitle:I18n.t('back'),
+        backButtonHidden:false,
         overrideBackPress: true,
       })
     }
@@ -128,6 +132,11 @@ class CreateAccount extends Component{
     const { isLoading } = this.props.accountManageReducer
     return(
       <View style={pubS.container}>
+        {
+          Platform.OS === 'ios' ?
+            <StatusBar backgroundColor="#000000"  barStyle="dark-content"  animated={true}/>
+          : null
+        }
         <Loading loadingVisible={this.state.visible} loadingText={I18n.t('creating')}/>
         <View style={[styles.warningView,pubS.paddingRow_24]}>
           <Text style={pubS.font22_1}>{I18n.t('create_account_prompt')}</Text>

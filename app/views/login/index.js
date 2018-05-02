@@ -7,10 +7,12 @@ import {
   StyleSheet,
   ScrollView,
   BackHandler,
+  StatusBar,
+  Platform
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle} from '../../styles/'
-import { setScaleText, scaleSize } from '../../utils/adapter'
+import { setScaleText, scaleSize,ifIphoneX } from '../../utils/adapter'
 import I18n from 'react-native-i18n'
 import { onExitApp } from '../../utils/exitApp'
 class Login extends Component{
@@ -34,6 +36,8 @@ class Login extends Component{
     this.props.navigator.push({
       screen: 'create_account',
       title:I18n.t('create'),
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle: Object.assign({},DetailNavigatorStyle,{navBarNoBorder:true}),
       passProps: { fromLogin: 'login'}
     })
@@ -44,6 +48,8 @@ class Login extends Component{
     this.props.navigator.push({
       screen: 'import_account',
       title:I18n.t('import'),
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle: DetailNavigatorStyle,
       passProps: { fromLogin: 'login'}
     })
@@ -59,6 +65,11 @@ class Login extends Component{
 
     return(
       <View style={pubS.container}>
+        {
+          Platform.OS === 'ios' ?
+            <StatusBar backgroundColor="#FFFFFF"  barStyle="light-content"  animated={true}/>
+          : null
+        }
         <Image source={require('../../images/xhdpi/bg_signin.png')} style={[pubS.fullWH,styles.bgStyle]}/>
         <Image source={require('../../images/xhdpi/logo.png')} style={styles.logoStyle}/>
         <View style={styles.btnContainer}>
@@ -86,20 +97,62 @@ const styles = StyleSheet.create({
     // left:0,
   },
   logoStyle: {
-    position:'absolute',
-    top: scaleSize(250),
-    left: scaleSize(292),
-    width: scaleSize(166),
-    height: scaleSize(242),
+    ...ifIphoneX(
+      {
+        position:'absolute',
+        top: scaleSize(250),
+        left: 135 ,
+        width: scaleSize(166),
+        height: scaleSize(242),
+      },
+      {
+        position:'absolute',
+        top: scaleSize(250),
+        left: scaleSize(292),
+        width: scaleSize(166),
+        height: scaleSize(242),
+      },
+      {
+        position:'absolute',
+        top: scaleSize(250),
+        left: scaleSize(292),
+        width: scaleSize(166),
+        height: scaleSize(242),
+      }
+    )
+    
   },
   btnContainer:{
-    justifyContent:'center',
-    position:'absolute',
-    top: scaleSize(748),
-    width: scaleSize(750),
-    alignItems:'center',
-    // borderColor:'red',
-    // borderWidth:1,
+    ...ifIphoneX(
+      {
+        justifyContent:'center',
+        position:'absolute',
+        top: scaleSize(748),
+        width: 376,
+        alignItems:'center',
+        // borderColor:'red',
+        // borderWidth:1,
+      },
+      {
+        justifyContent:'center',
+        position:'absolute',
+        top: scaleSize(748),
+        width: scaleSize(750),
+        alignItems:'center',
+        // borderColor:'red',
+        // borderWidth:1,
+      },
+      {
+        justifyContent:'center',
+        position:'absolute',
+        top: scaleSize(748),
+        width: scaleSize(750),
+        alignItems:'center',
+        // borderColor:'red',
+        // borderWidth:1,
+      }
+    )
+    
   },
   btnStyle: {
     height: scaleSize(94),
