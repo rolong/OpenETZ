@@ -3,8 +3,7 @@ import {
   View,
   Text,
   WebView,
-  StyleSheet,
-  StatusBar
+  StyleSheet
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../styles/'
@@ -18,9 +17,6 @@ class HelpCenter extends Component{
         <WebView  
           source={{uri:'https://mp.weixin.qq.com/s/8RQ8GOi0d2z03vYcTjsCrw'}}
           style={styles.webViewStyle}
-          startInLoadingState={true}
-          domStorageEnabled={true}//开启dom存贮
-          javaScriptEnabled={true}//开启js
         />
       </View>
     )
