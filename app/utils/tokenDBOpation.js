@@ -127,9 +127,15 @@ async function onSwitchTokenList(options){
 
 
 async function onTokenRefresh(options){
+	
 	const { parames, refreshSuccess,refreshFail,refreshEtz } = options
 	const { tokenlist,addr } = parames
+
+	console.log('tokenlist-====',tokenlist)
+	console.log('addr-====',addr)
+
 	for(let i = 0; i < tokenlist.length; i++){
+		console.log('代币的合约地址-====')
 		let tAdd = tokenlist[i].tk_address//tAdd 代币的合约地址
 		
 		let myContract = new web3.eth.Contract(contractAbi, tAdd)
@@ -149,17 +155,21 @@ async function onTokenRefresh(options){
 		sql: 'select * from token',
 		parame: []
 	})
-	if(selTokenRes.length !== 0){
+
+	console.log('selTokenRes111111-====',selTokenRes)
+
+	// if(selTokenRes.length !== 0){
 
 		let balance = await web3.eth.getBalance(`0x${addr}`)
     	let res = web3.utils.fromWei(balance,'ether')
+		
 
 		refreshEtz(res)
 
 		refreshSuccess(selTokenRes)
-	}else{
-		refreshFail()
-	}
+	// }else{
+	// 	refreshFail()
+	// }
 }
 
 const tokenDBOpation = {

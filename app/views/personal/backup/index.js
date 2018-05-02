@@ -14,7 +14,7 @@ import {
 } from 'react-native'
 import { Navigation } from 'react-native-navigation'
 import { pubS,DetailNavigatorStyle } from '../../../styles/'
-import { setScaleText, scaleSize } from '../../../utils/adapter'
+import { setScaleText, scaleSize, ifIphoneX } from '../../../utils/adapter'
 import { sliceAddress } from '../../../utils/splitNumber'
 import { Btn,Loading, } from '../../../components/'
 import Modal from 'react-native-modal'
@@ -490,9 +490,24 @@ const styles = StyleSheet.create({
     borderRadius: scaleSize(26),
   },
   userNameViewStyle:{
-    height:scaleSize(100),
-    width: scaleSize(680),
-    marginTop: scaleSize(80),
+    ...ifIphoneX(
+      {
+        height:scaleSize(100),
+        width: 345,
+        marginTop: scaleSize(80),
+      },
+      {
+        height:scaleSize(100),
+        width: scaleSize(680),
+        marginTop: scaleSize(80),
+      },
+      {
+        height:scaleSize(100),
+        width: scaleSize(680),
+        marginTop: scaleSize(80),
+      }
+    )
+
   },
   avateStyle:{
     width: scaleSize(112),

@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../../styles/'
-import { setScaleText, scaleSize } from '../../../utils/adapter'
+import { setScaleText, scaleSize,ifIphoneX } from '../../../utils/adapter'
 import { switchLanguageAction } from '../../../actions/switchLanguageAction'
 import { connect } from 'react-redux' 
 import { toSplash } from '../../../root' 
@@ -172,11 +172,29 @@ class SwitchLanguage extends Component{
 
 const styles = StyleSheet.create({
 	lanViewStyle:{
-		height: scaleSize(120),
-		width: scaleSize(750),
-		// backgroundColor:'#fff',
-		borderTopWidth:StyleSheet.hairlineWidth,
-		borderColor:'#EEEEEE',
+		...ifIphoneX(
+			{
+				height: scaleSize(120),
+				width: 375,
+				// backgroundColor:'#fff',
+				borderTopWidth:StyleSheet.hairlineWidth,
+				borderColor:'#EEEEEE',
+			},
+			{
+				height: scaleSize(120),
+				width: scaleSize(750),
+				// backgroundColor:'#fff',
+				borderTopWidth:StyleSheet.hairlineWidth,
+				borderColor:'#EEEEEE',
+			},
+			{
+				height: scaleSize(120),
+				width: scaleSize(750),
+				// backgroundColor:'#fff',
+				borderTopWidth:StyleSheet.hairlineWidth,
+				borderColor:'#EEEEEE',
+			},
+		)
 	},
 	selectImage:{
 	    height: scaleSize(40),

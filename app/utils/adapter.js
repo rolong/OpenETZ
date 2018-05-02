@@ -16,7 +16,7 @@
 
 
 
-import { Dimensions, PixelRatio } from 'react-native'
+import { Dimensions, PixelRatio, Platform } from 'react-native'
 
 const devicesPR = null
 export function getPixelRatio () {
@@ -28,10 +28,45 @@ export const deviceWidth = Dimensions.get('window').width // 设备的宽度  dp
 export const deviceHeight = Dimensions.get('window').height // 设备的高度
 let fontScale = PixelRatio.getFontScale() // 返回字体大小缩放比例
 
+//iponeX
+const X_WIDTH = 375;
+const X_HEIGHT = 812;
+
+/**
+ * 判断是否为iphoneX
+ * @returns {boolean}
+ */
+export function isIphoneX() {
+  return (
+      Platform.OS === 'ios' &&
+      ((deviceHeight === X_HEIGHT && deviceWidth === X_WIDTH) ||
+          (deviceHeight === X_WIDTH && deviceWidth === X_HEIGHT))
+  )
+}
+
+
 // px转换成dp
 const w2 = 750 / devicesPR //inch  750
 const h2 = 1334 / devicesPR // 1334
 const scale = Math.max(deviceHeight / h2, deviceWidth / w2) // 获取缩放比例
+
+/**
+ * 根据是否是iPhoneX返回不同的样式
+ * @param iphoneXStyle
+ * @param iosStyle
+ * @param androidStyle
+ * @returns {*}
+ */
+export function ifIphoneX(iphoneXStyle, iosStyle = {}, androidStyle) {
+  if (isIphoneX()) {
+      return iphoneXStyle;
+  } else if (Platform.OS === 'ios') {
+      return iosStyle
+  } else {
+      if (androidStyle) return androidStyle;
+      return iosStyle
+  }
+}
 /**
  * 设置text为sp
  * @param size sp

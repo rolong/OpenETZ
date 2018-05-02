@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle} from '../../styles/'
-import { setScaleText, scaleSize } from '../../utils/adapter'
+import { setScaleText, scaleSize,ifIphoneX } from '../../utils/adapter'
 import I18n from 'react-native-i18n'
 import { onExitApp } from '../../utils/exitApp'
 class Login extends Component{
@@ -86,20 +86,62 @@ const styles = StyleSheet.create({
     // left:0,
   },
   logoStyle: {
-    position:'absolute',
-    top: scaleSize(250),
-    left: scaleSize(292),
-    width: scaleSize(166),
-    height: scaleSize(242),
+    ...ifIphoneX(
+      {
+        position:'absolute',
+        top: scaleSize(250),
+        left: 135 ,
+        width: scaleSize(166),
+        height: scaleSize(242),
+      },
+      {
+        position:'absolute',
+        top: scaleSize(250),
+        left: scaleSize(292),
+        width: scaleSize(166),
+        height: scaleSize(242),
+      },
+      {
+        position:'absolute',
+        top: scaleSize(250),
+        left: scaleSize(292),
+        width: scaleSize(166),
+        height: scaleSize(242),
+      }
+    )
+    
   },
   btnContainer:{
-    justifyContent:'center',
-    position:'absolute',
-    top: scaleSize(748),
-    width: scaleSize(750),
-    alignItems:'center',
-    // borderColor:'red',
-    // borderWidth:1,
+    ...ifIphoneX(
+      {
+        justifyContent:'center',
+        position:'absolute',
+        top: scaleSize(748),
+        width: 376,
+        alignItems:'center',
+        // borderColor:'red',
+        // borderWidth:1,
+      },
+      {
+        justifyContent:'center',
+        position:'absolute',
+        top: scaleSize(748),
+        width: scaleSize(750),
+        alignItems:'center',
+        // borderColor:'red',
+        // borderWidth:1,
+      },
+      {
+        justifyContent:'center',
+        position:'absolute',
+        top: scaleSize(748),
+        width: scaleSize(750),
+        alignItems:'center',
+        // borderColor:'red',
+        // borderWidth:1,
+      }
+    )
+    
   },
   btnStyle: {
     height: scaleSize(94),

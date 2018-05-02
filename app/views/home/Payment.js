@@ -6,13 +6,15 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Alert
+  Alert,
+  Platform,
+  Keyboard
 } from 'react-native'
 
 
 
 import { pubS,DetailNavigatorStyle,MainThemeNavColor,ScanNavStyle } from '../../styles/'
-import { setScaleText, scaleSize } from '../../utils/adapter'
+import { setScaleText, scaleSize, ifIphoneX } from '../../utils/adapter'
 import { TextInputComponent,Btn,Loading, } from '../../components/'
 import { connect } from 'react-redux'
 import Modal from 'react-native-modal'
@@ -22,6 +24,7 @@ import { refreshTokenAction } from '../../actions/tokenManageAction'
 
 import { contractAbi } from '../../utils/contractAbi'
 import I18n from 'react-native-i18n'
+import InputScrollView from 'react-native-input-scroll-view';
 const EthUtil = require('ethereumjs-util')
 const Wallet = require('ethereumjs-wallet')
 const EthereumTx = require('ethereumjs-tx')
@@ -31,6 +34,7 @@ const BigNumber = require('big-number')
 let self = null
 
 import Toast from 'react-native-toast'
+import { platform } from 'os';
 
  function padLeftEven (hex) {
   hex = hex.length % 2 != 0 ? '0' + hex : hex;
@@ -79,6 +83,7 @@ class Payment extends Component{
       tokenData: '',
       contractAddress:'',
       currentAccountName: '',
+    
     }
     self = this
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
@@ -97,7 +102,6 @@ class Payment extends Component{
 
   componentWillMount(){
 
-
     // const { fetchTokenList } = this.props.tokenManageReducer 
     // this.props.dispatch(refreshTokenAction('ec80a9fe89b05e337efa9c801c07c8444d9cb32e',fetchTokenList))
     // Toast.showLongBottom(I18n.t('send_successful'))
@@ -109,7 +113,8 @@ class Payment extends Component{
     if(this.props.curToken !== 'ETZ'){
       this.setState({
         isToken: true,
-        currentTokenName: this.props.curToken
+        currentTokenName: this.props.curToken,
+        currentTokenDecimals: this.props.curDecimals
       })
     }
     if(this.props.receive_address){
@@ -226,7 +231,7 @@ class Payment extends Component{
             value: sanitizeHex(decimalToHex(valWei)),
             data: currentTokenName === 'ETZ' ? '' : sanitizeHex(tokenData)
         }
-        console.log('estObj===',estObj)
+        // console.log('estObj===',estObj)
         web3.eth.estimateGas(estObj).then( gas => {
           this.setState({
             gasValue: gas
@@ -247,16 +252,20 @@ class Payment extends Component{
           contractAddress = fetchTokenList[i].tk_address
         }
       } 
+      console.log('currentTokenDecimals',currentTokenDecimals)
+      console.log("__payTotalVal__",payTotalVal);
 
       let txNumber = parseInt(parseFloat(payTotalVal) *  Math.pow(10,currentTokenDecimals))
 
       let hex16 = parseInt(txNumber).toString(16)
 
+      console.log("__hex16__",hex16);
+
       let myContract = new web3.eth.Contract(contractAbi, contractAddress)
 
       let data = myContract.methods.transfer(receiverAddress, `0x${hex16}`).encodeABI()
 
-      // console.log('data值',data)
+      console.log('data值',data)
 
       this.setState({
         tokenData: data,
@@ -288,6 +297,8 @@ class Payment extends Component{
 
   onNextStep = () => {
     const { receiverAddress, payTotalVal, noteVal, } = this.state
+    // this.refs.accout_ref.blur()
+  
     let addressReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{42}$/
     if(!addressReg.test(receiverAddress)){
       this.setState({
@@ -324,12 +335,13 @@ class Payment extends Component{
     Picker.show()
   }
   onPressClose = () => {
+    Keyboard.dismiss()
     this.setState({
       visible: false,
       modalSetp1: true,
       payPsdVal: '',
       loadingText: '',
-      loadingVisible: false,
+      // loadingVisible: false,
     })
   }
 
@@ -353,8 +365,9 @@ class Payment extends Component{
     })
   }
   onPressPayBtn = () => {
-    
+    Keyboard.dismiss();
     const { payPsdVal, payPsdWarning, loadingText,loadingVisible } = this.state
+    console.log("payPsdVal",payPsdVal);
     if(payPsdVal.length === 0){
       this.setState({
         payPsdWarning: I18n.t('input_password'),
@@ -454,22 +467,45 @@ class Payment extends Component{
       .on('receipt', function(receipt){
           console.log('receipt==',receipt)
           let sendResult = 1
-          if(receipt.status==="0x1"){
-             //更新etz数量
+          if(Platform.OS == 'ios'){
+            console.log('平台',Platform.OS)
+            console.log('receipt.status',receipt.status);
+            console.log('receipt',receipt);
+            if(receipt.status == true || receipt.status == 'true'){
+              //更新etz数量
               self.props.dispatch(refreshTokenAction(senderAddress,fetchTokenList))
               setTimeout(() => {
                 Toast.showLongBottom(I18n.t('send_successful'))
               },1000)
+            }else{
+              sendResult = 0
+              Alert.alert(
+                  '',
+                  I18n.t('send_failure'),
+                  [
+                    {text: I18n.t('ok'), onPress:() => {console.log('1')}},
+                  ],
+              )
+            }
           }else{
-            sendResult = 0
-            Alert.alert(
-                '',
-                I18n.t('send_failure'),
-                [
-                  {text: I18n.t('ok'), onPress:() => {console.log('1')}},
-                ],
-            )
+            if(receipt.status==="0x1"){
+              //更新etz数量
+               self.props.dispatch(refreshTokenAction(senderAddress,fetchTokenList))
+               setTimeout(() => {
+                 Toast.showLongBottom(I18n.t('send_successful'))
+               },1000)
+           }else{
+             sendResult = 0
+             Alert.alert(
+                 '',
+                 I18n.t('send_failure'),
+                 [
+                   {text: I18n.t('ok'), onPress:() => {console.log('1')}},
+                 ],
+             )
+           }
           }
+          
 
           self.props.dispatch(insert2TradingDBAction({
             tx_hash: hashVal,
@@ -560,22 +596,43 @@ class Payment extends Component{
         // })
         .on('receipt', function(receipt){
             console.log('receipt:', receipt)
-            let sendResult = 1
-            if(receipt.status==="0x1"){//"0x1" succ "0x0" fail
-              self.props.dispatch(refreshTokenAction(senderAddress,fetchTokenList))
-              setTimeout(() => {
-                Toast.showLongBottom(I18n.t('send_successful'))
-              },1000)
+            let sendResult = 0
+            if(Platform.OS === 'ios'){
+              sendResult = 1
+              if(receipt.status === true){//"0x1" succ "0x0" fail
+                self.props.dispatch(refreshTokenAction(senderAddress,fetchTokenList))
+                setTimeout(() => {
+                  Toast.showLongBottom(I18n.t('send_successful'))
+                },1000)
+              }else{
+                
+                Alert.alert(
+                    '',
+                    I18n.t('send_failure'),
+                    [
+                      {text: I18n.t('ok'), onPress:() => {console.log('1')}},
+                    ],
+                )
+              }
             }else{
-              sendResult = 0
-              Alert.alert(
-                  '',
-                  I18n.t('send_failure'),
-                  [
-                    {text: I18n.t('ok'), onPress:() => {console.log('1')}},
-                  ],
-              )
+              sendResult = 1
+              if(receipt.status==="0x1"){//"0x1" succ "0x0" fail
+                self.props.dispatch(refreshTokenAction(senderAddress,fetchTokenList))
+                setTimeout(() => {
+                  Toast.showLongBottom(I18n.t('send_successful'))
+                },1000)
+              }else{
+                
+                Alert.alert(
+                    '',
+                    I18n.t('send_failure'),
+                    [
+                      {text: I18n.t('ok'), onPress:() => {console.log('1')}},
+                    ],
+                )
+              }
             }
+            
 
             self.props.dispatch(insert2TradingDBAction({
               tx_hash: hashVal,
@@ -626,39 +683,47 @@ class Payment extends Component{
       payPsdWarning: ''
     })
   }
+
   render(){
     const { receiverAddress, payTotalVal, noteVal,visible,modalTitleText,modalTitleIcon,payPsdVal,
             modalSetp1,payAddressWarning,payTotalWarning,senderAddress,payPsdWarning,currentTokenName, gasValue } = this.state
+            console.log("this.state.loadingVisible",this.state.loadingVisible);
     return(
       <View style={pubS.container}>
         <Loading loadingVisible={this.state.loadingVisible} loadingText={this.state.loadingText}/>
-        <TextInputComponent
-          value ={currentTokenName}
-          editable={false}
-          toMore={true}
-          touchable={true}
-          onPressTouch={this.showTokenPicker}
-        />
-        <TextInputComponent
-          placeholder={I18n.t('receiver_address')}
-          value={receiverAddress}
-          onChangeText={this.onChangePayAddrText}
-          warningText={payAddressWarning}
-          isScan={true}
-          onPressIptRight={this.toScan}
-        />
-        <TextInputComponent
-          placeholder={I18n.t('amount')}
-          value={payTotalVal}
-          onChangeText={this.onChangePaTotalText}
-          warningText={payTotalWarning}
-          keyboardType={'numeric'}
-        />
-        <TextInputComponent
-          placeholder={I18n.t('note_1')}
-          value={noteVal}
-          onChangeText={this.onChangeNoteText}
-        />
+        <InputScrollView>
+          <TextInputComponent
+            value ={currentTokenName}
+            editable={false}
+            toMore={true}
+            touchable={true}
+            onPressTouch={this.showTokenPicker}
+          />
+          <TextInputComponent
+            placeholder={I18n.t('receiver_address')}
+            value={receiverAddress}
+            onChangeText={this.onChangePayAddrText}
+            warningText={payAddressWarning}
+            isScan={true}
+            onPressIptRight={this.toScan}
+          />
+          <TextInputComponent
+            placeholder={I18n.t('amount')}
+            value={payTotalVal}
+            onChangeText={this.onChangePaTotalText}
+            warningText={payTotalWarning}
+            keyboardType={'numeric'}
+            // ref='accout_ref'
+            // onBlur={this.onBlur}
+            // autoFocus={this.state.autoFocus}
+            // onSubmitEditing={()=>{this.testBlur()}}  
+          />
+          <TextInputComponent
+            placeholder={I18n.t('note_1')}
+            value={noteVal}
+            onChangeText={this.onChangeNoteText}
+          />
+        
         {
           currentTokenName === 'ETZ' ?
           <View style={[styles.gasViewStyle,pubS.rowCenterJus]}>
@@ -672,7 +737,7 @@ class Payment extends Component{
           btnPress={this.onNextStep}
           btnText={I18n.t('next')}
         />
-
+        
         <Modal
           isVisible={visible}
           onBackButtonPress={this.onPressClose}
@@ -682,7 +747,7 @@ class Payment extends Component{
         >
           <View style={styles.modalView}>
             <View style={[styles.modalTitle,pubS.center]}>
-              <TouchableOpacity onPress={this.onPressCloseIcon} activeOpacity={.7} style={{position:'absolute',left: scaleSize(24),top: scaleSize(29)}}>
+              <TouchableOpacity onPress={this.onPressCloseIcon} activeOpacity={.7} style={styles.modalClose}>
                 <Image source={modalTitleIcon} style={{height: scaleSize(30),width: scaleSize(30)}}/>
               </TouchableOpacity>
               <Text style={pubS.font26_4}>{modalTitleText}</Text>
@@ -732,6 +797,7 @@ class Payment extends Component{
             }
           </View>
         </Modal>
+        </InputScrollView>
       </View>
     )
   }
@@ -759,19 +825,59 @@ class RowText extends Component{
 }
 const styles = StyleSheet.create({
     gasViewStyle:{
-      paddingLeft: 4,
-      alignSelf:'center',
-      width: scaleSize(680),
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      borderColor:'#DBDFE6',
-      height: scaleSize(99)
+      ...ifIphoneX(
+        {
+          paddingLeft: 4,
+          alignSelf:'center',
+          width: 355,
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderColor:'#DBDFE6',
+          height: scaleSize(99)
+        },
+        {
+          paddingLeft: 4,
+          alignSelf:'center',
+          width: scaleSize(680),
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderColor:'#DBDFE6',
+          height: scaleSize(99)
+        },
+        {
+          paddingLeft: 4,
+          alignSelf:'center',
+          width: scaleSize(680),
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderColor:'#DBDFE6',
+          height: scaleSize(99)
+        }
+      )
+
     },
     rowTextView:{
-        width: scaleSize(680),
-        height: scaleSize(88),
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderColor: '#DBDFE6',
-        alignSelf:'center'
+      ...ifIphoneX(
+        {
+          width: 345,
+          height: scaleSize(88),
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderColor: '#DBDFE6',
+          alignSelf:'center'
+        },
+        {
+          width: scaleSize(680),
+          height: scaleSize(88),
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderColor: '#DBDFE6',
+          alignSelf:'center'
+        },
+        {
+          width: scaleSize(680),
+          height: scaleSize(88),
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderColor: '#DBDFE6',
+          alignSelf:'center'
+        }
+      )
+
     },
     modalTitle:{
       height: scaleSize(88),
@@ -788,6 +894,13 @@ const styles = StyleSheet.create({
 	    alignSelf: 'center',
 	    backgroundColor:'#fff',
     },
+    modalClose:{
+      ...ifIphoneX(
+        {position:'absolute',left: 50,top: scaleSize(29)},
+        {position:'absolute',left: scaleSize(24),top: scaleSize(29)},
+        {position:'absolute',left: scaleSize(24),top: scaleSize(29)}
+      )
+    }
 })
 
 export default connect(

@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../../styles/'
-import { setScaleText, scaleSize } from '../../../utils/adapter'
+import { setScaleText, scaleSize,ifIphoneX,isIphoneX } from '../../../utils/adapter'
 import { TextInputComponent,Btn,Loading } from '../../../components/'
 import { importAccountAction,resetDeleteStatusAction } from '../../../actions/accountManageAction'
 import { connect } from 'react-redux'
@@ -90,9 +90,12 @@ class KeyStore extends Component{
     },1000)
   }
   render(){
-    const { keystoreVal, keystoreWarning,userNameVal,userNameWarning } = this.state
+    isIphoneX() ?    //判断IPONEX
+    this.state.DEFULT_IPONEX = 345
+    : this.state.DEFULT_IPONEX = scaleSize(680);
+    const { keystoreVal, keystoreWarning,userNameVal,userNameWarning,DEFULT_IPONEX } = this.state
     return(
-      <View style={pubS.container}>
+      <View style={styles.container}>
         <Loading loadingVisible={this.state.visible} loadingText={I18n.t('loading_importing_account')}/>
         <TextInputComponent
           placeholder={I18n.t('account_name')}
@@ -121,11 +124,36 @@ class KeyStore extends Component{
           btnMarginTop={scaleSize(60)}
           btnPress={this.onPressImport}
           btnText={I18n.t('import')}
+          btnWidth={DEFULT_IPONEX}
         />
       </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    ...ifIphoneX(
+      {
+        flex: 1,
+        backgroundColor:'#fff',
+        width: 375
+        // width: scaleSize(750),
+      },
+      {
+        flex: 1,
+        backgroundColor:'#fff',
+        // width: scaleSize(750),
+      },
+      {
+        flex: 1,
+        backgroundColor:'#fff',
+        // width: scaleSize(750),
+      }
+    )
+  }
+})
+
 export default connect(
   state => ({
     accountManageReducer: state.accountManageReducer

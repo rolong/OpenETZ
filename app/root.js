@@ -9,7 +9,7 @@ import {
 import { Navigation } from 'react-native-navigation'
 import { registerScreens, registerScreenVisibilityListener, } from './config/'
 import { getPixelRatio } from './utils/adapter'
-import { TabBarAppStyle,AssetsNavStyle,MainThemeNavColor } from './styles/'
+import { TabBarAppStyle,AssetsNavStyle,MainThemeNavColor,TabBarIOSStyle } from './styles/'
 import I18n from 'react-native-i18n'
 registerScreens()
 registerScreenVisibilityListener()
@@ -63,6 +63,7 @@ function toHome () {
    return Navigation.startTabBasedApp({
             tabs,
             appStyle: TabBarAppStyle,
+            tabsStyle: TabBarIOSStyle,
           })
 
 }

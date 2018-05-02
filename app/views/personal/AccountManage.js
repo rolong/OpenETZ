@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../styles/'
-import { setScaleText, scaleSize } from '../../utils/adapter'
+import { setScaleText, scaleSize,ifIphoneX } from '../../utils/adapter'
 import { connect } from 'react-redux'
 import { sliceAddress,splitDecimal } from '../../utils/splitNumber'
 import I18n from 'react-native-i18n'
@@ -151,31 +151,100 @@ const styles = StyleSheet.create({
     width: '50%',
   },
   backupBtn:{
-    height: scaleSize(34),
-    width:scaleSize(104),
-    borderWidth:1,
-    borderColor: '#FF6060',
-    borderRadius: scaleSize(6),
+    ...ifIphoneX(
+      {
+        height: scaleSize(34),
+        width:150,
+        borderWidth:1,
+        borderColor: '#FF6060',
+        borderRadius: scaleSize(6),
+      },
+      {
+        height: scaleSize(34),
+        width:scaleSize(104),
+        borderWidth:1,
+        borderColor: '#FF6060',
+        borderRadius: scaleSize(6),
+      },
+      {
+        height: scaleSize(34),
+        width:scaleSize(104),
+        borderWidth:1,
+        borderColor: '#FF6060',
+        borderRadius: scaleSize(6),
+      }
+    )
+
 
   },
   cardBottomView: {
-    height: scaleSize(114),
-    width: scaleSize(620),
-    alignSelf:'center',
+    ...ifIphoneX(
+      {
+        height: scaleSize(114),
+        width: 345,
+        alignSelf:'center',
+      },
+      {
+        height: scaleSize(114),
+        width: scaleSize(620),
+        alignSelf:'center',
+      },
+      {
+        height: scaleSize(114),
+        width: scaleSize(620),
+        alignSelf:'center',
+      }
+    )
+
   },
   cardTopView: {
-    height: scaleSize(140),
-    width: scaleSize(620),
-    alignSelf:'center',
+    ...ifIphoneX(
+      {
+        height: scaleSize(140),
+        width: 345,
+        alignSelf:'center',
+      },
+      {
+        height: scaleSize(140),
+        width: scaleSize(620),
+        alignSelf:'center',
+      },
+      {
+        height: scaleSize(140),
+        width: scaleSize(620),
+        alignSelf:'center',
+      }
+    )
+
 
   },
   cardView: {
-    width: scaleSize(702),
-    height: scaleSize(255),
-    backgroundColor: '#fff',
-    borderRadius: 4,
-    alignSelf:'center',
-    marginTop: scaleSize(30),
+    ...ifIphoneX(
+      {
+        width: 355,
+        height: scaleSize(255),
+        backgroundColor: '#fff',
+        borderRadius: 4,
+        alignSelf:'center',
+        marginTop: scaleSize(30),
+      },
+      {
+        width: scaleSize(702),
+        height: scaleSize(255),
+        backgroundColor: '#fff',
+        borderRadius: 4,
+        alignSelf:'center',
+        marginTop: scaleSize(30),
+      },
+      {
+        width: scaleSize(702),
+        height: scaleSize(255),
+        backgroundColor: '#fff',
+        borderRadius: 4,
+        alignSelf:'center',
+        marginTop: scaleSize(30),
+      }
+    )
   },
 })
 export default connect(
