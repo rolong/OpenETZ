@@ -7,10 +7,11 @@ import {
   StyleSheet,
   ScrollView,
   FlatList,
+  StatusBar
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../styles/'
-import { setScaleText, scaleSize } from '../../utils/adapter'
+import { setScaleText, scaleSize,ifIphoneX } from '../../utils/adapter'
 import { connect } from 'react-redux'
 import { sliceAddress,splitDecimal } from '../../utils/splitNumber'
 import I18n from 'react-native-i18n'
@@ -20,6 +21,7 @@ class AccountCard extends Component {
     return(
       <TouchableOpacity style={styles.cardView} activeOpacity={.7} onPress={accountBackUp}>
         <View style={[styles.cardTopView,pubS.bottomStyle,pubS.rowCenterJus]}>
+        <StatusBar backgroundColor="#000000"  barStyle="dark-content" animated={true} />
           <View style={[pubS.rowCenter]}>
             <Image source={require('../../images/xhdpi/Penguin.png')} style={{height: scaleSize(55),width: scaleSize(55)}}/>
             <View style={{marginLeft: scaleSize(30)}}>
@@ -72,6 +74,8 @@ class AccountManage extends Component{
       screen: 'back_up_account',
       title: name,
       navigatorStyle: DetailNavigatorStyle,
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       // overrideBackPress:true,
       passProps: {
         userName: name,
@@ -95,6 +99,8 @@ class AccountManage extends Component{
     this.props.navigator.push({
       screen: 'create_account',
       title:I18n.t('create'),
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle: DetailNavigatorStyle,
     })
   }
@@ -102,6 +108,8 @@ class AccountManage extends Component{
     this.props.navigator.push({
       screen: 'import_account',
       title:I18n.t('import'),
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle: DetailNavigatorStyle,
     })
   }
@@ -151,31 +159,100 @@ const styles = StyleSheet.create({
     width: '50%',
   },
   backupBtn:{
-    height: scaleSize(34),
-    width:scaleSize(104),
-    borderWidth:1,
-    borderColor: '#FF6060',
-    borderRadius: scaleSize(6),
+    ...ifIphoneX(
+      {
+        height: scaleSize(34),
+        width:150,
+        borderWidth:1,
+        borderColor: '#FF6060',
+        borderRadius: scaleSize(6),
+      },
+      {
+        height: scaleSize(34),
+        width:scaleSize(104),
+        borderWidth:1,
+        borderColor: '#FF6060',
+        borderRadius: scaleSize(6),
+      },
+      {
+        height: scaleSize(34),
+        width:scaleSize(104),
+        borderWidth:1,
+        borderColor: '#FF6060',
+        borderRadius: scaleSize(6),
+      }
+    )
+
 
   },
   cardBottomView: {
-    height: scaleSize(114),
-    width: scaleSize(620),
-    alignSelf:'center',
+    ...ifIphoneX(
+      {
+        height: scaleSize(114),
+        width: 345,
+        alignSelf:'center',
+      },
+      {
+        height: scaleSize(114),
+        width: scaleSize(620),
+        alignSelf:'center',
+      },
+      {
+        height: scaleSize(114),
+        width: scaleSize(620),
+        alignSelf:'center',
+      }
+    )
+
   },
   cardTopView: {
-    height: scaleSize(140),
-    width: scaleSize(620),
-    alignSelf:'center',
+    ...ifIphoneX(
+      {
+        height: scaleSize(140),
+        width: 345,
+        alignSelf:'center',
+      },
+      {
+        height: scaleSize(140),
+        width: scaleSize(620),
+        alignSelf:'center',
+      },
+      {
+        height: scaleSize(140),
+        width: scaleSize(620),
+        alignSelf:'center',
+      }
+    )
+
 
   },
   cardView: {
-    width: scaleSize(702),
-    height: scaleSize(255),
-    backgroundColor: '#fff',
-    borderRadius: 4,
-    alignSelf:'center',
-    marginTop: scaleSize(30),
+    ...ifIphoneX(
+      {
+        width: 355,
+        height: scaleSize(255),
+        backgroundColor: '#fff',
+        borderRadius: 4,
+        alignSelf:'center',
+        marginTop: scaleSize(30),
+      },
+      {
+        width: scaleSize(702),
+        height: scaleSize(255),
+        backgroundColor: '#fff',
+        borderRadius: 4,
+        alignSelf:'center',
+        marginTop: scaleSize(30),
+      },
+      {
+        width: scaleSize(702),
+        height: scaleSize(255),
+        backgroundColor: '#fff',
+        borderRadius: 4,
+        alignSelf:'center',
+        marginTop: scaleSize(30),
+      }
+    )
   },
 })
 export default connect(

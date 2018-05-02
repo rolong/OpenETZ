@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../styles/'
-import { setScaleText, scaleSize } from '../../utils/adapter'
+import { setScaleText, scaleSize,ifIphoneX } from '../../utils/adapter'
 import { connect } from 'react-redux'
 import { Loading } from '../../components/'
 import { deleteSelectedToListAction, addSelectedToListAction,fetchTokenAction,gloablTokenList } from '../../actions/tokenManageAction'
@@ -137,8 +137,7 @@ const styles = StyleSheet.create({
   },
   listItemView:{
     backgroundColor:'#fff',
-    paddingLeft: scaleSize(22),
-    paddingRight: scaleSize(22),
+    ...ifIphoneX({marginLeft:30,marginRight:30},{paddingLeft: scaleSize(22),paddingRight: scaleSize(22)},{paddingLeft: scaleSize(22),paddingRight: scaleSize(22)}),
     justifyContent:'center',
     flexDirection:'row',
     borderRadius: 4,
@@ -146,16 +145,43 @@ const styles = StyleSheet.create({
     marginTop: scaleSize(20),
   },
   whStyle: {
-    height: scaleSize(120),
-    width: scaleSize(702),
+    ...ifIphoneX(
+      {
+        height: scaleSize(120),
+        width: 345,
+      },
+      {
+        height: scaleSize(120),
+        width: scaleSize(702),
+      },
+      {
+        height: scaleSize(120),
+        width: scaleSize(702),
+      }
+    )
+
   },
   listItemTextView:{
-    width: scaleSize(618),
-    marginLeft:scaleSize(18),
-    paddingTop: scaleSize(15),
-    paddingBottom: scaleSize(22),
-    // borderColor:'red',
-    // borderWidth:1,
+    ...ifIphoneX(
+      {
+        width: 293,
+        marginLeft:scaleSize(18),
+        paddingTop: scaleSize(15),
+        paddingBottom: scaleSize(22),
+      },
+      {
+        width: scaleSize(618),
+        marginLeft:scaleSize(18),
+        paddingTop: scaleSize(15),
+        paddingBottom: scaleSize(22),
+      },
+      {
+        width: scaleSize(618),
+        marginLeft:scaleSize(18),
+        paddingTop: scaleSize(15),
+        paddingBottom: scaleSize(22),
+      }
+    )
   },
 })
 

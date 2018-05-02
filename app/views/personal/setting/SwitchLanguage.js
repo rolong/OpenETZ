@@ -6,10 +6,11 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  StatusBar
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../../styles/'
-import { setScaleText, scaleSize } from '../../../utils/adapter'
+import { setScaleText, scaleSize,ifIphoneX } from '../../../utils/adapter'
 import { switchLanguageAction } from '../../../actions/switchLanguageAction'
 import { connect } from 'react-redux' 
 import { toSplash } from '../../../root' 
@@ -145,6 +146,7 @@ class SwitchLanguage extends Component{
   		const { select_zh, select_en, select_ru,bgColorZh, bgColorEn, bgColorRu } = this.state
 	    return(
 	      <View style={{flex:1,backgroundColor: '#F5F7FB'}}>
+		  <StatusBar backgroundColor="#000000"  barStyle="dark-content" animated={true} />
 	      	<Language
 	      		languageText={'简体中文'}
 	      		isSelected={select_zh}
@@ -172,11 +174,29 @@ class SwitchLanguage extends Component{
 
 const styles = StyleSheet.create({
 	lanViewStyle:{
-		height: scaleSize(120),
-		width: scaleSize(750),
-		// backgroundColor:'#fff',
-		borderTopWidth:StyleSheet.hairlineWidth,
-		borderColor:'#EEEEEE',
+		...ifIphoneX(
+			{
+				height: scaleSize(120),
+				width: 375,
+				// backgroundColor:'#fff',
+				borderTopWidth:StyleSheet.hairlineWidth,
+				borderColor:'#EEEEEE',
+			},
+			{
+				height: scaleSize(120),
+				width: scaleSize(750),
+				// backgroundColor:'#fff',
+				borderTopWidth:StyleSheet.hairlineWidth,
+				borderColor:'#EEEEEE',
+			},
+			{
+				height: scaleSize(120),
+				width: scaleSize(750),
+				// backgroundColor:'#fff',
+				borderTopWidth:StyleSheet.hairlineWidth,
+				borderColor:'#EEEEEE',
+			},
+		)
 	},
 	selectImage:{
 	    height: scaleSize(40),

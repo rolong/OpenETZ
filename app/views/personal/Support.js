@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Alert
+  Alert,
+  StatusBar
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../styles/'
@@ -103,6 +104,7 @@ class Support extends Component{
     const { emaiVal, eNameWarning, contentVal, contentWarning, } = this.state
     return(
       <View style={{flex:1,backgroundColor:'#fff'}}>
+      <StatusBar backgroundColor="#000000"  barStyle="dark-content" animated={true} />
         <TextInputComponent
           placeholder={I18n.t('your_email')}
           value={emaiVal}

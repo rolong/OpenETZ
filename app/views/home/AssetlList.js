@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle,MainThemeNavColor } from '../../styles/'
-import { setScaleText, scaleSize } from '../../utils/adapter'
+import { setScaleText, scaleSize,ifIphoneX } from '../../utils/adapter'
 import RecordListItem from './tradingRecord/RecordListItem'
 import { splitNumber,sliceAddress,timeStamp2Date } from '../../utils/splitNumber'
 
@@ -50,6 +50,8 @@ class AssetlList extends Component{
       screen: 'trading_record_detail',
       title:I18n.t('tx_records_1'),
       navigatorStyle: MainThemeNavColor,
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       passProps: {
         detailInfo: res
       }
@@ -85,9 +87,12 @@ class AssetlList extends Component{
     this.props.navigator.push({
       screen: 'on_payment',
       title:I18n.t('send'),
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle: DetailNavigatorStyle,
       passProps:{
-        curToken: this.props.curToken
+        curToken: this.props.curToken,
+        curDecimals:this.props.curDecimals
       }
     })
   }
@@ -95,6 +100,8 @@ class AssetlList extends Component{
     this.props.navigator.push({
       screen: 'on_receive',
       title:I18n.t('receive'),
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle: DetailNavigatorStyle,
     })
   }
@@ -108,7 +115,7 @@ class AssetlList extends Component{
   render(){
     console.log('交易列表',this.state.recordList)
     return(
-      <View style={[pubS.container,{backgroundColor:'#F5F7FB'}]}>
+      <View style={[styles.container,{backgroundColor:'#F5F7FB'}]}>
         <View style={{marginBottom: scaleSize(96)}}> 
           <FlatList
             data={this.state.recordList}
@@ -132,15 +139,48 @@ class AssetlList extends Component{
 }
 
 const styles = StyleSheet.create({
+  container: {
+    ...ifIphoneX(
+      {
+        flex: 1,
+        width:375
+      },
+      {
+        flex: 1,
+        // width: scaleSize(750),
+      },
+      {
+        flex: 1,
+        // width: scaleSize(750),
+      }
+    )
+
+  },
   btnStyle:{
     width: '50%',
     height: scaleSize(96),
   },
   bottomBtnStyle:{
-    width: scaleSize(750),
-    height: scaleSize(96),
-    position:'absolute',
-    bottom: 0,
+    ...ifIphoneX(
+      {
+        width: 375,
+        height: scaleSize(96),
+        position:'absolute',
+        bottom: 0,
+      },
+      {
+        width: scaleSize(750),
+        height: scaleSize(96),
+        position:'absolute',
+        bottom: 0,
+      },
+      {
+        width: scaleSize(750),
+        height: scaleSize(96),
+        position:'absolute',
+        bottom: 0,
+      }
+    )
   },
   listViewStyle:{
     height: scaleSize(280),

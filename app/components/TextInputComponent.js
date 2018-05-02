@@ -9,7 +9,7 @@ import {
   Platform
 } from 'react-native'
 import { pubS } from '../styles/'
-import { setScaleText, scaleSize } from '../utils/adapter'
+import { setScaleText, scaleSize, ifIphoneX } from '../utils/adapter'
 export default class TextInputComponent extends Component{
   constructor(props){
     super(props)
@@ -45,6 +45,7 @@ export default class TextInputComponent extends Component{
             underlineColorAndroid={ multiline ? 'transparent' : '#DBDFE6'}
             textAlignVertical={multiline ? 'top' : 'center'}
             {...this.props}
+            ref={this.props.ref}
           />
         {
           toMore ?
@@ -72,11 +73,30 @@ export default class TextInputComponent extends Component{
 }
 const styles = StyleSheet.create({
   textInputView: {
-    // borderColor:'#DBDFE6',
-    // borderWidth:1,
-    alignSelf:'center',
-    width: scaleSize(680),
-    backgroundColor: '#fff',
+    ...ifIphoneX(
+      {
+        // borderColor:'#DBDFE6',
+        // borderWidth:1,
+        alignSelf:'center',
+        width: 360,
+        backgroundColor: '#fff',
+      },
+      {
+        // borderColor:'#DBDFE6',
+        // borderWidth:1,
+        alignSelf:'center',
+        width: scaleSize(680),
+        backgroundColor: '#fff',
+      },
+      {
+        // borderColor:'#DBDFE6',
+        // borderWidth:1,
+        alignSelf:'center',
+        width: scaleSize(680),
+        backgroundColor: '#fff',
+      }
+    )
+
   },
 
   textIptStyle: {

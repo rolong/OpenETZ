@@ -11,10 +11,11 @@ import {
   BackHandler,
   Clipboard,
   Share,
+  StatusBar
 } from 'react-native'
 import { Navigation } from 'react-native-navigation'
 import { pubS,DetailNavigatorStyle } from '../../../styles/'
-import { setScaleText, scaleSize } from '../../../utils/adapter'
+import { setScaleText, scaleSize, ifIphoneX } from '../../../utils/adapter'
 import { sliceAddress } from '../../../utils/splitNumber'
 import { Btn,Loading, } from '../../../components/'
 import Modal from 'react-native-modal'
@@ -212,6 +213,8 @@ class BackUpAccount extends Component{
           this.props.navigator.push({
             screen: 'write_mnemonic',
             title: '',
+            backButtonTitle:I18n.t('back'),
+            backButtonHidden:false,
             navigatorStyle: DetailNavigatorStyle,
             passProps: {
               currentAddress: this.props.address,
@@ -285,6 +288,7 @@ class BackUpAccount extends Component{
     const { isLoading,delMnemonicSuc } = this.props.accountManageReducer
     return(
       <View style={[pubS.container,{backgroundColor:'#fff',alignItems:'center'}]}>
+      <StatusBar backgroundColor="#000000"  barStyle="dark-content" animated={true} />
         <Loading loadingVisible={this.state.visible} loadingText={this.state.loadingText}/>
         <Image source={require('../../../images/xhdpi/Penguin.png')} style={styles.avateStyle}/>
         <Text style={pubS.font26_5}>{sliceAddress(this.props.address,10)}</Text>
@@ -490,9 +494,24 @@ const styles = StyleSheet.create({
     borderRadius: scaleSize(26),
   },
   userNameViewStyle:{
-    height:scaleSize(100),
-    width: scaleSize(680),
-    marginTop: scaleSize(80),
+    ...ifIphoneX(
+      {
+        height:scaleSize(100),
+        width: 345,
+        marginTop: scaleSize(80),
+      },
+      {
+        height:scaleSize(100),
+        width: scaleSize(680),
+        marginTop: scaleSize(80),
+      },
+      {
+        height:scaleSize(100),
+        width: scaleSize(680),
+        marginTop: scaleSize(80),
+      }
+    )
+
   },
   avateStyle:{
     width: scaleSize(112),

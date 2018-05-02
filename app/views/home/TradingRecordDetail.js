@@ -7,11 +7,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   WebView, 
-  Clipboard
+  Clipboard,
+  StatusBar
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../styles/'
-import { setScaleText, scaleSize } from '../../utils/adapter'
+import { setScaleText, scaleSize,ifIphoneX } from '../../utils/adapter'
 import QRCode from 'react-native-qrcode'
 import { sliceAddress,timeStamp2FullDate } from '../../utils/splitNumber'
 import I18n from 'react-native-i18n'
@@ -45,6 +46,9 @@ class TradingRecordDetail extends Component{
   toWebView = (hash) => {
     this.props.navigator.push({
       screen: 'tx_web_view',
+      title:I18n.t('tx_records'),
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle:DetailNavigatorStyle,
       passProps: {
         hash,
@@ -62,6 +66,7 @@ class TradingRecordDetail extends Component{
 
     return(
       <View style={pubS.container}>
+      <StatusBar backgroundColor="#FFFFFF"  barStyle="light-content" animated={true} />
         <Image source={require('../../images/xhdpi/ico_selectasset_transactionrecords_succeed.png')} style={styles.iocnStyle}/>
         <View style={styles.topView}></View>
         <View style={styles.mainStyle}>
@@ -127,25 +132,80 @@ const styles = StyleSheet.create({
         marginTop: scaleSize(10)
     },
     iocnStyle:{
-      width: scaleSize(100),
-      height: scaleSize(100),
-      position:'absolute',
-      left: scaleSize(325),
-      top: scaleSize(50),
-      zIndex: 999,
+      ...ifIphoneX(
+        {
+          width: scaleSize(100),
+          height: scaleSize(100),
+          position:'absolute',
+          left: 160,
+          top: scaleSize(50),
+          zIndex: 999,
+        },
+        {
+          width: scaleSize(100),
+          height: scaleSize(100),
+          position:'absolute',
+          left: scaleSize(325),
+          top: scaleSize(50),
+          zIndex: 999,
+        },
+        {
+          width: scaleSize(100),
+          height: scaleSize(100),
+          position:'absolute',
+          left: scaleSize(325),
+          top: scaleSize(50),
+          zIndex: 999,
+        }
+      )
+
     },
     accountStyle:{
-      height: scaleSize(178),
-      borderColor:'#DBDFE6',
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      width: scaleSize(680),
-      alignSelf:'center',
-      marginBottom: scaleSize(10),
-      // borderWidth:1,
+      ...ifIphoneX(
+        {
+          height: scaleSize(178),
+          borderColor:'#DBDFE6',
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          width: 375,
+          alignSelf:'center',
+          marginBottom: scaleSize(10),
+          // borderWidth:1,
+        },
+        {
+          height: scaleSize(178),
+          borderColor:'#DBDFE6',
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          width: scaleSize(680),
+          alignSelf:'center',
+          marginBottom: scaleSize(10),
+          // borderWidth:1,
+        },{
+          height: scaleSize(178),
+          borderColor:'#DBDFE6',
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          width: scaleSize(680),
+          alignSelf:'center',
+          marginBottom: scaleSize(10),
+          // borderWidth:1,
+        }
+      )
+
     },
     mainStyle:{
-        backgroundColor:'#fff',
-        width: scaleSize(750)
+       ...ifIphoneX(
+         {
+          backgroundColor:'#fff',
+          width: 375
+         },
+         {
+          backgroundColor:'#fff',
+          width: scaleSize(750)
+         },
+         {
+          backgroundColor:'#fff',
+          width: scaleSize(750)
+         }
+       )
     },
     topView:{
       height: scaleSize(100),

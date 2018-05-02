@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
+  StatusBar
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../styles/'
@@ -24,6 +25,8 @@ class Personal extends Component{
     this.props.navigator.push({
       screen: 'account_manage',
       title:I18n.t('manage_wallets'),
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle: DetailNavigatorStyle,
     })
   }
@@ -32,6 +35,8 @@ class Personal extends Component{
     this.props.navigator.push({
       screen: 'help_center',
       title:I18n.t('help_center'),
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle: DetailNavigatorStyle,
     })
   }
@@ -40,6 +45,8 @@ class Personal extends Component{
     this.props.navigator.push({
       screen: 'support',
       title:I18n.t('support'),
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle: DetailNavigatorStyle,
       navigatorButtons: {
         rightButtons: [
@@ -55,6 +62,8 @@ class Personal extends Component{
     this.props.navigator.push({
       screen: 'switch_language',
       title: I18n.t('language'),
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle: DetailNavigatorStyle,
       navigatorButtons: {
         rightButtons: [
@@ -69,6 +78,7 @@ class Personal extends Component{
   render(){
     return(
       <View style={[pubS.container,{backgroundColor:'#F5F7FB',}]}>
+      <StatusBar backgroundColor="#FFFFFF"  barStyle="light-content"  animated={true}/>
           <Image source={require('../../images/xhdpi/bg_personalcenter.png')} style={{height: scaleSize(387),width: scaleSize(750)}}/>
           <ArrowToDetail
             arrowText={I18n.t('manage_wallets')}

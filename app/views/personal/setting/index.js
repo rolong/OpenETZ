@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  StatusBar
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../../styles/'
@@ -24,6 +25,8 @@ export default class Setting extends Component{
     this.props.navigator.push({
       screen: 'switch_language',
       title: I18n.t('language'),
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
       navigatorStyle: DetailNavigatorStyle,
       navigatorButtons: {
         rightButtons: [
@@ -38,6 +41,7 @@ export default class Setting extends Component{
   render(){
     return(
       <View>
+        <StatusBar backgroundColor="#000000"  barStyle="dark-content" animated={true} />
         <ArrowToDetail
 	        arrowText={I18n.t('language')}
 	        arrowIcon={require('../../../images/xhdpi/ico_personalcenter_accountmanagement_def.png')}
