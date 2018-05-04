@@ -60,11 +60,19 @@ const tabs = [
 
 function toHome () {
 
-   return Navigation.startTabBasedApp({
-            tabs,
-            appStyle: TabBarAppStyle,
-            tabsStyle: TabBarIOSStyle,
-          })
+   if(Platform.OS == 'ios'){
+    return Navigation.startTabBasedApp({
+      tabs,
+      appStyle: TabBarAppStyle,
+      tabsStyle: TabBarIOSStyle,
+    })
+   }else{
+    return Navigation.startTabBasedApp({
+      tabs,
+      appStyle: TabBarAppStyle,
+    })
+   }
+
 
 }
 

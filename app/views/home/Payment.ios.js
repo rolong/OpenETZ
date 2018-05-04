@@ -41,7 +41,7 @@ class Payment extends Component{
   constructor(props){
     super(props)
     this.state={
-      receiverAddress: '0x1ec79157f606d942ac19ce21231c1572aef8bb5d',
+      receiverAddress: '',
       txValue: '',
       noteVal: '',
       txAddrWarning: '',
@@ -205,7 +205,12 @@ class Payment extends Component{
   }
   async getGasValue(){
     const { receiverAddress,txValue,senderAddress, currentTokenName, currentTokenDecimals, currentTokenAddress } = this.state
-
+    console.log('senderAddress',senderAddress)
+    console.log('receiverAddress',receiverAddress)
+    console.log('currentTokenName',currentTokenName)
+    console.log('currentTokenDecimals',currentTokenDecimals)
+    console.log('txValue',txValue)
+    console.log('currentTokenAddress',currentTokenAddress)
     if(receiverAddress.length === 42 && txValue.length > 0){
       if(this.state.currentTokenName === 'ETZ'){
 
@@ -218,7 +223,7 @@ class Payment extends Component{
 
       }else{
         let tokenGasValue = await getTokenGas(senderAddress,receiverAddress,currentTokenName,currentTokenDecimals,txValue,currentTokenAddress)
-        // console.log('tokenGasValue==',tokenGasValue)
+        console.log('tokenGasValue==',tokenGasValue)
         this.setState({
           gasValue: tokenGasValue,
         })
@@ -306,6 +311,24 @@ class Payment extends Component{
       })
       return
     }else{
+
+      if(Platform.OS == 'ios'){
+        Alert.alert(I18n.t('transfer_schedule'), I18n.t('transfer_detail'), [
+          { text: I18n.t('enter'), onPress: () => {
+            Keyboard.dismiss();
+            this.setState({
+              loadingText: I18n.t('sending'),
+              loadingVisible: true,
+              visible: false,
+              modalSetp1: true,
+            })
+            setTimeout(() => {
+              this.validatPsd()
+            },1000)
+          }}
+        ])
+      }else{
+          Keyboard.dismiss();
       this.setState({
         loadingText: I18n.t('sending'),
         loadingVisible: true,
@@ -316,6 +339,8 @@ class Payment extends Component{
         this.validatPsd()
       },1000)
     }
+  }
+
   }
 
   validatPsd = () => {
@@ -470,11 +495,11 @@ class Payment extends Component{
       let data = myContract.methods.transfer(receiverAddress, `0x${hex16}`).encodeABI()
 
       web3.eth.getTransactionCount(`0x${senderAddress}`, function(error, nonce) {
-
+        let gasValue1 = parseFloat(gasValue) + 100
         const txParams = {
             nonce: web3.utils.toHex(nonce),
             gasPrice:"0x098bca5a00",
-            gasLimit: `0x${parseFloat(gasValue).toString(16)}`,
+            gasLimit: `0x${parseFloat(gasValue1).toString(16)}`,
             to: currentTokenAddress,
             value :"0x0",
             data: data,
@@ -517,6 +542,8 @@ class Payment extends Component{
             self.props.navigator.push({                          
                screen: 'trading_record_detail',                   
                title:I18n.t('tx_records_1'),                      
+               backButtonTitle:I18n.t('back'),
+               backButtonHidden:false,                      
                navigatorStyle: MainThemeNavColor, 
                passProps: {  
                 detailInfo:passDetailInfo,
@@ -571,11 +598,11 @@ class Payment extends Component{
               currentAccountName: `0x${senderAddress}`
             }))
 
-        }).on('error', (error) => {
-          console.error(error)
+        }).on('error', function(error){
+          console.log('error1111',error)
           self.onPressClose()
           self.props.navigator.pop()
-          Alert.alert(`${error}`,)
+          // Alert.alert(`${error}`,)
 
           // alert(error)
         });
@@ -600,7 +627,10 @@ class Payment extends Component{
     return(
       <View style={pubS.container}>
         <StatusBar backgroundColor="#000000"  barStyle="dark-content" animated={true} />
+
         <Loading loadingVisible={this.state.loadingVisible} loadingText={this.state.loadingText}/>   
+
+        
           <InputScrollView>
         
           <TextInputComponent

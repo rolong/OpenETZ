@@ -34,9 +34,15 @@ class CreateAccountSuccess extends Component{
     onExitApp()
   }
   onNavigatorEvent(event){
+    console.log("我点击的是"+JSON.stringify(event));
     if (event.type == 'NavBarButtonPress') {
       if(event.id === 'backPress'){
           toHome()
+      }
+    }
+    if(event.type == 'ScreenChangedEvent'){   //成功后点击返回到首页
+      if(event.id == 'willDisappear'){
+        toHome()
       }
     }
   }

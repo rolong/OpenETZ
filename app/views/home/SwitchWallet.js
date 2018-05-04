@@ -32,7 +32,9 @@ class SwitchWallet extends Component {
 	onScan = () => {
 		this.props.thisPorps.props.navigator.push({
 	      screen: 'scan_qr_code',
-	      title:I18n.t('scan'),
+		  title:I18n.t('scan'),
+		  backButtonTitle:I18n.t('back'),
+          backButtonHidden:false,
 	      navigatorStyle: Object.assign({},DetailNavigatorStyle,{
 	        navBarTextColor:'#fff',
 	        navBarBackgroundColor:'#000',
@@ -45,7 +47,9 @@ class SwitchWallet extends Component {
 	onCreate = () => {
 		this.props.thisPorps.props.navigator.push({
 	      screen: 'create_account',
-	      title:I18n.t('create'),
+		  title:I18n.t('create'),
+		  backButtonTitle:I18n.t('back'),
+          backButtonHidden:false,
 	      navigatorStyle: DetailNavigatorStyle,
 	    })
 	    this.props.onCloseSwitchDrawer()
