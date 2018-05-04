@@ -15,10 +15,9 @@ import I18n from 'react-native-i18n'
 class ScanQrCode extends Component{
   constructor(props){
     super(props)
-    this.state = {
-
-    }
+    
   }
+  
   onSuccess = (e) => {
     this.props.navigator.push({
       screen: 'on_payment',
@@ -29,7 +28,7 @@ class ScanQrCode extends Component{
       overrideBackPress: true,
       passProps: {
         receive_address: e.data,
-        curToken: 'ETZ',
+        curToken: this.props.curToken,
       }
     })
   }

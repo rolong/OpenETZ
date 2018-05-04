@@ -26,6 +26,7 @@ import { refreshTokenAction } from '../../actions/tokenManageAction'
 import { contractAbi } from '../../utils/contractAbi'
 import I18n from 'react-native-i18n'
 import { getTokenGas, getGeneralGas } from '../../utils/getGas'
+import { fromV3 } from '../../utils/fromV3'
 import InputScrollView from 'react-native-input-scroll-view';
 const EthUtil = require('ethereumjs-util')
 const Wallet = require('ethereumjs-wallet')
@@ -264,6 +265,9 @@ class Payment extends Component{
         statusBarColor:'#000',
         statusBarTextColorScheme:'light',
       }),
+      passProps:{
+        curToken: this.state.currentTokenName
+      }
     })
   }
   showTokenPicker = () => {
@@ -372,8 +376,10 @@ class Payment extends Component{
     const { txPsdVal,senderAddress,txValue,receiverAddress,noteVal,gasValue } = this.state
     const { fetchTokenList } = this.props.tokenManageReducer 
     try{  
-      let newWallet = await Wallet.fromV3(this.state.keyStore,txPsdVal)
-      let privKey = await newWallet._privKey.toString('hex')
+      
+      let newWallet = fromV3(this.state.keyStore,txPsdVal)
+      let privKey = newWallet.privKey.toString('hex')
+
       console.log('privKey==',privKey)
       let bufPrivKey = new Buffer(privKey, 'hex')
       // console.log('bufPrivKey==',bufPrivKey)
@@ -474,7 +480,8 @@ class Payment extends Component{
       })
     }catch(error){
       this.onPressClose()
-      Toast.showLongBottom(I18n.t('password_is_wrong'))
+      Alert.alert(error)
+      // Toast.showLongBottom(I18n.t('password_is_wrong'))
     }
   }
   async makeTransactByToken(){
@@ -483,9 +490,10 @@ class Payment extends Component{
     const { fetchTokenList } = this.props.tokenManageReducer 
 
     try{
-      let newWallet = await Wallet.fromV3(this.state.keyStore,txPsdVal)
-      let privKey = await newWallet._privKey.toString('hex')
-     
+      
+      let newWallet = fromV3(this.state.keyStore,txPsdVal)
+      let privKey = newWallet.privKey.toString('hex')
+
       let txNumber = parseInt(parseFloat(txValue) *  Math.pow(10,currentTokenDecimals))
 
       let hex16 = parseInt(txNumber).toString(16)      
@@ -610,7 +618,8 @@ class Payment extends Component{
 
     }catch (error) {
       this.onPressClose()
-      Toast.showLongBottom(I18n.t('password_is_wrong'))
+      Alert.alert(error)
+      // Toast.showLongBottom(I18n.t('password_is_wrong'))
     }
 
   }

@@ -23,6 +23,7 @@ class AddAssets extends Component{
     super(props)
     this.state={
       tokenList: [],
+      loadingVisible: false
     }
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
   }
@@ -30,8 +31,16 @@ class AddAssets extends Component{
   componentWillMount(){
     this.onFetch()
   }
+  componentWillReceiveProps(nextProps){
+    if(this.props.tokenManageReducer.fetchTokenList !== nextProps.tokenManageReducer.fetchTokenList){
+      this.setState({
+        loadingVisible: false
+      })
+    }
+  }
   async onFetch(){
     //fetch token列表 并通过当前账户地址得到 token账户余额
+    
     const { currentAccount } = this.props.accountManageReducer
     // console.log('添加资产当前账号currentAccount===',currentAccount)
     let selTokenRes = await accountDB.selectTable({
@@ -42,6 +51,9 @@ class AddAssets extends Component{
     //切换账号后需要更新  当前账号下的token list
     // console.log('selTokenRes11111111===',selTokenRes)
     if(selTokenRes.length === 0){
+      this.setState({
+        loadingVisible: true
+      })
       this.props.dispatch(fetchTokenAction(currentAccount.address))
     }else{
       this.props.dispatch(gloablTokenList(selTokenRes))
@@ -77,7 +89,7 @@ class AddAssets extends Component{
     console.log('资产列表fetchTokenList===',fetchTokenList)
     return(
       <View style={{flex:1,backgroundColor:'#F5F7FB'}}>
-
+        <Loading loadingVisible={this.state.loadingVisible} />  
         <View style={[styles.listItemView,styles.whStyle]}>
           <Image source={require('../../images/xhdpi/etz_logo.png')} style={pubS.logoStyle}/>
           <View style={[styles.listItemTextView,pubS.rowCenterJus]}>

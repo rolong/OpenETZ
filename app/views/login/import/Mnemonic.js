@@ -16,6 +16,7 @@ import { connect } from 'react-redux'
 import { toHome } from '../../../root'
 import I18n from 'react-native-i18n'
 import Toast from 'react-native-toast'
+const bip39 = require('bip39')
 class Mnemonic extends Component{
   constructor(props){
     super(props)
@@ -111,15 +112,21 @@ class Mnemonic extends Component{
       visible: true
     })
     setTimeout(() => {
-      this.props.dispatch(importAccountAction({
-        mnemonicVal,
-        mnemonicPsd: passwordVal,
-        mnemonicUserName: userNameVal,
-        type: 'mnemonic',
-        fromLogin: this.props.fromLogin === 'login' ? 'login' : 'accounts'
-      }))
-    },1000)
-    
+      if(bip39.validateMnemonic(mnemonicVal)){
+        this.props.dispatch(importAccountAction({
+          mnemonicVal,
+          mnemonicPsd: passwordVal,
+          mnemonicUserName: userNameVal,
+          type: 'mnemonic',
+          fromLogin: this.props.fromLogin === 'login' ? 'login' : 'accounts'
+        }))
+      }else{
+        this.setState({
+          mnemonicValWarning: I18n.t('mnemonic_phrase_warning'),
+          visible: false
+        })
+      }
+    },1000)   
   }
   render(){
     isIphoneX() ?    //判断IPONEX

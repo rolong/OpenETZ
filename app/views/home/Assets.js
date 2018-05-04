@@ -303,6 +303,7 @@ class Assets extends Component{
     
     const { currentAccount, globalAccountsList } = this.props.accountManageReducer
     const { fetchTokenList,etzBalance } = this.props.tokenManageReducer
+    console.log('etzBalance  render===',etzBalance)
     return(
       <View style={styles.containerView}>
         {

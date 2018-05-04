@@ -114,7 +114,7 @@ const initSelectedListAction = () => {
 }
 
 const refreshTokenAction = (addr,tokenlist) => {
-	console.log('下拉action')
+	console.log('下拉刷新action')
 	const onRef = () => {
 		return {
 			type: types.REFRESH_TOKEN_INFO,

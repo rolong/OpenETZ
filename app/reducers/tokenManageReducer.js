@@ -156,7 +156,7 @@ const onRefreshSuc = (state,action) => {
 }
 const onRefreshEtz = (state,action) => {
 	const { data } = action.payload
-	
+	console.log('onRefreshEtz reducer',data)
 	return {
 		...state,
 		etzBalance: data
