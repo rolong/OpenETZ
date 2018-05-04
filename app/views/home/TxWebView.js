@@ -4,10 +4,22 @@ import {
 	WebView,
 	StyleSheet,
 	StatusBar,
-	Platform
+	Platform,
+	ActivityIndicator
 } from 'react-native'
 import { scaleSize,ifIphoneX } from '../../utils/adapter'
 export default class TxWebView extends Component{
+	renderLoading = () => {
+		return(
+			<View style={{alignSelf:'center',marginTop: '50%'}}>
+	           <ActivityIndicator  
+	              color={'#144396'}
+	              indeterminate={true}
+	              size={'large'}
+	            />
+	        </View> 
+		)
+	}
 	render(){
 		return(
 			<View style={{flex:1}}>
@@ -20,6 +32,7 @@ export default class TxWebView extends Component{
 			        source={{uri:`https://explorer.etherzero.org/tx/${this.props.hash}`,method:'GET'}}
 					style={styles.WebViewStyle}
 					startInLoadingState={true}
+					renderLoading={this.renderLoading }
 	                domStorageEnabled={true}//开启dom存贮
 	                javaScriptEnabled={true}//开启js
 		      	>	

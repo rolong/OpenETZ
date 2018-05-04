@@ -7,6 +7,7 @@ import {
 } from 'react-native'
 import Modal from 'react-native-modal'
 import { pubS } from '../styles/'
+import I18n from 'react-native-i18n'
 export default class Loading extends Component {
   constructor(props) {
     super(props);
@@ -23,7 +24,7 @@ export default class Loading extends Component {
   }
   static defaultProps = {
     opacity: .3,
-    loadingText:'loading...',
+    loadingText:I18n.t('loading'),
     bgColor: '#fff'
 
   }

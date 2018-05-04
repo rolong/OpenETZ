@@ -211,7 +211,9 @@ class BackUpAccount extends Component{
     setTimeout(() => {
       try {
         const newWallet = fromV3(keyStore,psdVal)
+        console.log('备份解析的私钥newWallet',newWallet)
         let priv = newWallet.privKey.toString('hex')
+        console.log('备份解析的私钥',priv)
         if(backupMnemonic){
           this.props.navigator.push({
             screen: 'write_mnemonic',
@@ -238,7 +240,7 @@ class BackUpAccount extends Component{
         }
         this.onHide()
       } catch (err) {
-        Alert.alert(I18n.t('password_is_wrong'))       
+        Alert.alert(err)       
 
         this.setState({
           psdVal: '',

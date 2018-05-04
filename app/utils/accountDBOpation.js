@@ -6,7 +6,7 @@ const randomBytes = require('randombytes')
 
 
 import accountDB from '../db/account_db'
-
+import {  ethWallet,EthereumHDKey } from './ethWallet'
 
 
 async function onImportAccount(options){
@@ -20,10 +20,11 @@ async function onImportAccount(options){
 	try {
 		if(type === 'private'){
 			let buf = new Buffer(privateKey, 'hex')
+			let wal = ethWallet.fromPrivateKey(buf)
+		    let p_keystore = wal.toV3(privatePassword,{c:8192,n:8192})
 
-			let w = wallet.fromPrivateKey(buf)
-		    let p_keystore = w.toV3(privatePassword,{c:8192,n:8192})
 		    console.log('私钥导入p_keystore====',p_keystore)
+
 		    keyStore = p_keystore
 		    userName = privateUserName
 		    createFinished = true
@@ -31,7 +32,7 @@ async function onImportAccount(options){
 			if(type === 'mnemonic'){
 				console.log('需要导入的助记词',mnemonicVal)
 				let seed = bip39.mnemonicToSeed(mnemonicVal)
-			    let hdWallet = hdkey.fromMasterSeed(seed)
+			    let hdWallet = EthereumHDKey.fromMasterSeed(seed)
 			    let w = hdWallet.getWallet()
 			    let m_keystore = w.toV3(mnemonicPsd,{c:8192,n:8192})
 			    console.log('助记词导入',m_keystore)
@@ -46,6 +47,7 @@ async function onImportAccount(options){
 			}
 		}
 	} catch (err){
+		console.log('导入出错555',err)
 		importFailure(err) 
 		return
 	}
@@ -164,11 +166,12 @@ async function onCreateAccount(options){
     
     let seed = await bip39.mnemonicToSeed(mnemonic)
 
-    let hdWallet = await hdkey.fromMasterSeed(seed)
+    let hdWallet = EthereumHDKey.fromMasterSeed(seed)
 
 
     let w = hdWallet.getWallet()
-    let keyStore = await w.toV3(psdVal,{c:8192,n:8192})
+
+    let keyStore = w.toV3(psdVal,{c:8192,n:8192})
 
     console.log('keyStore==',keyStore)
 

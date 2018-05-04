@@ -38,7 +38,6 @@ async function getTokenGas(fromAddr,toAddr,tokenSymbol,tokenDecimal,txValue,toke
 
     let tData = tokenObjs.getData(toAddr, txValue).data
 
-    console.log('data========',tData)
 
     let estObj = {
             from:fromAddr,
@@ -46,7 +45,6 @@ async function getTokenGas(fromAddr,toAddr,tokenSymbol,tokenDecimal,txValue,toke
             value: '0x00',
             data: tData
     }
-
     let tokenGas = await web3.eth.estimateGas(estObj)
 
     return tokenGas

@@ -135,7 +135,6 @@ async function onTokenRefresh(options){
 	console.log('addr-====',addr)
 
 	for(let i = 0; i < tokenlist.length; i++){
-		console.log('代币的合约地址-====')
 		let tAdd = tokenlist[i].tk_address//tAdd 代币的合约地址
 		
 		let myContract = new web3.eth.Contract(contractAbi, tAdd)
@@ -160,6 +159,8 @@ async function onTokenRefresh(options){
 	let balance = await web3.eth.getBalance(`0x${addr}`)
 	let res = web3.utils.fromWei(balance,'ether')
 
+	console.log('初次加载的etz数量res',res)
+	
 	refreshEtz(res)
 // =======
 
