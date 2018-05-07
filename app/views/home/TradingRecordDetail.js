@@ -44,7 +44,7 @@ class TradingRecordDetail extends Component{
   }
 
   componentDidMount(){
-
+  
     this.setState({
         txDetail: this.props.detailInfo
     })
@@ -102,8 +102,8 @@ class TradingRecordDetail extends Component{
     return(
       <View style={pubS.container}>
         {
-          Platform.OS === 'ios' ?
-          <StatusBar backgroundColor="#FFFFFF"  barStyle="light-content" hidden={true} />
+          Platform.OS == 'ios' ?
+          <StatusBar backgroundColor="#FFFFFF"  barStyle="light-content" hidden={false} />
           : null
         }
         <Image source={ txDetail.tx_result === 1 ? require('../../images/xhdpi/ico_selectasset_transactionrecords_succeed.png') : require('../../images/xhdpi/ico_selectasset_transactionrecords_error.png')} style={styles.iocnStyle}/>

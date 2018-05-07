@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-
+  Platform,
 } from 'react-native'
 
 import { pubS } from '../../../styles/'
@@ -14,7 +14,7 @@ import { setScaleText, scaleSize,ifIphoneX,isIphoneX } from '../../../utils/adap
 import ScrollableTabView, { DefaultTabBar, ScrollableTabBar } from 'react-native-scrollable-tab-view'
 import { TextInputComponent,Btn,Loading } from '../../../components/'
 import { toHome } from '../../../root'
-import { importAccountAction,resetDeleteStatusAction } from '../../../actions/accountManageAction'
+import { importAccountAction,resetDeleteStatusAction,showImportLoadingAction } from '../../../actions/accountManageAction'
 import { connect } from 'react-redux'
 import { Navigation } from 'react-native-navigation'
 import I18n from 'react-native-i18n'
@@ -32,29 +32,12 @@ class PrivateKey extends Component{
       rePsdWarning: '',
       userNameVal: '',
       userNameWarning: '',
-      visible: false,
     }
   }
   componentWillMount(){
     this.props.dispatch(resetDeleteStatusAction())
   }
-  componentWillReceiveProps(nextProps){
-    if(nextProps.accountManageReducer.importStatus !== this.props.accountManageReducer.importStatus){
-      this.setState({
-        visible: false
-      })
-      if(nextProps.accountManageReducer.importStatus === 'success'){
-        Toast.showLongBottom(I18n.t('import_successful'))
-        setTimeout(() => {
-          toHome()
-        },100)
-      }else{
-        if(nextProps.accountManageReducer.importStatus === 'fail'){
-          Toast.showLongBottom(I18n.t('import_fail'))
-        }
-      }
-    }
-  }
+
   onChangePrivateText = (val) => {
     this.setState({
       privKeyVal: val,
@@ -87,7 +70,6 @@ class PrivateKey extends Component{
     if(userNameVal.length === 0){
       this.setState({
         userNameWarning: I18n.t('enter_account_name'),
-        visible: false
       })
     }else{
       if(!privReg.test(privKeyVal)){
@@ -114,9 +96,8 @@ class PrivateKey extends Component{
 
   onImport = () => {
     const { privKeyVal, psdVal,userNameVal } = this.state  
-    this.setState({
-      visible: true
-    })
+    
+    this.props.dispatch(showImportLoadingAction(true))
 
     setTimeout(() => {
       this.props.dispatch(importAccountAction({
@@ -141,7 +122,6 @@ class PrivateKey extends Component{
     const { privKeyVal, psdVal, repeadPsdVal, promptVal, privKeyWarning, psdWarning, rePsdWarning,userNameVal, userNameWarning,DEFULT_IPONEX } = this.state
     return(
       <View>
-        <Loading loadingVisible={this.state.visible} loadingText={I18n.t('loading_importing_account')}/>
         <TextInputComponent
           placeholder={I18n.t('account_name')}
           value={userNameVal}

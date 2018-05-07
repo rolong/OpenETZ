@@ -127,10 +127,10 @@ class TxRecordlList extends Component{
           />
         </View>
         <View style={[styles.bottomBtnStyle,pubS.rowCenter]}>
-          <TouchableOpacity activeOpacity={.7} onPress={this.payBtn} style={[styles.btnStyle,{backgroundColor:'#FFAA3B'},pubS.center]}>
+          <TouchableOpacity activeOpacity={.7} onPress={this.payBtn} style={[styles.btnStyle,{backgroundColor:'#ffa93b'},pubS.center]}>
             <Text style={pubS.font30_3}>{I18n.t('send')}</Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={.7} onPress={this.collectBtn} style={[styles.btnStyle,{backgroundColor:'#FF9844'},pubS.center]}>
+          <TouchableOpacity activeOpacity={.7} onPress={this.collectBtn} style={[styles.btnStyle,{backgroundColor:'#ff6f51'},pubS.center]}>
             <Text style={pubS.font30_3}>{I18n.t('receive')}</Text>
           </TouchableOpacity>
         </View>

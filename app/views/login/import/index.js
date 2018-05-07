@@ -14,17 +14,47 @@ import  PrivateKey from './PrivateKey'
 import KeyStore from './KeyStore'
 import Mnemonic from './Mnemonic'
 import { connect } from 'react-redux'
-import { toSplash,toHome } from '../../../root'
+import { toHome } from '../../../root'
 import { resetDeleteStatusAction } from '../../../actions/accountManageAction'
 import { Loading } from '../../../components/' 
 import I18n from 'react-native-i18n'
+import Toast from 'react-native-toast'
 class ImportAccount extends Component{
+  constructor(props){
+    super(props)
+    this.state={
+      visible: false
+    }
+  }
   componentWillReceiveProps(nextProps){
-    // if(nextProps.accountManageReducer.importSucc !== this.props.accountManageReducer.importSucc && nextProps.accountManageReducer.importSucc){
-    //   ToastAndroid.show('import successfully',3000)
-    //   toSplash()
-    //   this.props.dispatch(resetDeleteStatusAction())
-    // }
+    if(nextProps.accountManageReducer.importLoading !== this.props.accountManageReducer.importLoading){
+      if(nextProps.accountManageReducer.importLoading){
+        this.setState({
+          visible: true
+        })
+      }else{
+        this.setState({
+          visible: false
+        })
+      }
+    }
+
+    if(nextProps.accountManageReducer.importStatus !== this.props.accountManageReducer.importStatus){
+      this.setState({
+        visible: false
+      })
+      if(nextProps.accountManageReducer.importStatus === 'success'){
+        Toast.showLongBottom(I18n.t('import_successful'))
+          setTimeout(() => {
+            toHome()
+          },100)
+        
+      }else{
+        if(nextProps.accountManageReducer.importStatus === 'fail'){
+          Toast.showLongBottom(I18n.t('import_fail'))
+        }
+      }
+    }
   }
 
   render(){
@@ -37,10 +67,8 @@ class ImportAccount extends Component{
           : null
         }
 
-        {
-          // <Loading loadingVisible={importSucc} loadingText={'importing account'}/>
+        <Loading loadingVisible={this.state.visible} loadingText={'importing'}/>
           
-        }
         <ScrollableTabView
           style={styles.TabViewStyle}
           tabBarActiveTextColor={'#2B8AFF'}

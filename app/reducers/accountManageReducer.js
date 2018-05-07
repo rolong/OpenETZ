@@ -20,7 +20,8 @@ const initState = {
 	globalAccountsList: [],
 	currentAccount: {},
 	deleteCurrentAccount: false,
-	backupModalTimes: 0
+	backupModalTimes: 0,
+	importLoading: false
 }
 export default function accountManageReducer (state = initState,action) {
 	switch(action.type){
@@ -79,6 +80,9 @@ export default function accountManageReducer (state = initState,action) {
 		case types.CHANGE_BACKUP_MODAL_TIMES:
 			return changeBackupTimes(state,action)
 			break
+		case types.SHOW_IMPORT_LOADING:
+			return onShowLoading(state,action)
+			break
 		default:
 			return state
 			break
@@ -90,6 +94,14 @@ const changeBackupTimes = (state,action) => {
 	return {
 		...state,
 		backupModalTimes: time,
+	}
+}
+
+const onShowLoading = (state,action) => {
+	const { status } = action.payload
+	return{
+		...state,
+		importLoading: status
 	}
 }
 const globalCurrentAccounts = (state,action) => {
@@ -274,11 +286,13 @@ const importSuc = (state,action) => {
 	return {
 		...newState,
 		importStatus: 'success',
+		importLoading: false
 	}
 }
 const importFail = (state,action) => {
 	return {
 		...state,
 		importStatus: 'fail',
+		importLoading: false
 	}
 }

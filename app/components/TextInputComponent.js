@@ -33,11 +33,12 @@ export default class TextInputComponent extends Component{
   render(){
     const { warningText,iptMarginTop,isScan,onPressIptRight,toMore,coinUnit,touchable,onPressTouch } = this.props
     const { multiline} = this.state
+    
     return(
       <TouchableOpacity 
         activeOpacity={touchable ? .7 : 1} 
         onPress={touchable ? onPressTouch : () => {return}} 
-        style={[styles.textInputView,{borderBottomWidth:  Platform.OS === 'ios' ? StyleSheet.hairlineWidth : 0, marginTop: iptMarginTop,height: multiline ? scaleSize(190) :scaleSize(109)}]}>
+        style={[styles.textInputView,{borderBottomWidth: Platform.OS === 'ios' ? StyleSheet.hairlineWidth : 0, marginTop: iptMarginTop,height: multiline ? scaleSize(190) :scaleSize(109)}]}>
           <TextInput
             multiline={multiline}
             style={[styles.textIptStyle,{borderColor: multiline ? '#DBDFE6' : 'transparent',borderWidth: multiline ? StyleSheet.hairlineWidth : 0}]}

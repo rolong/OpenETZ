@@ -28,6 +28,7 @@ import I18n from 'react-native-i18n'
 import Toast from 'react-native-toast'
 
 
+import { Navigation } from 'react-native-navigation'
 
 import accountDB from '../../db/account_db'
 
@@ -47,6 +48,9 @@ class Assets extends Component{
   }
 
   componentWillMount(){
+    Navigation.dismissAllModals({
+      animationType: 'slide-down' // 'none' / 'slide-down' , dismiss animation for the modal (optional, default 'slide-down')
+    })
     this.props.navigator.setTabButton({
       tabIndex: 0,
       label: I18n.t('assets')
@@ -118,7 +122,9 @@ class Assets extends Component{
         this.props.dispatch(globalCurrentAccountInfoAction(value))
         //初始化 已经选择的token list (选中之后 再退出) 也就是初始化 fetchTokenList
         this.props.dispatch(initSelectedListAction())
+        return;
       }
+      return;
     })
   }
 
@@ -165,6 +171,7 @@ class Assets extends Component{
         navTitle: currentAccount.account_name,
         curAddr: currentAccount.address
       })
+      return;
     }
   }
 
@@ -265,6 +272,7 @@ class Assets extends Component{
   onDrawerOpenStart = () => {
     switchDrawer(true)
   }
+  
   onCloseDrawer = () => {
     this._drawer.close()
   }
@@ -320,7 +328,6 @@ class Assets extends Component{
           openDrawerOffset={0.4}
           side={'right'}
           tapToClose={true}
-          ref={(ref) => this._drawer = ref}
           content={<SwitchWallet thisPorps={this} onCloseSwitchDrawer={this.onCloseDrawer}/>}
           onCloseStart={this.onDrawerCloseStart}
           onOpenStart={this.onDrawerOpenStart}
@@ -347,7 +354,7 @@ class Assets extends Component{
                 
               }
               <Text style={pubS.font30_1}>{this.state.navTitle}</Text>
-              <TouchableOpacity activeOpacity={.6} onPress={this.onRightDrawer} style={styles.drawerStyle}>
+              <TouchableOpacity activeOpacity={.6} onPress={() => this.onRightDrawer()} style={styles.drawerStyle}>
                 <Image source={require('../../images/xhdpi/nav_ico_home_more_def.png')} style={styles.navImgStyle}/>
               </TouchableOpacity>
             </View>
@@ -453,7 +460,7 @@ const styles = StyleSheet.create({
         backgroundColor:'#144396'
       },
       {
-        height: scaleSize(40),
+        height: scaleSize(46),
         backgroundColor:'#144396'
       }
     )

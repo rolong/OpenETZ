@@ -43,6 +43,7 @@ export default class Loading extends Component {
           style={[pubS.center,{flex:1,}]}
           backdropColor={this.props.bgColor}
           backdropOpacity={this.props.opacity}
+          useNativeDriver={true}
         >
          <View style={{alignSelf:'center'}}>
            <ActivityIndicator  

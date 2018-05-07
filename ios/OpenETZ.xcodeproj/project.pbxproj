@@ -42,6 +42,7 @@
 		2D16E6881FA4F8E400B85C8A /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D16E6891FA4F8E400B85C8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* OpenETZTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* OpenETZTests.m */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		BE6314C1939F4AC99958713F /* libRNLaunchImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DE1CF9984984DEB804048CF /* libRNLaunchImage.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,6 +115,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 327633421BFAAD7E004DA88E;
 			remoteInfo = RCTToast;
+		};
+		0285D01C209C49C200C018EA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D320477A43C43A4B8AE323E /* RNLaunchImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNLaunchImage;
 		};
 		02DCDE392085F9E4007B5109 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -351,7 +359,9 @@
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
+		7D320477A43C43A4B8AE323E /* RNLaunchImage.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNLaunchImage.xcodeproj; path = "../node_modules/react-native-launch-image/ios/RNLaunchImage.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
+		8DE1CF9984984DEB804048CF /* libRNLaunchImage.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNLaunchImage.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -386,6 +396,7 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
+				BE6314C1939F4AC99958713F /* libRNLaunchImage.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -485,6 +496,22 @@
 			isa = PBXGroup;
 			children = (
 				021BEDAC20871F3A003AADA4 /* libRCTToast.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0285CFF3209C49C000C018EA /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				8DE1CF9984984DEB804048CF /* libRNLaunchImage.a */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		0285D019209C49C100C018EA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0285D01D209C49C200C018EA /* libRNLaunchImage.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -627,6 +654,7 @@
 				832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */,
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
+				7D320477A43C43A4B8AE323E /* RNLaunchImage.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -648,6 +676,7 @@
 				00E356EF1AD99517003FC87E /* OpenETZTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
+				0285CFF3209C49C000C018EA /* Recovered References */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -746,7 +775,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0930;
+				LastUpgradeCheck = 930;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
@@ -844,6 +873,10 @@
 					ProjectRef = 02DCDE652085FC76007B5109 /* RNI18n.xcodeproj */;
 				},
 				{
+					ProductGroup = 0285D019209C49C100C018EA /* Products */;
+					ProjectRef = 7D320477A43C43A4B8AE323E /* RNLaunchImage.xcodeproj */;
+				},
+				{
 					ProductGroup = 021BED7A20860FDE003AADA4 /* Products */;
 					ProjectRef = 021BED7920860FDE003AADA4 /* RNRandomBytes.xcodeproj */;
 				},
@@ -924,6 +957,13 @@
 			fileType = archive.ar;
 			path = libRCTToast.a;
 			remoteRef = 021BEDAB20871F3A003AADA4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		0285D01D209C49C200C018EA /* libRNLaunchImage.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNLaunchImage.a;
+			remoteRef = 0285D01C209C49C200C018EA /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		02DCDE3A2085F9E4007B5109 /* libRCTBEEPickerManager.a */ = {
@@ -1249,6 +1289,10 @@
 				INFOPLIST_FILE = OpenETZTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1267,6 +1311,10 @@
 				INFOPLIST_FILE = OpenETZTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1291,6 +1339,7 @@
 					"$(SRCROOT)/../../react-native/React",
 					"$(SRCROOT)/../../../React",
 					"$(SRCROOT)/../node_modules/react-native-camera/ios",
+					"$(SRCROOT)/../node_modules/react-native-launch-image/ios",
 				);
 				INFOPLIST_FILE = OpenETZ/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1318,6 +1367,7 @@
 					"$(SRCROOT)/../../react-native/React",
 					"$(SRCROOT)/../../../React",
 					"$(SRCROOT)/../node_modules/react-native-camera/ios",
+					"$(SRCROOT)/../node_modules/react-native-launch-image/ios",
 				);
 				INFOPLIST_FILE = OpenETZ/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1346,6 +1396,10 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "OpenETZ-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1372,6 +1426,10 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "OpenETZ-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1397,6 +1455,10 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "OpenETZ-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.OpenETZ-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
@@ -1418,6 +1480,10 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "OpenETZ-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.OpenETZ-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;

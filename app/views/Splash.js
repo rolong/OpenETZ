@@ -17,6 +17,7 @@ import I18n from 'react-native-i18n'
 
 import accountDB from '../db/account_db'
 import { platform } from 'os';
+import * as launchImage from 'react-native-launch-image';
 
 class Splash extends Component{
   constructor(props){
@@ -70,7 +71,8 @@ class Splash extends Component{
     if(res.length === 0){
       //还没有账户信息
       toLogin()  
-
+      launchImage.hide();
+      return;
       //此时  没有任何账户信息  
 
     }else{
@@ -95,8 +97,10 @@ class Splash extends Component{
     console.log('更新结果',updateRes)
     if(updateRes === 'success'){
       // setTimeout(() => {
-        toHome()
-      // },2000)
+      toHome()
+      launchImage.hide();
+      return;
+      // },1000)
     }else{
       console.log('还没有更新完')
     }
