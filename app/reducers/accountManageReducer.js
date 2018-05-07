@@ -19,7 +19,8 @@ const initState = {
 
 	globalAccountsList: [],
 	currentAccount: {},
-	deleteCurrentAccount: false
+	deleteCurrentAccount: false,
+	backupModalTimes: 0
 }
 export default function accountManageReducer (state = initState,action) {
 	switch(action.type){
@@ -75,16 +76,26 @@ export default function accountManageReducer (state = initState,action) {
 		case types.GLOBAL_CURRENT_ACCOUNT_INFO:
 			return globalCurrentAccounts(state,action)
 			break
+		case types.CHANGE_BACKUP_MODAL_TIMES:
+			return changeBackupTimes(state,action)
+			break
 		default:
 			return state
 			break
 
 	}
 }
+const changeBackupTimes = (state,action) => {
+	const { time } = action.payload
+	return {
+		...state,
+		backupModalTimes: time,
+	}
+}
 const globalCurrentAccounts = (state,action) => {
 	return {
 		...state,
-		currentAccount: action.payload.currinfos
+		currentAccount: action.payload.currinfos,
 	}
 }
 

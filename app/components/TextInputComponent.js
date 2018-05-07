@@ -37,7 +37,7 @@ export default class TextInputComponent extends Component{
       <TouchableOpacity 
         activeOpacity={touchable ? .7 : 1} 
         onPress={touchable ? onPressTouch : () => {return}} 
-        style={[styles.textInputView,{/*borderBottomWidth: multiline ? 0 : StyleSheet.hairlineWidth, */marginTop: iptMarginTop,height: multiline ? scaleSize(190) :scaleSize(109)}]}>
+        style={[styles.textInputView,{borderBottomWidth:  Platform.OS === 'ios' ? StyleSheet.hairlineWidth : 0, marginTop: iptMarginTop,height: multiline ? scaleSize(190) :scaleSize(109)}]}>
           <TextInput
             multiline={multiline}
             style={[styles.textIptStyle,{borderColor: multiline ? '#DBDFE6' : 'transparent',borderWidth: multiline ? StyleSheet.hairlineWidth : 0}]}
@@ -75,21 +75,21 @@ const styles = StyleSheet.create({
   textInputView: {
     ...ifIphoneX(
       {
-        // borderColor:'#DBDFE6',
+        borderColor:'#DBDFE6',
         // borderWidth:1,
         alignSelf:'center',
         width: 360,
         backgroundColor: '#fff',
       },
       {
-        // borderColor:'#DBDFE6',
+        borderColor:'#DBDFE6',
         // borderWidth:1,
         alignSelf:'center',
         width: scaleSize(680),
         backgroundColor: '#fff',
       },
       {
-        // borderColor:'#DBDFE6',
+        borderColor:'#DBDFE6',
         // borderWidth:1,
         alignSelf:'center',
         width: scaleSize(680),

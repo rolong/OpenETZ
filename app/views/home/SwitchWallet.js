@@ -10,7 +10,7 @@ import {
 import { pubS,ScanNavStyle,DetailNavigatorStyle } from '../../styles/'
 import { setScaleText, scaleSize } from '../../utils/adapter'
 import { connect } from 'react-redux'
-import { switchAccountAction } from '../../actions/accountManageAction'
+import { switchAccountAction,changeBackupModalTimesAction } from '../../actions/accountManageAction'
 import { switchTokenAction,refreshTokenAction } from '../../actions/tokenManageAction'
 
 
@@ -61,7 +61,10 @@ class SwitchWallet extends Component {
 
 		this.props.dispatch(refreshTokenAction(addr,fetchTokenList))
 
+		this.props.dispatch(changeBackupModalTimesAction(0))
 		this.props.onCloseSwitchDrawer()
+
+
 	}
 	closeDrawer = () => {
 		this.props.onCloseSwitchDrawer()

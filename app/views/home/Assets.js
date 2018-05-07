@@ -15,7 +15,7 @@ import {
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle,MainThemeNavColor,ScanNavStyle } from '../../styles/'
-import { setScaleText, scaleSize,ifIphoneX } from '../../utils/adapter'
+import { setScaleText, scaleSize,ifIphoneX, } from '../../utils/adapter'
 import Drawer from 'react-native-drawer'
 import { connect } from 'react-redux'
 import SwitchWallet from './SwitchWallet'
@@ -303,7 +303,10 @@ class Assets extends Component{
     
     const { currentAccount, globalAccountsList } = this.props.accountManageReducer
     const { fetchTokenList,etzBalance } = this.props.tokenManageReducer
-    console.log('etzBalance  render===',etzBalance)
+    // console.log('etzBalance  render===',etzBalance)
+    // console.log('deviceWidth  render===',deviceWidth)
+    // console.log('deviceHeight  render===',deviceHeight)
+
     return(
       <View style={styles.containerView}>
         {
@@ -351,7 +354,7 @@ class Assets extends Component{
             <View>
               <View style={[styles.assetsTotalView,pubS.center,{height: Platform.OS === 'ios' ? scaleSize(260) : scaleSize(300)}]}>
                   <Text style={pubS.font72_1}>{splitDecimal(etzBalance)}</Text>
-                  <Text style={pubS.font26_3}>{I18n.t('total_assets')}({currencySymbol})</Text>
+                  <Text style={pubS.font26_3}>{I18n.t('total_assets')}</Text>
               </View>
 
               <View style={[styles.optionView,pubS.center]}>
@@ -379,7 +382,7 @@ class Assets extends Component{
               shortName={etzTitle}
               fullName={'EtherZero'}
               coinNumber={splitDecimal(etzBalance)}
-              price2rmb={0}
+              //price2rmb={0}
               symbol={this.state.currencySymbol}
               onPressItem={() => this.toAssetsDetail(etzTitle,splitDecimal(etzBalance),'ETZ',0)}
             />
@@ -394,7 +397,7 @@ class Assets extends Component{
                       shortName={res.tk_symbol}
                       fullName={res.tk_name}
                       coinNumber={splitDecimal(res.tk_number)}
-                      price2rmb={0}
+                      //price2rmb={0}
                       symbol={this.state.currencySymbol}
                       onPressItem={() => this.toAssetsDetail(res.tk_symbol,splitDecimal(res.tk_number),res.tk_symbol,res.tk_decimals)}
                     />
@@ -420,15 +423,19 @@ class AssetsItem extends Component {
     return(
       <TouchableOpacity style={[styles.listItemView,styles.whStyle]} activeOpacity={.7} onPress={onPressItem}>
         <Image source={require('../../images/xhdpi/etz_logo.png')} style={pubS.logoStyle}/>
-        <View style={[styles.listItemTextView]}>
-          <View style={pubS.rowCenterJus}>
+        <View style={[styles.listItemTextView,pubS.rowCenterJus]}>
+          <View>
             <Text style={pubS.font36_2}>{shortName}</Text>
+            <Text style={[pubS.font24_2]}>{fullName}</Text>
+          </View>
+          <View>
             <Text style={pubS.font36_2}>{coinNumber}</Text> 
           </View>
-          <View style={pubS.rowCenterJus}>
-            <Text style={pubS.font24_2}>{fullName}</Text>
-            <Text style={pubS.font24_2}>{`≈ ${this.props.symbol}${price2rmb}`}</Text>
-          </View>
+            {
+          //<View style={pubS.rowCenterJus}>
+              //<Text style={pubS.font24_2}>{`≈ ${this.props.symbol}${price2rmb}`}</Text>
+          //</View>
+            }
         </View>
       </TouchableOpacity>
     )
@@ -497,17 +504,8 @@ const styles = StyleSheet.create({
     )
   },
   whStyle: {
-    ...ifIphoneX(
-      {
-        width:350
-      },
-      {
-        width:scaleSize(702)
-      },
-      {
-        width:scaleSize(702)
-      }
-    ),
+    
+    width:scaleSize(702),
     height: scaleSize(120)
   },
   listItemTextView:{
@@ -515,25 +513,26 @@ const styles = StyleSheet.create({
       {
         width: 293,
         marginLeft:scaleSize(18),
-        paddingTop: scaleSize(15),
-        paddingBottom: scaleSize(22),
+        // paddingTop: scaleSize(15),
+        // paddingBottom: scaleSize(22),
       },
       {
         width: scaleSize(618),
         marginLeft:scaleSize(18),
-        paddingTop: scaleSize(15),
-        paddingBottom: scaleSize(22),
+        // paddingTop: scaleSize(15),
+        // paddingBottom: scaleSize(22),
       },
       {
         width: scaleSize(618),
         marginLeft:scaleSize(18),
-        paddingTop: scaleSize(15),
-        paddingBottom: scaleSize(22),
+        // paddingTop: scaleSize(15),
+        // paddingBottom: scaleSize(22),
+        // borderColor:'red',
+        // borderWidth:1,
       }
     )
     
-    // borderColor:'red',
-    // borderWidth:1,
+    
   },
   listItemBox:{
     ...ifIphoneX(
@@ -543,12 +542,12 @@ const styles = StyleSheet.create({
         flex:1,
       },
       {
-        width:345,
+        width:scaleSize(650),
         alignSelf:'center',
         flex:1,
       },
       {
-        width:345,
+        width:scaleSize(650),
         alignSelf:'center',
         flex:1,
       }

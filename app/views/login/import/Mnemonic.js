@@ -25,11 +25,11 @@ class Mnemonic extends Component{
       // mnemonicVal: 'rhythm example taxi leader divorce prosper arm add tower snake domain still',
       mnemonicVal: '',
       mnemonicValWarning: '',
-      passwordVal: '',
+      passwordVal: '1234567q',
       passwordWarning: '',
-      repeadPsdVal: '',
+      repeadPsdVal: '1234567q',
       rePsdWarning: '',
-      userNameVal: '',
+      userNameVal: '朱几次导入',
       userNameWarning: '',
     }
   }

@@ -18,7 +18,7 @@ import Modal from 'react-native-modal'
 import QRCode from 'react-native-qrcode'
 import { connect } from 'react-redux'
 import I18n, { getLanguages } from 'react-native-i18n'
-
+import { changeBackupModalTimesAction } from '../../actions/accountManageAction'
 const wallet = require('ethereumjs-wallet')
 import Toast from 'react-native-toast'
 class Receive extends Component{
@@ -46,13 +46,12 @@ class Receive extends Component{
 
   componentWillMount(){
 
-    const { currentAccount } = this.props.accountManageReducer
+    const { currentAccount,backupModalTimes } = this.props.accountManageReducer
 
     this.setState({
       addressText: `0x${currentAccount.address}`
     })
-
-    if(currentAccount.backup_status === 0){
+    if(currentAccount.backup_status === 0 && backupModalTimes === 0){
       this.setState({
         visible: true
       })
@@ -71,7 +70,7 @@ class Receive extends Component{
       default:
         break
     }
-
+    this.props.dispatch(changeBackupModalTimesAction(1))
   }
 
   componentWillUnmount(){

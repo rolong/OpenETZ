@@ -49,6 +49,8 @@ export function isIphoneX() {
 const w2 = 750 / devicesPR //inch  750
 const h2 = 1334 / devicesPR // 1334
 const scale = Math.max(deviceHeight / h2, deviceWidth / w2) // 获取缩放比例
+// console.log('获取缩放比例==',scale)
+// 1080*2160
 
 /**
  * 根据是否是iPhoneX返回不同的样式
@@ -80,6 +82,7 @@ export function setScaleText (size: number) {
 
 // 宽 高 尺寸缩放
 export function scaleSize (size: number) {
-  size = Math.round(size * scale + 0.5)
+  let s = scale > 1.5 ? 1.5 : scale
+  size = Math.round(size * s + 0.5)
   return size / devicesPR
 }

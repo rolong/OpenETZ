@@ -242,6 +242,19 @@ const globalCurrentAccountInfoAction = (currinfos) => {
 	}
 }
 
+const changeBackupModalTimesAction = (time) => {
+	const changeTimes = () => {
+		return{
+			type: types.CHANGE_BACKUP_MODAL_TIMES,
+			payload:{
+				time
+			}
+		}
+	}
+	return (dispatch,getState) => {
+		dispatch(changeTimes())
+	}
+}
 export {
 	switchAccountAction,
 	importAccountAction,
@@ -252,4 +265,5 @@ export {
 	deleteMnemonicAction,
 	globalAllAccountsInfoAction,
 	globalCurrentAccountInfoAction,
+	changeBackupModalTimesAction,
 }

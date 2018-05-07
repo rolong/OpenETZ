@@ -289,6 +289,8 @@ class BackUpAccount extends Component{
     }
   }
 
+
+
   render(){
     const { iptPsdVisible,psdVal,pKeyVisible,privKey,privBackuped,mncBackuped,keyStore,dVisible } = this.state
     const { isLoading,delMnemonicSuc } = this.props.accountManageReducer
@@ -307,14 +309,21 @@ class BackUpAccount extends Component{
           <Text style={pubS.font26_4}>{this.props.userName}</Text>
         </View>
         <View style={{position:'absolute',bottom: scaleSize(40)}}>
-          <Btn
-            btnPress={ mncBackuped ? () => {return} : () => this.backupMnemonicBtn() }
-            // bgColor={mncBackuped ? '#BDC0C6' : '#2B8AFF'}
-            bgColor={'#2B8AFF'}
-            opacity={mncBackuped ? 1 : .7}
-            btnText={I18n.t('backup_mnemonic_1')}
-            btnMarginTop={scaleSize(150)}
-          />
+          
+          {
+            mncBackuped ? 
+            <View/>
+            :
+            <Btn
+              btnPress={ () => this.backupMnemonicBtn() }
+              bgColor={'#2B8AFF'}
+              opacity={.7}
+              btnText={I18n.t('backup_mnemonic_1')}
+              btnMarginTop={scaleSize(150)}
+            />
+          }
+
+          
           <Btn
             btnPress={() => this.backUpKeyStoreBtn() }
             bgColor={'#2B8AFF'}
@@ -322,14 +331,19 @@ class BackUpAccount extends Component{
             btnText={I18n.t('backup_keystore_1')}
             btnMarginTop={scaleSize(20)}
           />
-          <Btn
-            btnPress={privBackuped ? () => {return} : () => this.backUpPrivBtn() }
-            // bgColor={privBackuped ? '#BDC0C6' : '#2B8AFF'}
-            bgColor={'#2B8AFF'}
-            opacity={privBackuped ? 1 : .7}
-            btnText={I18n.t('backup_private_key')}
-            btnMarginTop={scaleSize(20)}
-          />
+          
+          {
+            privBackuped ? 
+            <View/>
+            :
+            <Btn
+              btnPress={ () => this.backUpPrivBtn() }
+              bgColor={'#2B8AFF'}
+              opacity={.7}
+              btnText={I18n.t('backup_private_key')}
+              btnMarginTop={scaleSize(20)}
+            />
+          }
           <Btn
             btnPress={this.deleteAccount}
             btnText={I18n.t('delete')}
