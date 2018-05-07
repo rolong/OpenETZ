@@ -74,6 +74,7 @@ class SwitchWallet extends Component {
 		const { currentAccount, globalAccountsList } = this.props.accountManageReducer
 		return(
 			<View style={styles.switchView}>
+				<ScrollView>
 					{
 						globalAccountsList.map((val,index) => {
 							return(
@@ -89,6 +90,7 @@ class SwitchWallet extends Component {
 							)
 						})
 					}
+				</ScrollView>
 				
 				<View style={styles.lineStyle}></View>
 				<TouchableOpacity 

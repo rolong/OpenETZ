@@ -107,10 +107,12 @@ async function onImportAccount(options){
 		    	//导入成功   回调
 		    	importSuccess(userData)
 		    }else{
+		    	console.log('导入出错444')
 		    	importFailure('import failed')
 		    }
 	  		
 	  	} catch(err){
+	  		console.log('导入出错333',err)
 	  		importFailure(err) 
 	  	}
  	}

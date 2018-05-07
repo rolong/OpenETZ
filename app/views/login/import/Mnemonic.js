@@ -6,12 +6,13 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  Platform
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../../styles/'
 import { setScaleText, scaleSize,ifIphoneX,isIphoneX } from '../../../utils/adapter'
 import { TextInputComponent,Btn,Loading } from '../../../components/'
-import { importAccountAction,resetDeleteStatusAction } from '../../../actions/accountManageAction'
+import { importAccountAction,resetDeleteStatusAction,showImportLoadingAction } from '../../../actions/accountManageAction'
 import { connect } from 'react-redux'
 import { toHome } from '../../../root'
 import I18n from 'react-native-i18n'
@@ -21,7 +22,6 @@ class Mnemonic extends Component{
   constructor(props){
     super(props)
     this.state={
-      visible: false,
       // mnemonicVal: 'rhythm example taxi leader divorce prosper arm add tower snake domain still',
       mnemonicVal: '',
       mnemonicValWarning: '',
@@ -34,23 +34,6 @@ class Mnemonic extends Component{
     }
   }
 
-  componentWillReceiveProps(nextProps){
-    if(nextProps.accountManageReducer.importStatus !== this.props.accountManageReducer.importStatus){
-      this.setState({
-        visible: false
-      })
-      if(nextProps.accountManageReducer.importStatus === 'success'){
-        Toast.showLongBottom(I18n.t('import_successful'))
-        setTimeout(() => {
-          toHome()
-        },100)
-      }else{
-        if(nextProps.accountManageReducer.importStatus === 'fail'){
-          Toast.showLongBottom(I18n.t('import_fail'))
-        }
-      }
-    }
-  }
 
   onChangeMemonic = (val) => {
     this.setState({
@@ -108,9 +91,7 @@ class Mnemonic extends Component{
 
   onImport = () => {
     const { mnemonicVal, passwordVal, userNameVal} = this.state  
-    this.setState({
-      visible: true
-    })
+    this.props.dispatch(showImportLoadingAction(true))
     setTimeout(() => {
       if(bip39.validateMnemonic(mnemonicVal)){
         this.props.dispatch(importAccountAction({
@@ -121,9 +102,9 @@ class Mnemonic extends Component{
           fromLogin: this.props.fromLogin === 'login' ? 'login' : 'accounts'
         }))
       }else{
+        this.props.dispatch(showImportLoadingAction(false))
         this.setState({
           mnemonicValWarning: I18n.t('mnemonic_phrase_warning'),
-          visible: false
         })
       }
     },1000)   
@@ -135,7 +116,6 @@ class Mnemonic extends Component{
     const { mnemonicVal, mnemonicValWarning, passwordVal, passwordWarning, repeadPsdVal, rePsdWarning,userNameVal, userNameWarning,DEFULT_IPONEX } = this.state
     return(
       <View style={styles.container}>
-        <Loading loadingVisible={this.state.visible} loadingText={I18n.t('loading_importing_account')}/>
         <TextInputComponent
           placeholder={I18n.t('account_name')}
           value={userNameVal}

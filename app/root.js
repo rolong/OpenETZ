@@ -59,11 +59,11 @@ const tabs = [
 ]
 
 function toHome () {
-
+    console.log('toHome11111111')
    if(Platform.OS == 'ios'){
     return Navigation.startTabBasedApp({
       tabs,
-      appStyle: TabBarAppStyle,
+      // appStyle: TabBarAppStyle,
       tabsStyle: TabBarIOSStyle,
     })
    }else{

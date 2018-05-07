@@ -42,7 +42,7 @@ class Payment extends Component{
   constructor(props){
     super(props)
     this.state={
-      receiverAddress: '',
+      receiverAddress: '0x1ec79157f606d942ac19ce21231c1572aef8bb5d',
       txValue: '',
       noteVal: '',
       txAddrWarning: '',
@@ -234,6 +234,7 @@ class Payment extends Component{
   onNextStep = () => {
     const { receiverAddress, txValue, noteVal, } = this.state
     let addressReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{42}$/
+
     if(!addressReg.test(receiverAddress)){
       this.setState({
         txAddrWarning: I18n.t('input_receive_address'),
@@ -306,8 +307,8 @@ class Payment extends Component{
   onPressPayBtn = () => {
     
     const { txPsdVal, txPsdWarning, loadingText,loadingVisible } = this.state
+    Keyboard.dismiss();
     if(txPsdVal.length === 0){
-      Keyboard.dismiss();
       this.setState({
         txPsdWarning: I18n.t('input_password'),
         loadingText: '',
@@ -315,38 +316,20 @@ class Payment extends Component{
       })
       return
     }else{
-
-      if(Platform.OS == 'ios'){
-        Alert.alert(I18n.t('transfer_schedule'), I18n.t('transfer_detail'), [
-          { text: I18n.t('enter'), onPress: () => {
-            Keyboard.dismiss();
-            this.setState({
-              loadingText: I18n.t('sending'),
-              loadingVisible: true,
-              visible: false,
-              modalSetp1: true,
-            })
-            setTimeout(() => {
-              this.validatPsd()
-            },1000)
-          }}
-        ])
-      }else{
-          Keyboard.dismiss();
       this.setState({
         loadingText: I18n.t('sending'),
-        loadingVisible: true,
         visible: false,
         modalSetp1: true,
       })
       setTimeout(() => {
+        this.setState({
+          loadingVisible: true,
+        })
         this.validatPsd()
       },1000)
+
     }
   }
-
-  }
-
   validatPsd = () => {
    
     try{
@@ -632,14 +615,16 @@ class Payment extends Component{
 
   render(){
     const { receiverAddress, txValue, noteVal,visible,modalTitleText,modalTitleIcon,txPsdVal,
-            modalSetp1,txAddrWarning,txValueWarning,senderAddress,txPsdWarning,currentTokenName, gasValue } = this.state
+            modalSetp1,txAddrWarning,txValueWarning,senderAddress,txPsdWarning,currentTokenName, gasValue, loadingVisible } = this.state
+
+    console.log('visible====',visible)
+    console.log('loadingVisible',loadingVisible)
     return(
       <View style={pubS.container}>
         <StatusBar backgroundColor="#000000"  barStyle="dark-content" animated={true} />
 
-        <Loading loadingVisible={this.state.loadingVisible} loadingText={this.state.loadingText}/>   
+        <Loading loadingVisible={loadingVisible} loadingText={this.state.loadingText}/>   
 
-        
           <InputScrollView>
         
           <TextInputComponent
@@ -679,14 +664,14 @@ class Payment extends Component{
           btnPress={this.onNextStep}
           btnText={I18n.t('next')}
         />
-        
-        <Modal
-          isVisible={visible}
-          onBackButtonPress={this.onPressClose}
-          onBackdropPress={this.onPressClose}
-          style={styles.modalView}
-          backdropOpacity={.8}
-        >
+        {
+          <Modal
+            isVisible={visible}
+            onBackButtonPress={this.onPressClose}
+            onBackdropPress={this.onPressClose}
+            style={styles.modalView}
+            backdropOpacity={.8}
+          >
           <View style={styles.modalView}>
             <View style={[styles.modalTitle,pubS.center]}>
               <TouchableOpacity onPress={this.onPressCloseIcon} activeOpacity={.7} style={styles.modalClose}>
@@ -740,6 +725,8 @@ class Payment extends Component{
             }
           </View>
         </Modal>
+        }
+        
           </InputScrollView>
          
       </View>

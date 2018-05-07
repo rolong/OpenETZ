@@ -241,7 +241,19 @@ const globalCurrentAccountInfoAction = (currinfos) => {
 		dispatch(curInfos())
 	}
 }
-
+const showImportLoadingAction = (status) => {
+	const onShow = () => {
+		return {
+			type: types.SHOW_IMPORT_LOADING,
+			payload: {
+				status
+			}
+		}
+	}
+	return (dispatch,getState) => {
+		dispatch(onShow())
+	}
+}
 export {
 	switchAccountAction,
 	importAccountAction,
@@ -252,4 +264,5 @@ export {
 	deleteMnemonicAction,
 	globalAllAccountsInfoAction,
 	globalCurrentAccountInfoAction,
+	showImportLoadingAction
 }

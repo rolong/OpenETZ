@@ -6,44 +6,28 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  Platform
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../../styles/'
 import { setScaleText, scaleSize,ifIphoneX,isIphoneX } from '../../../utils/adapter'
 import { TextInputComponent,Btn,Loading } from '../../../components/'
-import { importAccountAction,resetDeleteStatusAction } from '../../../actions/accountManageAction'
+import { importAccountAction,resetDeleteStatusAction,showImportLoadingAction } from '../../../actions/accountManageAction'
 import { connect } from 'react-redux'
-import { toSplash } from '../../../root'
+import { toHome } from '../../../root'
 import I18n from 'react-native-i18n'
 import Toast from 'react-native-toast'
 class KeyStore extends Component{
   constructor(props){
     super(props)
     this.state={
-      visible: false,
       keystoreVal:'',
       keystoreWarning: '',
       userNameVal: '',
       userNameWarning: '',
     }
   }
-  componentWillReceiveProps(nextProps){
-    if(nextProps.accountManageReducer.importStatus !== this.props.accountManageReducer.importStatus){
-      this.setState({
-        visible: false
-      })
-      if(nextProps.accountManageReducer.importStatus === 'success'){
-        Toast.showLongBottom(I18n.t('import_successful'))
-        setTimeout(() => {
-          toSplash()
-        },100)
-      }else{
-        if(nextProps.accountManageReducer.importStatus === 'fail'){
-          Toast.showLongBottom(I18n.t('import_fail'))
-        }
-      }
-    }
-  }
+  
   onChangelKeystore = (val) => {
     this.setState({
       keystoreVal: val,
@@ -77,9 +61,7 @@ class KeyStore extends Component{
 
   onBtn = () => {
     const { keystoreVal, userNameVal } = this.state 
-    this.setState({
-      visible: true
-    })
+    this.props.dispatch(showImportLoadingAction(true))
     setTimeout(() => {
       this.props.dispatch(importAccountAction({
         keystoreVal,
@@ -96,7 +78,6 @@ class KeyStore extends Component{
     const { keystoreVal, keystoreWarning,userNameVal,userNameWarning,DEFULT_IPONEX } = this.state
     return(
       <View style={styles.container}>
-        <Loading loadingVisible={this.state.visible} loadingText={I18n.t('loading_importing_account')}/>
         <TextInputComponent
           placeholder={I18n.t('account_name')}
           value={userNameVal}
