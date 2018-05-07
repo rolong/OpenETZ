@@ -86,7 +86,7 @@ function toLogin () {
 }
 
 function toSplash () {
-  Navigation.startSingleScreenApp({
+  return Navigation.startSingleScreenApp({
     screen: {
       screen: 'splash',
       navigatorStyle: {navBarHidden: true,statusBarColor:'#144396'},

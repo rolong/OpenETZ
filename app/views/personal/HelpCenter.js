@@ -5,25 +5,38 @@ import {
   WebView,
   StyleSheet,
   StatusBar,
-  Platform
+  Platform,
+  ActivityIndicator
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../styles/'
 import { setScaleText, scaleSize,ifIphoneX } from '../../utils/adapter'
 
 class HelpCenter extends Component{
+  renderLoading = () => {
+		return(
+			<View style={{flex:1,alignSelf:'center',marginTop: '50%'}}>
+	           <ActivityIndicator  
+	              color={'#144396'}
+	              indeterminate={true}
+	              size={'large'}
+	            />
+	        </View> 
+		)
+	}
   render(){
     return(
       <View style={{flex:1}}>
         {
           Platform.OS === 'ios' ?
-          <StatusBar backgroundColor="#000000"  barStyle="dark-content"  animated={true} />
+          <StatusBar backgroundColor={"#000000"}  barStyle={"dark-content"}  animated={true} />
           : null
         }
         <WebView  
           source={{uri:'https://mp.weixin.qq.com/s/8RQ8GOi0d2z03vYcTjsCrw'}}
           style={styles.webViewStyle}
           startInLoadingState={true}
+          renderLoading={this.renderLoading }
           domStorageEnabled={true}//开启dom存贮
           javaScriptEnabled={true}//开启js
         />

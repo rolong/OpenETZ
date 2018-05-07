@@ -44,7 +44,7 @@ class TradingRecordDetail extends Component{
   }
 
   componentDidMount(){
-
+  
     this.setState({
         txDetail: this.props.detailInfo
     })

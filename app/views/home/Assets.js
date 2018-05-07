@@ -118,7 +118,9 @@ class Assets extends Component{
         this.props.dispatch(globalCurrentAccountInfoAction(value))
         //初始化 已经选择的token list (选中之后 再退出) 也就是初始化 fetchTokenList
         this.props.dispatch(initSelectedListAction())
+        return;
       }
+      return;
     })
   }
 
@@ -165,6 +167,7 @@ class Assets extends Component{
         navTitle: currentAccount.account_name,
         curAddr: currentAccount.address
       })
+      return;
     }
   }
 
@@ -446,7 +449,7 @@ const styles = StyleSheet.create({
         backgroundColor:'#144396'
       },
       {
-        height: scaleSize(40),
+        height: scaleSize(46),
         backgroundColor:'#144396'
       }
     )
@@ -543,12 +546,12 @@ const styles = StyleSheet.create({
         flex:1,
       },
       {
-        width:345,
+        width:scaleSize(650),
         alignSelf:'center',
         flex:1,
       },
       {
-        width:345,
+        width:scaleSize(650),
         alignSelf:'center',
         flex:1,
       }

@@ -42,6 +42,7 @@
     "react-native-http": "github:tradle/react-native-http#834492d",
     "react-native-i18n": "^2.0.12",
     "react-native-input-scroll-view": "^1.6.5",
+    "react-native-launch-image": "^1.0.3",
     "react-native-level-fs": "^3.0.0",
     "react-native-mail": "^3.0.6",
     "react-native-modal": "^5.3.0",
