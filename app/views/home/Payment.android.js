@@ -133,6 +133,9 @@ class Payment extends Component{
 
   }
   componentDidMount(){
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow)
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide)
+
     const tokenPickerData = ["ETZ"]
     const { fetchTokenList } = this.props.tokenManageReducer 
     fetchTokenList.map((val,idx) => {
@@ -176,11 +179,21 @@ class Payment extends Component{
   }
 
 
+ 
+
   componentWillUnmount(){
     // this.onPressClose()
     Picker.hide()
+    this.keyboardDidShowListener.remove()
+    this.keyboardDidHideListener.remove()
+  }
+   _keyboardDidShow = () => {
+      this.refs._scroll.scrollToEnd({animated: true})
   }
 
+  _keyboardDidHide =() => {
+
+  }
   onChangeToAddr = (val) => {
     this.setState({
       receiverAddress: val.trim(),
@@ -189,13 +202,17 @@ class Payment extends Component{
     this.getGasValue()
   }  
   onChangeTxValue = (val) => {
-    this.setState({
-      txValue: val,
-      txValueWarning: ''
-    })
-    setTimeout(() => {
-      this.getGasValue()
-    },500)
+    if(!isNaN(val)){
+      this.setState({
+        txValue: val,
+        txValueWarning: ''
+      })
+      setTimeout(() => {
+        this.getGasValue()
+      },500)
+    }else{
+      Alert.alert(I18n.t('input_number'))
+    }
   }
 
   onChangeNoteText = (val) => {
@@ -582,111 +599,112 @@ class Payment extends Component{
       txPsdWarning: ''
     })
   }
-
+ 
   render(){
     const { receiverAddress, txValue, noteVal,visible,modalTitleText,modalTitleIcon,txPsdVal,
             modalSetp1,txAddrWarning,txValueWarning,senderAddress,txPsdWarning,currentTokenName, gasValue } = this.state
     return(
       <View style={pubS.container}>
-        <Loading loadingVisible={this.state.loadingVisible} loadingText={this.state.loadingText}/>          
-          <TextInputComponent
-            value ={currentTokenName}
-            editable={false}
-            toMore={true}
-            touchable={true}
-            onPressTouch={this.showTokenPicker}
-          />
-          <TextInputComponent
-            placeholder={I18n.t('receiver_address')}
-            value={receiverAddress}
-            onChangeText={this.onChangeToAddr}
-            warningText={txAddrWarning}
-            isScan={true}
-            onPressIptRight={this.toScan}
-          />
-          <TextInputComponent
-            placeholder={I18n.t('amount')}
-            value={txValue}
-            onChangeText={this.onChangeTxValue}
-            warningText={txValueWarning}
-            keyboardType={'numeric'}
-          />
-          <TextInputComponent
-            placeholder={I18n.t('note_1')}
-            value={noteVal}
-            onChangeText={this.onChangeNoteText}
-          />
-          <View style={[styles.gasViewStyle,pubS.rowCenterJus]}>
-            <Text style={{color:'#C7CACF',fontSize: setScaleText(26)}}>Gas:</Text>
-            <Text>{gasValue}</Text>
-          </View>
-
-        <Btn
-          btnMarginTop={scaleSize(60)}
-          btnPress={this.onNextStep}
-          btnText={I18n.t('next')}
-        />
-        
-        <Modal
-          isVisible={visible}
-          onBackButtonPress={this.onPressClose}
-          onBackdropPress={this.onPressClose}
-          style={styles.modalView}
-          backdropOpacity={.8}
-        >
-          <View style={styles.modalView}>
-            <View style={[styles.modalTitle,pubS.center]}>
-              <TouchableOpacity onPress={this.onPressCloseIcon} activeOpacity={.7} style={styles.modalClose}>
-                <Image source={modalTitleIcon} style={{height: scaleSize(30),width: scaleSize(30)}}/>
-              </TouchableOpacity>
-              <Text style={pubS.font26_4}>{modalTitleText}</Text>
+        <Loading loadingVisible={this.state.loadingVisible} loadingText={this.state.loadingText}/>     
+          <ScrollView ref={'_scroll'}>     
+            <TextInputComponent
+              value ={currentTokenName}
+              editable={false}
+              toMore={true}
+              touchable={true}
+              onPressTouch={this.showTokenPicker}
+            />
+            <TextInputComponent
+              placeholder={I18n.t('receiver_address')}
+              value={receiverAddress}
+              onChangeText={this.onChangeToAddr}
+              warningText={txAddrWarning}
+              isScan={true}
+              onPressIptRight={this.toScan}
+            />
+            <TextInputComponent
+              placeholder={I18n.t('amount')}
+              value={txValue}
+              onChangeText={this.onChangeTxValue}
+              warningText={txValueWarning}
+              keyboardType={'numeric'}
+            />
+            <TextInputComponent
+              placeholder={I18n.t('note_1')}
+              value={noteVal}
+              onChangeText={this.onChangeNoteText}
+            />
+            <View style={[styles.gasViewStyle,pubS.rowCenterJus]}>
+              <Text style={{color:'#C7CACF',fontSize: setScaleText(26)}}>Gas:</Text>
+              <Text>{gasValue}</Text>
             </View>
-            {
-              modalSetp1 ?
-              <View>
-                <RowText
-                  rowTitle={I18n.t('order_note')}
-                  rowContent={noteVal}
-                />
-                <RowText
-                  rowTitle={I18n.t('to_address')}
-                  rowContent={receiverAddress}
-                />
-                <RowText
-                  rowTitle={I18n.t('from_address')}
-                  rowContent={`0x${senderAddress}`}
-                />
-                <RowText
-                  rowTitle={I18n.t('amount_1')}
-                  rowContent={txValue}
-                  rowUnit={currentTokenName}
-                />
 
-                <Btn
-                  btnPress={this.onPressOrderModalBtn}
-                  btnText={I18n.t('confirm')}
-                  btnMarginTop={scaleSize(50)}
-                />
+            <Btn
+              btnMarginTop={scaleSize(60)}
+              btnPress={this.onNextStep}
+              btnText={I18n.t('next')}
+            />
+            <Modal
+              isVisible={visible}
+              onBackButtonPress={this.onPressClose}
+              onBackdropPress={this.onPressClose}
+              style={styles.modalView}
+              backdropOpacity={.8}
+            >
+              <View style={styles.modalView}>
+                <View style={[styles.modalTitle,pubS.center]}>
+                  <TouchableOpacity onPress={this.onPressCloseIcon} activeOpacity={.7} style={styles.modalClose}>
+                    <Image source={modalTitleIcon} style={{height: scaleSize(30),width: scaleSize(30)}}/>
+                  </TouchableOpacity>
+                  <Text style={pubS.font26_4}>{modalTitleText}</Text>
+                </View>
+                {
+                  modalSetp1 ?
+                  <View>
+                    <RowText
+                      rowTitle={I18n.t('order_note')}
+                      rowContent={noteVal}
+                    />
+                    <RowText
+                      rowTitle={I18n.t('to_address')}
+                      rowContent={receiverAddress}
+                    />
+                    <RowText
+                      rowTitle={I18n.t('from_address')}
+                      rowContent={`0x${senderAddress}`}
+                    />
+                    <RowText
+                      rowTitle={I18n.t('amount_1')}
+                      rowContent={txValue}
+                      rowUnit={currentTokenName}
+                    />
+
+                    <Btn
+                      btnPress={this.onPressOrderModalBtn}
+                      btnText={I18n.t('confirm')}
+                      btnMarginTop={scaleSize(50)}
+                    />
+                  </View>
+                  :
+                  <View>
+                    <TextInputComponent
+                      placeholder={I18n.t('password')}
+                      value={txPsdVal}
+                      onChangeText={this.onChangePayPsdText}
+                      warningText={txPsdWarning}
+                      secureTextEntry={true}
+                      autoFocus={true}
+                    />
+                    <Btn
+                      btnPress={this.onPressPayBtn}
+                      btnText={I18n.t('make_send')}
+                      btnMarginTop={scaleSize(50)}
+                    />
+                  </View>
+                }
               </View>
-              :
-              <View>
-                <TextInputComponent
-                  placeholder={I18n.t('password')}
-                  value={txPsdVal}
-                  onChangeText={this.onChangePayPsdText}
-                  warningText={txPsdWarning}
-                  secureTextEntry={true}
-                  autoFocus={true}
-                />
-                <Btn
-                  btnPress={this.onPressPayBtn}
-                  btnText={I18n.t('make_send')}
-                  btnMarginTop={scaleSize(50)}
-                />
-              </View>
-            }
-          </View>
-        </Modal>         
+            </Modal>
+          </ScrollView>         
       </View>
     )
   }

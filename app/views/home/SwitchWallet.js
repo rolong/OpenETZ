@@ -77,7 +77,10 @@ class SwitchWallet extends Component {
 		const { currentAccount, globalAccountsList } = this.props.accountManageReducer
 		return(
 			<View style={styles.switchView}>
-				<ScrollView>
+				<ScrollView
+					showsVerticalScrollIndicator={false}
+					
+				>
 					{
 						globalAccountsList.map((val,index) => {
 							return(
@@ -93,25 +96,25 @@ class SwitchWallet extends Component {
 							)
 						})
 					}
+					<View style={styles.lineStyle}></View>
+					<TouchableOpacity 
+						style={[pubS.rowCenter,{marginLeft: scaleSize(53)}]} 
+						activeOpacity={.7} 
+						onPress={this.onScan}
+					>
+						<Image source={require('../../images/xhdpi/btn_ico_more_scan_def.png')} style={styles.imgStyle}/>
+						<Text style={[pubS.font26_4,{marginLeft: scaleSize(30)}]}>{I18n.t('scan')}</Text>
+					</TouchableOpacity>
+					<TouchableOpacity 
+						style={[pubS.rowCenter,{marginLeft: scaleSize(53),marginTop: scaleSize(40)}]} 
+						activeOpacity={.7} 
+						onPress={this.onCreate}
+					>
+						<Image source={require('../../images/xhdpi/btn_ico_more_createaccount_def.png')} style={styles.imgStyle}/>
+						<Text style={[pubS.font26_4,{marginLeft: scaleSize(30)}]}>{I18n.t('create')}</Text>
+					</TouchableOpacity>
 				</ScrollView>
 				
-				<View style={styles.lineStyle}></View>
-				<TouchableOpacity 
-					style={[pubS.rowCenter,{marginLeft: scaleSize(53)}]} 
-					activeOpacity={.7} 
-					onPress={this.onScan}
-				>
-					<Image source={require('../../images/xhdpi/btn_ico_more_scan_def.png')} style={styles.imgStyle}/>
-					<Text style={[pubS.font26_4,{marginLeft: scaleSize(30)}]}>{I18n.t('scan')}</Text>
-				</TouchableOpacity>
-				<TouchableOpacity 
-					style={[pubS.rowCenter,{marginLeft: scaleSize(53),marginTop: scaleSize(40)}]} 
-					activeOpacity={.7} 
-					onPress={this.onCreate}
-				>
-					<Image source={require('../../images/xhdpi/btn_ico_more_createaccount_def.png')} style={styles.imgStyle}/>
-					<Text style={[pubS.font26_4,{marginLeft: scaleSize(30)}]}>{I18n.t('create')}</Text>
-				</TouchableOpacity>
 			</View>
 		)
 	}

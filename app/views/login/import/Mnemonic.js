@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Platform
+  Platform,
+  Keyboard
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../../styles/'
@@ -18,6 +19,7 @@ import { toHome } from '../../../root'
 import I18n from 'react-native-i18n'
 import Toast from 'react-native-toast'
 const bip39 = require('bip39')
+
 class Mnemonic extends Component{
   constructor(props){
     super(props)
@@ -32,8 +34,28 @@ class Mnemonic extends Component{
       userNameVal: '',
       userNameWarning: '',
     }
+
+  }
+   
+  componentDidMount () {
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => this._keyboardDidShow(false));
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
   }
 
+  componentWillUnmount () {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
+  }
+
+  _keyboardDidShow = (status) => {
+    if(status){
+      this.refs._scroll.scrollToEnd({animated: true})
+    }
+  }
+
+  _keyboardDidHide =() => {
+
+  }
 
   onChangeMemonic = (val) => {
     this.setState({
@@ -61,7 +83,7 @@ class Mnemonic extends Component{
   }
   onPressImport = () => {
    const { mnemonicVal, mnemonicValWarning, passwordVal, passwordWarning, repeadPsdVal, rePsdWarning,userNameVal } = this.state
-   let psdReg = /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]{8,}$/
+   let psdReg = /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*.]+$)[a-zA-Z\d!@#$%^&*.]{8,}$/
    if(userNameVal.length === 0){
       this.setState({
         userNameWarning: I18n.t('enter_account_name'),
@@ -109,6 +131,9 @@ class Mnemonic extends Component{
       }
     },1000)   
   }
+  onFocus = () => {   
+    this._keyboardDidShow(true)
+  }
   render(){
     isIphoneX() ?    //判断IPONEX
     this.state.DEFULT_IPONEX = 345
@@ -116,42 +141,48 @@ class Mnemonic extends Component{
     const { mnemonicVal, mnemonicValWarning, passwordVal, passwordWarning, repeadPsdVal, rePsdWarning,userNameVal, userNameWarning,DEFULT_IPONEX } = this.state
     return(
       <View style={styles.container}>
-        <TextInputComponent
-          placeholder={I18n.t('account_name')}
-          value={userNameVal}
-          onChangeText={this.onChangeUseNameText}
-          warningText={userNameWarning}//
-        />
-        <TextInputComponent
-          isMultiline={true}
-          placeholder={I18n.t('mnemonic_phrase_1')}
-          value={mnemonicVal}
-          onChangeText={this.onChangeMemonic}
-          warningText={mnemonicValWarning}
-          iptMarginTop={scaleSize(60)}
-        />
-        <TextInputComponent
-          placeholder={I18n.t('password')}
-          value={passwordVal}
-          onChangeText={this.onChangPassword}
-          secureTextEntry={true}
-          warningText={passwordWarning}
-        />
-       
-        <TextInputComponent
-          placeholder={I18n.t('repeat_password')}
-          value={repeadPsdVal}
-          onChangeText={this.onChangeRePassword}
-          secureTextEntry={true}
-          warningText={rePsdWarning}
-        />
+        <ScrollView
+          ref={'_scroll'}
+        >
+          <TextInputComponent
+            placeholder={I18n.t('account_name')}
+            value={userNameVal}
+            onChangeText={this.onChangeUseNameText}
+            warningText={userNameWarning}//
+          />
+          <TextInputComponent
+            isMultiline={true}
+            placeholder={I18n.t('mnemonic_phrase_1')}
+            value={mnemonicVal}
+            onChangeText={this.onChangeMemonic}
+            warningText={mnemonicValWarning}
+            iptMarginTop={scaleSize(60)}
+            
+          />
+          <TextInputComponent
+            placeholder={I18n.t('password')}
+            value={passwordVal}
+            onChangeText={this.onChangPassword}
+            secureTextEntry={true}
+            warningText={passwordWarning}
+            onFocus={this.onFocus}
+          />
+         
+          <TextInputComponent
+            placeholder={I18n.t('repeat_password')}
+            value={repeadPsdVal}
+            onChangeText={this.onChangeRePassword}
+            secureTextEntry={true}
+            warningText={rePsdWarning}
+          />
 
-        <Btn
-          btnMarginTop={scaleSize(60)}
-          btnPress={this.onPressImport}
-          btnText={I18n.t('import')}
-          btnWidth={DEFULT_IPONEX}
-        />
+          <Btn
+            btnMarginTop={scaleSize(60)}
+            btnPress={this.onPressImport}
+            btnText={I18n.t('import')}
+            btnWidth={DEFULT_IPONEX}
+          />
+        </ScrollView>
       </View>
     )
   }

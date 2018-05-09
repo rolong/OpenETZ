@@ -7,6 +7,7 @@ import {
   StyleSheet,
   ScrollView,
   Platform,
+  Keyboard
 } from 'react-native'
 
 import { pubS } from '../../../styles/'
@@ -37,7 +38,25 @@ class PrivateKey extends Component{
   componentWillMount(){
     this.props.dispatch(resetDeleteStatusAction())
   }
+  componentDidMount () {
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => this._keyboardDidShow(false));
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+  }
 
+  componentWillUnmount () {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
+  }
+
+  _keyboardDidShow = (status) => {
+    if(status){
+      this.refs._scroll.scrollToEnd({animated: true})
+    }
+  }
+
+  _keyboardDidHide =() => {
+
+  }
   onChangePrivateText = (val) => {
     this.setState({
       privKeyVal: val,
@@ -66,7 +85,7 @@ class PrivateKey extends Component{
     let privReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{64}$/
 
     // let psdReg = /^(?=.*[a-z])(?=.)(?=.*\d)[a-z\d]{8,}$/
-    let psdReg = /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]{8,}$/
+    let psdReg = /^(?![a-zA-z]+$)(?!\d+$)(?![.!@#$%^&*.]+$)[a-zA-Z\d.!@#$%^&*.]{8,}$/
     if(userNameVal.length === 0){
       this.setState({
         userNameWarning: I18n.t('enter_account_name'),
@@ -115,6 +134,9 @@ class PrivateKey extends Component{
       userNameWarning: ''
     })
   }
+  onFocus = () => {   
+    this._keyboardDidShow(true)
+  }
   render(){
     isIphoneX() ?    //判断IPONEX
     this.state.DEFULT_IPONEX = 345
@@ -122,48 +144,53 @@ class PrivateKey extends Component{
     const { privKeyVal, psdVal, repeadPsdVal, promptVal, privKeyWarning, psdWarning, rePsdWarning,userNameVal, userNameWarning,DEFULT_IPONEX } = this.state
     return(
       <View>
-        <TextInputComponent
-          placeholder={I18n.t('account_name')}
-          value={userNameVal}
-          onChangeText={this.onChangeUseNameText}
-          warningText={userNameWarning}//
-        />
-        <TextInputComponent
-          isMultiline={true}
-          placeholder={I18n.t('private_key')}
-          value={privKeyVal}
-          onChangeText={this.onChangePrivateText}
-          warningText={privKeyWarning}
-          iptMarginTop={scaleSize(60)}
-        />
-        <TextInputComponent
-          placeholder={I18n.t('password')}
-          value={psdVal}
-          onChangeText={this.onChangPsdText}
-          secureTextEntry={true}
-          warningText={psdWarning}
-        />
-        <TextInputComponent
-          placeholder={I18n.t('repeat_password')}
-          value={repeadPsdVal}
-          onChangeText={this.onChangeRepeatText}
-          secureTextEntry={true}
-          warningText={rePsdWarning}
-        />
-        {
-          // <TextInputComponent
-          //   placeholder={'password hint (Optional)'}
-          //   value={promptVal}
-          //   onChangeText={this.onChangePromptText}
-          // />
-          
-        }
-        <Btn
-          btnMarginTop={scaleSize(60)}
-          btnPress={this.onPressImport}
-          btnText={I18n.t('import')}
-          btnWidth={DEFULT_IPONEX}
-        />
+        <ScrollView
+          ref={'_scroll'}
+        >
+          <TextInputComponent
+            placeholder={I18n.t('account_name')}
+            value={userNameVal}
+            onChangeText={this.onChangeUseNameText}
+            warningText={userNameWarning}//
+          />
+          <TextInputComponent
+            isMultiline={true}
+            placeholder={I18n.t('private_key')}
+            value={privKeyVal}
+            onChangeText={this.onChangePrivateText}
+            warningText={privKeyWarning}
+            iptMarginTop={scaleSize(60)}
+          />
+          <TextInputComponent
+            placeholder={I18n.t('password')}
+            value={psdVal}
+            onChangeText={this.onChangPsdText}
+            secureTextEntry={true}
+            warningText={psdWarning}
+            onFocus={this.onFocus}
+          />
+          <TextInputComponent
+            placeholder={I18n.t('repeat_password')}
+            value={repeadPsdVal}
+            onChangeText={this.onChangeRepeatText}
+            secureTextEntry={true}
+            warningText={rePsdWarning}
+          />
+          {
+            // <TextInputComponent
+            //   placeholder={'password hint (Optional)'}
+            //   value={promptVal}
+            //   onChangeText={this.onChangePromptText}
+            // />
+            
+          }
+          <Btn
+            btnMarginTop={scaleSize(60)}
+            btnPress={this.onPressImport}
+            btnText={I18n.t('import')}
+            btnWidth={DEFULT_IPONEX}
+          />
+        </ScrollView>
       </View>
     )
   }

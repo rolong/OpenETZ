@@ -8,7 +8,9 @@ import {
   TextInput,
   Alert,
   StatusBar,
-  Platform
+  Platform,
+  ScrollView,
+  Keyboard
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../styles/'
@@ -19,6 +21,7 @@ import { createAccountAction } from '../../actions/accountManageAction'
 
 import I18n from 'react-native-i18n'
 import Toast from 'react-native-toast'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 class CreateAccount extends Component{
   constructor(props){
       super(props)
@@ -40,8 +43,10 @@ class CreateAccount extends Component{
         keyStoreAddress: '',
         second: 0
       }
-  }
+      
+      this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.onFocus.bind(this));
 
+  }
 
   componentWillReceiveProps(nextProps){
     if(this.props.accountManageReducer.createSucc !== nextProps.accountManageReducer.createSucc && nextProps.accountManageReducer.createSucc){
@@ -58,7 +63,10 @@ class CreateAccount extends Component{
       })
     }
   }
-
+ 
+   componentWillUnmount () {
+    this.keyboardDidShowListener.remove();
+  }
   onChangeUserNameText = (val) => {
     this.setState({
       userNameVal: val,
@@ -69,7 +77,7 @@ class CreateAccount extends Component{
 
   onPressBtn = () => {
     const { userNameVal, psdVal, repeadPsdVal, promptVal, } = this.state
-    let reg = /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]{8,}$/
+    let reg = /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*.]+$)[a-zA-Z\d!@#$%^&*.]{8,}$/
     if(userNameVal.length === 0){
       this.setState({
         userNameWarning: I18n.t('enter_account_name')
@@ -127,6 +135,10 @@ class CreateAccount extends Component{
       promptVal: val,
     })
   }
+  onFocus = () => {
+    this.refs._scrollview.scrollToEnd({animated: true})
+    
+  }
   render(){
     const { userNameVal, psdVal, repeadPsdVal, promptVal, userNameWarning, psdWarning, rePsdWarning,visible } = this.state
     const { isLoading } = this.props.accountManageReducer
@@ -138,41 +150,46 @@ class CreateAccount extends Component{
           : null
         }
         <Loading loadingVisible={this.state.visible} loadingText={I18n.t('creating')}/>
-        <View style={[styles.warningView,pubS.paddingRow_24]}>
-          <Text style={pubS.font22_1}>{I18n.t('create_account_prompt')}</Text>
-        </View>
-        <View style={{paddingTop:10,}}>
-          <TextInputComponent
-            placeholder={I18n.t('account_name')}
-            value={userNameVal}
-            onChangeText={this.onChangeUserNameText}
-            warningText={userNameWarning}
-          />
-          <TextInputComponent
-            placeholder={I18n.t('password')}
-            value={psdVal}
-            onChangeText={this.onChangPsdText}
-            secureTextEntry={true}
-            warningText={psdWarning}
-          />
-          <TextInputComponent
-            placeholder={I18n.t('repeat_password')}
-            value={repeadPsdVal}
-            onChangeText={this.onChangeRepeatText}
-            secureTextEntry={true}
-            warningText={rePsdWarning}
-          />
-          <TextInputComponent
-            placeholder={I18n.t('password_hint')}
-            value={promptVal}
-            onChangeText={this.onChangePromptText}
-          />
-          <Btn
-            btnMarginTop={scaleSize(60)}
-            btnPress={this.onPressBtn}
-            btnText={I18n.t('create')}
-          />
-        </View>
+        <ScrollView
+          ref={'_scrollview'}
+        >
+          <View style={[styles.warningView,pubS.paddingRow_24]}>
+            <Text style={pubS.font22_1}>{I18n.t('create_account_prompt')}</Text>
+          </View>
+          <View style={{paddingTop:10,}}>
+            <TextInputComponent
+              placeholder={I18n.t('account_name')}
+              value={userNameVal}
+              onChangeText={this.onChangeUserNameText}
+              warningText={userNameWarning}
+              // onFocus={this.onFocus}
+            />
+            <TextInputComponent
+              placeholder={I18n.t('password')}
+              value={psdVal}
+              onChangeText={this.onChangPsdText}
+              secureTextEntry={true}
+              warningText={psdWarning}
+            />
+            <TextInputComponent
+              placeholder={I18n.t('repeat_password')}
+              value={repeadPsdVal}
+              onChangeText={this.onChangeRepeatText}
+              secureTextEntry={true}
+              warningText={rePsdWarning}
+            />
+            <TextInputComponent
+              placeholder={I18n.t('password_hint')}
+              value={promptVal}
+              onChangeText={this.onChangePromptText}
+            />
+            <Btn
+              btnMarginTop={scaleSize(60)}
+              btnPress={this.onPressBtn}
+              btnText={I18n.t('create')}
+            />
+          </View>
+        </ScrollView>
         
       </View>
     )

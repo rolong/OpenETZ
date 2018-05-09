@@ -3,69 +3,82 @@ import accountDB from '../db/account_db'
 
 async function onFetchToken(options){
 	const { parames, fetchTokenSuccess, fetchTokenFail } = options
+	const { addr,refresh } = parames
 	let insertRes = []
-	let res = await fetch('http://52.74.3.64/token-list.txt',{
-		method: 'GET',
-	    headers: {
-	        'Accept': 'application/json',
-	        'Content-Type': 'application/json',
-	    }
-	})
-	let response = null
-	response = await res.json()
-	console.log('response===',response)
-	//fetch到token列表后  全部插入数据库
-	for(let i = 0; i < response.length; i++){
-		let myContract = new web3.eth.Contract(contractAbi, response[i].address)
-		let result = await myContract.methods.balanceOf(parames.addr).call()
-		let number = result / Math.pow(10,response[i].decimals)
-		console.log('number==',number)
-  		let token = {}
-  		token.account_addr = parames.addr //当前账户的地址
-  		token.tk_address = response[i].address
-  		token.tk_decimals = response[i].decimals
-  		token.tk_name = response[i].name
-  		token.tk_price = response[i].price
-  		token.tk_symbol = response[i].symbol
-  		token.tk_selected = 0
-  		token.tk_number = number
-  		insertRes.push(token)
+
+	if(refresh){//如果是下拉刷新  先删除token表中的所有数据  再重新fetch数据 插入数据库
+		accountDB.dropTable({
+      		sql: 'delete from token'
+    	})
 	}
 
-	
-	let insertTokenRes = await accountDB.insertToTokenTable(insertRes)
-	if(insertTokenRes){
-
-
-
-
-		// for(let i = 0; i < response.length; i++){
-		// 	let tokenAddr = response[i].address
-			
-		// 	let myContract = new web3.eth.Contract(contractAbi, tokenAddr)
-		// 	myContract.methods.balanceOf(parames.addr).call((error,result) => {
-		// 		let number = result / Math.pow(10,response[i].decimals)
-
-		// 		await accountDB.updateTable({
-		// 			sql: 'update token set tk_number = ? where tk_address = ?',
-		// 			parame: [number,tokenAddr]
-		// 		})
-		// 	})
-		// }
-
-		//返回最新的token列表 (带有余额)
-
-
-
-		let selTokenRes = await accountDB.selectTable({
-			sql: 'select * from token where account_addr = ?',
-			parame: [parames.addr]
+	try {
+		let res = await fetch('http://52.74.3.64/token-list.txt',{
+			method: 'GET',
+		    headers: {
+		        'Accept': 'application/json',
+		        'Content-Type': 'application/json',
+		    }
 		})
-		console.log('返回最新的token列表 (带有余额)==',selTokenRes)
-		fetchTokenSuccess(selTokenRes)
-	}else{
+		let response = null
+		response = await res.json()
+		console.log('onFetchToken   response66666666666===',response)
+		//fetch到token列表后  全部插入数据库
+		for(let i = 0; i < response.length; i++){
+			let myContract = new web3.eth.Contract(contractAbi, response[i].address)
+			let result = await myContract.methods.balanceOf(addr).call()
+			let number = result / Math.pow(10,response[i].decimals)
+			console.log('number==',number)
+	  		let token = {}
+	  		token.account_addr = addr //当前账户的地址
+	  		token.tk_address = response[i].address
+	  		token.tk_decimals = response[i].decimals
+	  		token.tk_name = response[i].name
+	  		token.tk_price = response[i].price
+	  		token.tk_symbol = response[i].symbol
+	  		token.tk_selected = 0
+	  		token.tk_number = number
+	  		insertRes.push(token)
+		}
+
+		
+		let insertTokenRes = await accountDB.insertToTokenTable(insertRes)
+		if(insertTokenRes){
+
+
+
+
+			// for(let i = 0; i < response.length; i++){
+			// 	let tokenAddr = response[i].address
+				
+			// 	let myContract = new web3.eth.Contract(contractAbi, tokenAddr)
+			// 	myContract.methods.balanceOf(addr).call((error,result) => {
+			// 		let number = result / Math.pow(10,response[i].decimals)
+
+			// 		await accountDB.updateTable({
+			// 			sql: 'update token set tk_number = ? where tk_address = ?',
+			// 			parame: [number,tokenAddr]
+			// 		})
+			// 	})
+			// }
+
+			//返回最新的token列表 (带有余额)
+
+
+
+			let selTokenRes = await accountDB.selectTable({
+				sql: 'select * from token where account_addr = ?',
+				parame: [addr]
+			})
+			console.log('返回最新的token列表 (带有余额)==',selTokenRes)
+			fetchTokenSuccess(selTokenRes)
+		}else{
+			fetchTokenFail()
+		}
+	} catch(err){
 		fetchTokenFail()
 	}
+
 
 
 	

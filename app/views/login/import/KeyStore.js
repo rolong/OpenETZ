@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Platform
+  Platform,
+  Keyboard
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../../styles/'
@@ -17,6 +18,7 @@ import { connect } from 'react-redux'
 import { toHome } from '../../../root'
 import I18n from 'react-native-i18n'
 import Toast from 'react-native-toast'
+
 class KeyStore extends Component{
   constructor(props){
     super(props)
@@ -27,7 +29,25 @@ class KeyStore extends Component{
       userNameWarning: '',
     }
   }
-  
+  componentDidMount () {
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => this._keyboardDidShow(false));
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+  }
+
+  componentWillUnmount () {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
+  }
+
+  _keyboardDidShow = (status) => {
+    if(status){
+      this.refs._scroll.scrollToEnd({animated: true})
+    }
+  }
+
+  _keyboardDidHide =() => {
+
+  }
   onChangelKeystore = (val) => {
     this.setState({
       keystoreVal: val,
@@ -71,6 +91,9 @@ class KeyStore extends Component{
       }))
     },1000)
   }
+  onFocus = () => {   
+    this._keyboardDidShow(true)
+  }
   render(){
     isIphoneX() ?    //判断IPONEX
     this.state.DEFULT_IPONEX = 345
@@ -78,35 +101,40 @@ class KeyStore extends Component{
     const { keystoreVal, keystoreWarning,userNameVal,userNameWarning,DEFULT_IPONEX } = this.state
     return(
       <View style={styles.container}>
-        <TextInputComponent
-          placeholder={I18n.t('account_name')}
-          value={userNameVal}
-          onChangeText={this.onChangeUseNameText}
-          warningText={userNameWarning}//
-        />
-        <TextInputComponent
-          isMultiline={true}
-          placeholder={I18n.t('keystore_content')}
-          value={keystoreVal}
-          onChangeText={this.onChangelKeystore}
-          warningText={keystoreWarning}
-          iptMarginTop={scaleSize(60)}
-        />
-        {
-          // <TextInputComponent
-          //   placeholder={'password'}
-          //   value={passwordVal}
-          //   onChangeText={this.onChangPassword}
-          //   secureTextEntry={true}
-          //   warningText={passwordWarning}
-          // />
-        }
-        <Btn
-          btnMarginTop={scaleSize(60)}
-          btnPress={this.onPressImport}
-          btnText={I18n.t('import')}
-          btnWidth={DEFULT_IPONEX}
-        />
+        <ScrollView
+          ref={'_scroll'}
+        >
+          <TextInputComponent
+            placeholder={I18n.t('account_name')}
+            value={userNameVal}
+            onChangeText={this.onChangeUseNameText}
+            warningText={userNameWarning}//
+          />
+          <TextInputComponent
+            isMultiline={true}
+            placeholder={I18n.t('keystore_content')}
+            value={keystoreVal}
+            onChangeText={this.onChangelKeystore}
+            warningText={keystoreWarning}
+            iptMarginTop={scaleSize(60)}
+            onFocus={this.onFocus}
+          />
+          {
+            // <TextInputComponent
+            //   placeholder={'password'}
+            //   value={passwordVal}
+            //   onChangeText={this.onChangPassword}
+            //   secureTextEntry={true}
+            //   warningText={passwordWarning}
+            // />
+          }
+          <Btn
+            btnMarginTop={scaleSize(60)}
+            btnPress={this.onPressImport}
+            btnText={I18n.t('import')}
+            btnWidth={DEFULT_IPONEX}
+          />
+        </ScrollView>
       </View>
     )
   }

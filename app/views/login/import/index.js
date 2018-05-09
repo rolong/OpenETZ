@@ -60,7 +60,7 @@ class ImportAccount extends Component{
   render(){
     const { importSucc } = this.props.accountManageReducer
     return(
-      <View style={pubS.container}>
+      <View style={[pubS.container,{alignSelf:'center'}]}>
         {
           Platform.OS === 'ios' ?
             <StatusBar backgroundColor="#000000"  barStyle="dark-content" animated={true} />
@@ -97,13 +97,16 @@ const styles = StyleSheet.create({
   TabViewStyle:{
     ...ifIphoneX(
       {
-        width:375
+        width:375,
+        // alignSelf:'center'
       },
       {
-        width: scaleSize(750)
+        width: scaleSize(750),
+        // alignSelf:'center'
       },
       {
-        width: scaleSize(750)
+        width: scaleSize(750),
+        // alignSelf:'center'
       }
     )
   },

@@ -45,6 +45,7 @@ class Assets extends Component{
       curAddr: '',
       currencySymbol: '',
     }
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
   }
 
   componentWillMount(){
@@ -75,6 +76,14 @@ class Assets extends Component{
     this.getAllAccounts()
   }
 
+  onNavigatorEvent(event) {
+    if (event.id === 'bottomTabSelected') {
+        this.onCloseDrawer()
+    }
+    if (event.id === 'bottomTabReselected') {
+      this.onCloseDrawer()
+    }
+  }
 
   setCurrencySymbol(symbol){
     switch(symbol){
@@ -175,7 +184,9 @@ class Assets extends Component{
     }
   }
 
-
+  componentWillUnmount(){
+    this.onCloseDrawer()
+  }
  
   toAssetsDetail = (title,balance,token,deci) => {
     this.props.navigator.push({

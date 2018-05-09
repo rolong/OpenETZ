@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   FlatList,
-  ScrollView
+  ScrollView,
+  RefreshControl
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../styles/'
@@ -23,7 +24,8 @@ class AddAssets extends Component{
     super(props)
     this.state={
       tokenList: [],
-      loadingVisible: false
+      // loadingVisible: false,
+      isRefreshing: false,
     }
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
   }
@@ -34,7 +36,7 @@ class AddAssets extends Component{
   componentWillReceiveProps(nextProps){
     if(this.props.tokenManageReducer.fetchTokenList !== nextProps.tokenManageReducer.fetchTokenList){
       this.setState({
-        loadingVisible: false
+        isRefreshing: false
       })
     }
   }
@@ -52,9 +54,9 @@ class AddAssets extends Component{
     // console.log('selTokenRes11111111===',selTokenRes)
     if(selTokenRes.length === 0){
       this.setState({
-        loadingVisible: true
+        isRefreshing: true
       })
-      this.props.dispatch(fetchTokenAction(currentAccount.address))
+      this.props.dispatch(fetchTokenAction(currentAccount.address,false))
     }else{
       this.props.dispatch(gloablTokenList(selTokenRes))
     }
@@ -82,25 +84,46 @@ class AddAssets extends Component{
       this.props.dispatch(addSelectedToListAction(pressAddr,currentAccount.address))
     }
   }
+  onRefresh = () => {
+    const { currentAccount } = this.props.accountManageReducer
+    this.setState({
+      isRefreshing: true
+    })
+    this.props.dispatch(fetchTokenAction(currentAccount.address,true))
 
+  }
   render(){
     let selected = false
     const { fetchTokenList } = this.props.tokenManageReducer
     console.log('资产列表fetchTokenList===',fetchTokenList)
     return(
       <View style={{flex:1,backgroundColor:'#F5F7FB'}}>
-        <Loading loadingVisible={this.state.loadingVisible} />  
-        <View style={[styles.listItemView,styles.whStyle]}>
-          <Image source={require('../../images/xhdpi/etz_logo.png')} style={pubS.logoStyle}/>
-          <View style={[styles.listItemTextView,pubS.rowCenterJus]}>
-            <View>
-              <Text style={pubS.font36_2}>ETZ</Text>
-              <Text style={pubS.font24_2}>EtherZero</Text>
+        {
+          //<Loading loadingVisible={this.state.loadingVisible} />  
+        }
+        <ScrollView 
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.isRefreshing}
+              onRefresh={this.onRefresh}
+              tintColor={"#144396"}
+              title={I18n.t('loading')}
+              colors={['#fff']}
+              progressBackgroundColor={"#1d53a6"}
+            />
+          }
+        >
+          <View style={[styles.listItemView,styles.whStyle]}>
+            <Image source={require('../../images/xhdpi/etz_logo.png')} style={pubS.logoStyle}/>
+            <View style={[styles.listItemTextView,pubS.rowCenterJus]}>
+              <View>
+                <Text style={pubS.font36_2}>ETZ</Text>
+                <Text style={pubS.font24_2}>EtherZero</Text>
+              </View>
             </View>
           </View>
-        </View>
 
-        <ScrollView showsVerticalScrollIndicator={false}>
           {
             fetchTokenList.map((res,index) => {
               if(res.tk_selected === 1){

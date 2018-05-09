@@ -129,5 +129,6 @@
   "back":"back",
   "transfer_schedule":"Transfer schedule",
   "transfer_detail":"In the transfer, the details page is being skipping for you",
-  "enter":"Oh I see"
+  "enter":"Oh I see",
+  "input_number":"please input number",
 }	

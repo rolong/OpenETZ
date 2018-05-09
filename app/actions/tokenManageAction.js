@@ -14,7 +14,7 @@ const gloablTokenList = (list) => {
 		dispatch(getList())
 	}
 }
-const fetchTokenAction = (addr) => {
+const fetchTokenAction = (addr,refresh) => {
 	const onFetchStart = () => {
 		return {
 			type: types.FETCH_TOKEN_LIST,
@@ -43,7 +43,8 @@ const fetchTokenAction = (addr) => {
 		dispatch(onFetchStart())
 		tokenDBOpation.fetchToken({
 			parames: {
-				addr
+				addr,
+				refresh
 			},
 			fetchTokenSuccess: (list) => {dispatch(suc(list))},
 			fetchTokenFail: (msg) => {dispatch(err(msg))}

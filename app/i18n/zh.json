@@ -129,5 +129,6 @@
   "back":"返回",
   "transfer_schedule":"转账进度",
   "transfer_detail":"正在转账中,正在为你跳转详情页面...",
-  "enter":"我知道了"
+  "enter":"我知道了",
+  "input_number":"请输入数字",
 }	
