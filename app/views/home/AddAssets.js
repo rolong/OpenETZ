@@ -6,7 +6,9 @@ import {
   TouchableOpacity,
   StyleSheet,
   FlatList,
-  ScrollView
+  ScrollView,
+  StatusBar,
+  Platform
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../styles/'
@@ -89,6 +91,11 @@ class AddAssets extends Component{
     console.log('资产列表fetchTokenList===',fetchTokenList)
     return(
       <View style={{flex:1,backgroundColor:'#F5F7FB'}}>
+       {
+          Platform.OS === 'ios' ?
+          <StatusBar backgroundColor="#000000"  barStyle="dark-content" hidden={false} />
+          : null
+        }
         <Loading loadingVisible={this.state.loadingVisible} />  
         <View style={[styles.listItemView,styles.whStyle]}>
           <Image source={require('../../images/xhdpi/etz_logo.png')} style={pubS.logoStyle}/>

@@ -130,6 +130,8 @@ class BackUpAccount extends Component{
     }
 
   }
+
+
   onNavigatorEvent(event){
     if (event.type == 'NavBarButtonPress') {
       switch(event.id){
@@ -153,9 +155,8 @@ class BackUpAccount extends Component{
   deleteAccount = () => {
     this.setState({
       iptPsdVisible: true,
-      isDelAccount: true
+      isDelAccount: true,
     })
-
   }
 
   onPressCancel = () => {
@@ -205,9 +206,14 @@ class BackUpAccount extends Component{
     const { psdVal,backupMnemonic,keyStore,isDelAccount,  } = this.state
     this.setState({
       loadingText: I18n.t("unlocking"),
-      visible: true,
-      iptPsdVisible: false
-    })  
+      iptPsdVisible: false,
+    })
+    setTimeout(() => {
+      this.setState({
+        visible: true,
+      })
+      
+    },500)
     setTimeout(() => {
       try {
         const newWallet = fromV3(keyStore,psdVal)
@@ -228,14 +234,18 @@ class BackUpAccount extends Component{
           })
         }else{
           if(isDelAccount){
-            this.setState({
-              dVisible: true,
-            })
+            setTimeout(() => {
+              this.setState({
+                dVisible: true,
+              })
+            },1000)  
           }else{
-            this.setState({
-              privKey: priv,
-              pKeyVisible: true
-            })
+            setTimeout(() => {
+              this.setState({
+                privKey: priv,
+                pKeyVisible: true,
+              })
+            },1000)
           }
         }
         this.onHide()
@@ -248,7 +258,7 @@ class BackUpAccount extends Component{
           loadingText: '',
         })
       }
-    },500)
+    },1000)
   }
 
 
@@ -292,16 +302,19 @@ class BackUpAccount extends Component{
 
 
   render(){
-    const { iptPsdVisible,psdVal,pKeyVisible,privKey,privBackuped,mncBackuped,keyStore,dVisible } = this.state
+    const { iptPsdVisible,psdVal,pKeyVisible,privKey,privBackuped,mncBackuped,keyStore,dVisible, visible } = this.state
     const { isLoading,delMnemonicSuc } = this.props.accountManageReducer
+
+    console.log('visible===',visible)
     return(
       <View style={[pubS.container,{backgroundColor:'#fff',alignItems:'center'}]}>
+        <Loading loadingVisible={visible} loadingText={this.state.loadingText}/>
         {
           Platform.OS === 'ios' ?
           <StatusBar backgroundColor="#000000"  barStyle="dark-content" animated={true} />
           : null
         }
-        <Loading loadingVisible={this.state.visible} loadingText={this.state.loadingText}/>
+        
         <Image source={require('../../../images/xhdpi/Penguin.png')} style={styles.avateStyle}/>
         <Text style={pubS.font26_5}>{sliceAddress(this.props.address,10)}</Text>
         <View style={[styles.userNameViewStyle,pubS.rowCenterJus,pubS.bottomStyle]}>
@@ -380,7 +393,6 @@ class BackUpAccount extends Component{
             </View>
           </View>
         </Modal>
-
         <Modal
           isVisible={pKeyVisible}
           backdropOpacity={.8}
@@ -417,6 +429,7 @@ class BackUpAccount extends Component{
             </View>
           </View>
         </Modal>
+        
 
       </View>
     )

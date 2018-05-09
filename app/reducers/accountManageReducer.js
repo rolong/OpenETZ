@@ -21,7 +21,10 @@ const initState = {
 	currentAccount: {},
 	deleteCurrentAccount: false,
 	backupModalTimes: 0,
-	importLoading: false
+	importLoading: false,
+
+	scanAddress: '',
+	scanCurToken: '',
 }
 export default function accountManageReducer (state = initState,action) {
 	switch(action.type){
@@ -83,12 +86,24 @@ export default function accountManageReducer (state = initState,action) {
 		case types.SHOW_IMPORT_LOADING:
 			return onShowLoading(state,action)
 			break
+		case types.PASS_SCAN_RECEIVE_ADDRESS:
+			return onPassScanAddr(state,action)
+			break
 		default:
 			return state
 			break
 
 	}
 }
+const onPassScanAddr = (state,action) => {
+	const { addr, token} = action.payload
+	return {
+		...state,
+		scanAddress: addr,
+		scanCurToken: token,
+	}
+}
+
 const changeBackupTimes = (state,action) => {
 	const { time } = action.payload
 	return {

@@ -270,6 +270,20 @@ const showImportLoadingAction = (status) => {
 	}
 }
 
+const passReceiveAddressAction = (addr,token) => {
+	const onPass = () => {
+		return {
+			type: types.PASS_SCAN_RECEIVE_ADDRESS,
+			payload: {
+				addr,
+				token,
+			}
+		}
+	}
+	return (dispatch,getState) => {
+		dispatch(onPass())
+	}
+}
 
 export {
 	switchAccountAction,
@@ -282,5 +296,7 @@ export {
 	globalAllAccountsInfoAction,
 	globalCurrentAccountInfoAction,
 	changeBackupModalTimesAction,
-	showImportLoadingAction
+	showImportLoadingAction,
+	passReceiveAddressAction,
+
 }

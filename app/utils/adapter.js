@@ -82,7 +82,10 @@ export function setScaleText (size: number) {
 
 // 宽 高 尺寸缩放
 export function scaleSize (size: number) {
-  let s = scale > 1.5 ? 1.5 : scale
+  let s;
+  Platform.OS == 'ios' ?
+  s = scale
+  : s = scale > 1.5 ? 1.5 : scale
   size = Math.round(size * s + 0.5)
   return size / devicesPR
 }

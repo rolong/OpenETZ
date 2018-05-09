@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     ...ifIphoneX(
       {
         height: scaleSize(34),
-        width:150,
+        width:scaleSize(88),
         borderWidth:1,
         borderColor: '#FF6060',
         borderRadius: scaleSize(6),
