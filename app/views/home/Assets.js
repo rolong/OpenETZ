@@ -22,6 +22,7 @@ import SwitchWallet from './SwitchWallet'
 import { switchDrawer } from '../../utils/switchDrawer'
 
 import { splitDecimal } from '../../utils/splitNumber'
+import {Scan} from '../../components/'
 
 import { insertToTokenAction,initSelectedListAction,refreshTokenAction,fetchTokenAction } from '../../actions/tokenManageAction'
 import I18n from 'react-native-i18n'
@@ -226,7 +227,9 @@ class Assets extends Component{
       title:I18n.t('send'),
       backButtonTitle:I18n.t('back'),
       backButtonHidden:false,
-      navigatorStyle: DetailNavigatorStyle,
+      navigatorStyle: Object.assign({},DetailNavigatorStyle,{
+        navBarHidden: true
+      }),
       passProps:{
         curToken: 'ETZ'
       }
@@ -522,9 +525,21 @@ const styles = StyleSheet.create({
     )
   },
   whStyle: {
-    
-    width:scaleSize(702),
-    height: scaleSize(120)
+    ...ifIphoneX(
+      {
+        width:scaleSize(580),
+        height: scaleSize(120)
+      },
+      {
+        width:scaleSize(702),
+        height: scaleSize(120)
+      },
+      {
+        width:scaleSize(702),
+        height: scaleSize(120)
+      }
+    )
+
   },
   listItemTextView:{
     ...ifIphoneX(

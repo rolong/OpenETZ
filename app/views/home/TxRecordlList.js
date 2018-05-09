@@ -6,13 +6,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   FlatList,
+  Platform
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle,MainThemeNavColor } from '../../styles/'
 import { setScaleText, scaleSize,ifIphoneX } from '../../utils/adapter'
 import RecordListItem from './tradingRecord/RecordListItem'
 import { splitNumber,sliceAddress,timeStamp2Date } from '../../utils/splitNumber'
-
+import { Navigation } from 'react-native-navigation'
 import I18n from 'react-native-i18n'
 import { connect } from 'react-redux'
 import accountDB from '../../db/account_db'
@@ -80,17 +81,25 @@ class TxRecordlList extends Component{
       return(
         <View style={[styles.listViewStyle,pubS.center]}>
           <Text style={pubS.font72_1}>{splitNumber(etzBalance)}</Text>
-          <Text style={pubS.font26_3}>{this.props.currencySymbol}</Text>
+          {
+            //<Text style={pubS.font26_3}>{this.props.currencySymbol}</Text>
+          }
+          
         </View>
       ) 
   }
-  payBtn = () => {
+
+
+
+  payBtn = () => {    
     this.props.navigator.push({
       screen: 'on_payment',
       title:I18n.t('send'),
       backButtonTitle:I18n.t('back'),
       backButtonHidden:false,
-      navigatorStyle: DetailNavigatorStyle,
+      navigatorStyle: Object.assign({},DetailNavigatorStyle,{
+        navBarHidden: true
+      }),
       passProps:{
         curToken: this.props.curToken,
         curDecimals:this.props.curDecimals
@@ -184,7 +193,8 @@ const styles = StyleSheet.create({
     )
   },
   listViewStyle:{
-    height: scaleSize(280),
+    height: Platform.OS === 'ios' ? scaleSize(270) : scaleSize(300),
+    // height: scaleSize(280),
     backgroundColor: '#144396',
   },
 })

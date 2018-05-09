@@ -8,6 +8,8 @@ import {
   FlatList,
   ScrollView,
   RefreshControl
+  StatusBar,
+  Platform
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../styles/'

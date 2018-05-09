@@ -11,7 +11,7 @@ import { scaleSize,ifIphoneX } from '../../utils/adapter'
 export default class TxWebView extends Component{
 	renderLoading = () => {
 		return(
-			<View style={{alignSelf:'center',marginTop: '50%'}}>
+			<View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
 	           <ActivityIndicator  
 	              color={'#144396'}
 	              indeterminate={true}
@@ -22,7 +22,7 @@ export default class TxWebView extends Component{
 	}
 	render(){
 		return(
-			<View style={{flex:1}}>
+			<View style={{flex:1,}}>
 				{
 		          Platform.OS === 'ios' ?
 		          <StatusBar backgroundColor="#000000"  barStyle="dark-content" animated={true} />
