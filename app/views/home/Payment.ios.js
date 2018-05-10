@@ -83,6 +83,12 @@ class Payment extends Component{
     const { fetchTokenList } = this.props.tokenManageReducer 
 
     const { currentAccount } = this.props.accountManageReducer
+
+    this.setState({
+      receiverAddress: this.props.scanSucAddr,
+    })
+
+    
     if(this.props.curToken !== 'ETZ'){
       this.setState({
         isToken: true,
