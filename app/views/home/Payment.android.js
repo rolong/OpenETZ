@@ -9,7 +9,8 @@ import {
   Alert,
   Platform,
   Keyboard,
-  StatusBar
+  StatusBar,
+  BackHandler,
 } from 'react-native'
 
 
@@ -22,7 +23,7 @@ import Modal from 'react-native-modal'
 import Picker from 'react-native-picker'
 import { insert2TradingDBAction } from '../../actions/tradingManageAction'
 import { refreshTokenAction } from '../../actions/tokenManageAction'
-
+import { passReceiveAddressAction } from '../../actions/accountManageAction'
 import { contractAbi } from '../../utils/contractAbi'
 import I18n from 'react-native-i18n'
 import { getTokenGas, getGeneralGas } from '../../utils/getGas'
@@ -68,20 +69,41 @@ class Payment extends Component{
   }
   
   onNavigatorEvent(event){
-     if(event.id === 'backPress'){
-        if(this.props.receive_address){
-          this.props.navigator.popToRoot({
-            animated: true, 
-            animationType: 'fade'
-          })
-        }
-     }
-  } 
+     // if(event.id === 'backPress'){
 
+
+        // if(this.props.receive_address){
+        //   this.props.navigator.popToRoot({
+        //     animated: true, 
+        //     animationType: 'fade'
+        //   })
+        // }
+     // }
+
+     switch (event.id) {
+      case 'willAppear':
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+        break;
+      case 'willDisappear':
+        this.backHandler.remove();
+        break;
+      default:
+        break;
+    }
+
+  } 
+   handleBackPress = () => {
+    this.props.navigator.popToRoot({ animated: false });
+     
+    return true;
+  }
   componentWillMount(){
     const { fetchTokenList } = this.props.tokenManageReducer 
 
     const { currentAccount } = this.props.accountManageReducer
+    this.setState({
+      receiverAddress: this.props.scanSucAddr,
+    })
     if(this.props.curToken !== 'ETZ'){
       this.setState({
         isToken: true,
@@ -179,7 +201,16 @@ class Payment extends Component{
   }
 
 
- 
+  componentWillReceiveProps(nextProps){
+    const { scanAddress, scanCurToken} = nextProps.accountManageReducer
+    console.log('this.props.accountManageReducer.scanAddress==',this.props.accountManageReducer.scanAddress)
+    if(this.props.accountManageReducer.scanAddress !== scanAddress && scanAddress.length > 0){
+      this.setState({
+        receiverAddress: scanAddress,
+        currentTokenName: scanCurToken
+      })
+    }
+  }
 
   componentWillUnmount(){
     // this.onPressClose()
@@ -187,6 +218,9 @@ class Payment extends Component{
     this.keyboardDidShowListener.remove()
     this.keyboardDidHideListener.remove()
   }
+  
+
+
    _keyboardDidShow = () => {
       this.refs._scroll.scrollToEnd({animated: true})
   }
@@ -265,6 +299,9 @@ class Payment extends Component{
   }
 
   toScan = () => {
+    let a = '',
+        b = '';
+    this.props.dispatch(passReceiveAddressAction(a,b))
     this.props.navigator.push({
       screen: 'scan_qr_code',
       title:I18n.t('scan'),
@@ -599,13 +636,30 @@ class Payment extends Component{
       txPsdWarning: ''
     })
   }
- 
+  onPressBack = () => {
+    this.props.navigator.popToRoot({
+      animated: true, 
+      animationType: 'fade', 
+    })
+  }
   render(){
     const { receiverAddress, txValue, noteVal,visible,modalTitleText,modalTitleIcon,txPsdVal,
             modalSetp1,txAddrWarning,txValueWarning,senderAddress,txPsdWarning,currentTokenName, gasValue } = this.state
     return(
       <View style={pubS.container}>
-        <Loading loadingVisible={this.state.loadingVisible} loadingText={this.state.loadingText}/>     
+        <Loading loadingVisible={this.state.loadingVisible} loadingText={this.state.loadingText}/>   
+          <View style={[styles.navbarStyle,pubS.rowCenterJus,{paddingLeft: scaleSize(24),paddingRight: scaleSize(24)}]}>
+          <TouchableOpacity activeOpacity={.6} onPress={this.onPressBack} style={pubS.rowCenter}>
+            <Image source={require('../../images/xhdpi/send_page_back_ios.png')}style={styles.navImgStyle}/>
+          </TouchableOpacity>
+          <View style={{marginLeft: 50}}>
+            <Text style={[pubS.font30_2,{}]}>{I18n.t('send')}</Text>
+          </View>
+          
+          <TouchableOpacity activeOpacity={.6} onPress={this.toScan} style={styles.drawerStyle}>
+            <Image source={require('../../images/xhdpi/btn_ico_payment_scan_def.png')} style={styles.navImgStyle}/>
+          </TouchableOpacity>
+        </View>  
           <ScrollView ref={'_scroll'}>     
             <TextInputComponent
               value ={currentTokenName}
@@ -619,8 +673,6 @@ class Payment extends Component{
               value={receiverAddress}
               onChangeText={this.onChangeToAddr}
               warningText={txAddrWarning}
-              isScan={true}
-              onPressIptRight={this.toScan}
             />
             <TextInputComponent
               placeholder={I18n.t('amount')}
@@ -731,6 +783,22 @@ class RowText extends Component{
   }
 }
 const styles = StyleSheet.create({
+  navImgStyle: {
+      width:scaleSize(40),
+      height: scaleSize(40)
+    },
+    drawerStyle:{
+      height: scaleSize(83),
+      width: scaleSize(145),
+      justifyContent:'center',
+      marginRight: scaleSize(10),
+      alignItems:'flex-end',
+    },
+    navbarStyle:{
+      marginTop: scaleSize(30),   
+      height: scaleSize(67),
+      backgroundColor: '#fff',
+    },
     gasViewStyle:{
       ...ifIphoneX(
         {

@@ -7,7 +7,7 @@ import {
   StyleSheet,
   FlatList,
   ScrollView,
-  RefreshControl
+  RefreshControl,
   StatusBar,
   Platform
 } from 'react-native'

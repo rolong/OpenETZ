@@ -84,6 +84,33 @@ class Assets extends Component{
     if (event.id === 'bottomTabReselected') {
       this.onCloseDrawer()
     }
+
+    switch (event.id) {
+      case 'willAppear':
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+        break;
+      case 'willDisappear':
+        this.backPressed = 0;
+        this.backHandler.remove();
+        break;
+      default:
+        break;
+    }
+
+  }
+   handleBackPress = () => {
+    if (this.backPressed && this.backPressed > 0) {
+      this.props.navigator.popToRoot({ animated: false });
+      return false;
+    }
+
+    this.backPressed = 1;
+    Toast.showLongBottom(I18n.t('click_again')) 
+    // this.props.navigator.showSnackbar({
+    //   text: 'Press one more time to exit',
+    //   duration: 'long',
+    // });
+    return true;
   }
 
   setCurrencySymbol(symbol){
@@ -218,6 +245,9 @@ class Assets extends Component{
         statusBarColor:'#000',
         statusBarTextColorScheme:'light',
       }),
+      passProps: {
+        fromHome:true
+      }
     })
   }
 

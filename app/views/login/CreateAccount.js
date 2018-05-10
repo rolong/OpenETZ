@@ -21,7 +21,6 @@ import { createAccountAction } from '../../actions/accountManageAction'
 
 import I18n from 'react-native-i18n'
 import Toast from 'react-native-toast'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 class CreateAccount extends Component{
   constructor(props){
       super(props)

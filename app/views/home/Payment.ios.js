@@ -631,7 +631,10 @@ class Payment extends Component{
     })
   }
   onPressBack = () => {
-    this.props.navigator.pop()
+    this.props.navigator.popToRoot({
+      animated: true, 
+      animationType: 'fade', 
+    })
   }
   render(){
     const { receiverAddress, txValue, noteVal,visible,modalTitleText,modalTitleIcon,txPsdVal,

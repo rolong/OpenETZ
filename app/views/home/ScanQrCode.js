@@ -22,20 +22,25 @@ class ScanQrCode extends Component{
   }
   
   onSuccess = (e) => {
-    this.props.dispatch(passReceiveAddressAction(e.data,this.props.curToken))
-    this.props.navigator.pop()
-    // this.props.navigator.push({
-    //   screen: 'on_payment',
-    //   title:I18n.t('send'),
-    //   backButtonTitle:I18n.t('back'),
-    //   backButtonHidden:false,
-    //   navigatorStyle: DetailNavigatorStyle,
-    //   // overrideBackPress: true,
-    //   passProps: {
-    //     receive_address: e.data,
-    //     curToken: this.props.curToken,
-    //   }
-    // })
+    
+    if(this.props.fromHome){
+      this.props.navigator.push({
+        screen: 'on_payment',
+        title:I18n.t('send'),
+        backButtonTitle:I18n.t('back'),
+        backButtonHidden:false,
+        navigatorStyle: Object.assign({},DetailNavigatorStyle,{
+          navBarHidden: true
+        }),
+        passProps:{
+          curToken: 'ETZ',
+          scanSucAddr: e.data,
+        }
+      })
+    }else{
+      this.props.dispatch(passReceiveAddressAction(e.data,this.props.curToken))
+      this.props.navigator.pop()
+    }
   }
 
   onCancel = () => {

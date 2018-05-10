@@ -7,20 +7,50 @@ import {
   TouchableOpacity,
   StyleSheet,
   StatusBar,
-  Platform
+  Platform,
+  BackHandler
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../styles/'
 import { setScaleText, scaleSize } from '../../utils/adapter'
 import {ArrowToDetail} from '../../components/'
 import I18n from 'react-native-i18n'
-
+import Toast from 'react-native-toast'
 class Personal extends Component{
   constructor(props){
     super(props)
     this.state={
         
     }
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
+  }
+  onNavigatorEvent(event) {
+    switch (event.id) {
+      case 'willAppear':
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+        break;
+      case 'willDisappear':
+        this.backPressed = 0;
+        this.backHandler.remove();
+        break;
+      default:
+        break;
+    }
+
+  }
+  handleBackPress = () => {
+    if (this.backPressed && this.backPressed > 0) {
+      this.props.navigator.popToRoot({ animated: false });
+      return false;
+    }
+
+    this.backPressed = 1;
+    Toast.showLongBottom(I18n.t('click_again'))  
+    // this.props.navigator.showSnackbar({
+    //   text: 'Press one more time to exit',
+    //   duration: 'long',
+    // });
+    return true;
   }
   toAccountManage = () => {
     this.props.navigator.push({
