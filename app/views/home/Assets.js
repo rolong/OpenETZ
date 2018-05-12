@@ -21,7 +21,7 @@ import { connect } from 'react-redux'
 import SwitchWallet from './SwitchWallet'
 import { switchDrawer } from '../../utils/switchDrawer'
 
-import { splitDecimal } from '../../utils/splitNumber'
+import { splitDecimal, scientificToNumber} from '../../utils/splitNumber'
 import {Scan} from '../../components/'
 
 import { insertToTokenAction,initSelectedListAction,refreshTokenAction,fetchTokenAction } from '../../actions/tokenManageAction'
@@ -447,7 +447,7 @@ class Assets extends Component{
                       key={index}
                       shortName={res.tk_symbol}
                       fullName={res.tk_name}
-                      coinNumber={splitDecimal(res.tk_number)}
+                      coinNumber={scientificToNumber(splitDecimal(res.tk_number)) }
                       //price2rmb={0}
                       symbol={this.state.currencySymbol}
                       onPressItem={() => this.toAssetsDetail(res.tk_symbol,splitDecimal(res.tk_number),res.tk_symbol,res.tk_decimals)}

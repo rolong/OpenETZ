@@ -27,6 +27,7 @@ import { contractAbi } from '../../utils/contractAbi'
 import I18n from 'react-native-i18n'
 import { getTokenGas, getGeneralGas } from '../../utils/getGas'
 import { fromV3 } from '../../utils/fromV3'
+import { scientificToNumber } from '../../utils/splitNumber'
 import InputScrollView from 'react-native-input-scroll-view';
 const EthUtil = require('ethereumjs-util')
 const Wallet = require('ethereumjs-wallet')
@@ -495,20 +496,33 @@ class Payment extends Component{
       let newWallet = fromV3(this.state.keyStore,txPsdVal)
       let privKey = newWallet.privKey.toString('hex')
 
-      let txNumber = parseInt(parseFloat(txValue) *  Math.pow(10,currentTokenDecimals))
+      // let txNumber = parseInt(parseFloat(txValue) *  Math.pow(10,currentTokenDecimals))
+      let txNumber = parseFloat(txValue) *  Math.pow(10,currentTokenDecimals)
+      let txNum = ''
+      if(/e/.test(`${txNumber}`)){
+        let t = scientificToNumber(`${txNumber}`.replace('+',''))
+        txNum = `${t}0`
+      }else{
+        txNum = `${txNumber}`
+      }
+      // console.log('txNum==',txNum)
 
-      let hex16 = parseInt(txNumber).toString(16)      
+      let hex16 = parseInt(txNum).toString(16)
+      
+      // console.log('hex16',hex16)
+
+      // let hex16 = parseInt(txNumber).toString(16)      
 
       let myContract = new web3.eth.Contract(contractAbi, currentTokenAddress)
 
       let data = myContract.methods.transfer(receiverAddress, `0x${hex16}`).encodeABI()
 
       web3.eth.getTransactionCount(`0x${senderAddress}`, function(error, nonce) {
-        let gasValue1 = parseFloat(gasValue) + 100
+        let gas = parseFloat(gasValue) + 500
         const txParams = {
             nonce: web3.utils.toHex(nonce),
             gasPrice:"0x098bca5a00",
-            gasLimit: `0x${parseFloat(gasValue1).toString(16)}`,
+            gasLimit: `0x${gas.toString(16)}`,
             to: currentTokenAddress,
             value :"0x0",
             data: data,

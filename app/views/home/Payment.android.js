@@ -28,6 +28,7 @@ import { contractAbi } from '../../utils/contractAbi'
 import I18n from 'react-native-i18n'
 import { getTokenGas, getGeneralGas } from '../../utils/getGas'
 import { fromV3 } from '../../utils/fromV3'
+import { scientificToNumber } from '../../utils/splitNumber'
 const EthUtil = require('ethereumjs-util')
 const Wallet = require('ethereumjs-wallet')
 const EthereumTx = require('ethereumjs-tx')
@@ -42,7 +43,7 @@ class Payment extends Component{
   constructor(props){
     super(props)
     this.state={
-      receiverAddress: '',
+      receiverAddress: '0x1ec79157f606d942ac19ce21231c1572aef8bb5d',
       txValue: '',
       noteVal: '',
       txAddrWarning: '',
@@ -101,9 +102,11 @@ class Payment extends Component{
     const { fetchTokenList } = this.props.tokenManageReducer 
 
     const { currentAccount } = this.props.accountManageReducer
-    this.setState({
-      receiverAddress: this.props.scanSucAddr,
-    })
+    if(this.props.scanSucAddr){
+       this.setState({
+        receiverAddress: this.props.scanSucAddr,
+       })
+    }
     if(this.props.curToken !== 'ETZ'){
       this.setState({
         isToken: true,
@@ -510,21 +513,33 @@ class Payment extends Component{
     try{
       let newWallet = fromV3(this.state.keyStore,txPsdVal)
       let privKey = newWallet.privKey.toString('hex')
-     
-      let txNumber = parseInt(parseFloat(txValue) *  Math.pow(10,currentTokenDecimals))
+      
+      console.log('txValue==',txValue)
 
-      let hex16 = parseInt(txNumber).toString(16)      
+      let txNumber = parseFloat(txValue) *  Math.pow(10,currentTokenDecimals)
 
+      console.log('txNumber==',txNumber)
+      let txNum = ''
+      if(/e/.test(`${txNumber}`)){
+        let t = scientificToNumber(`${txNumber}`.replace('+',''))
+        txNum = `${t}0`
+      }else{
+        txNum = `${txNumber}`
+      }
+      console.log('txNum==',txNum)
+      
+      let hex16 = parseInt(txNum).toString(16)      
+      console.log('hex16',hex16)
       let myContract = new web3.eth.Contract(contractAbi, currentTokenAddress)
 
       let data = myContract.methods.transfer(receiverAddress, `0x${hex16}`).encodeABI()
 
       web3.eth.getTransactionCount(`0x${senderAddress}`, function(error, nonce) {
-
+        let gas = parseFloat(gasValue) + 500
         const txParams = {
             nonce: web3.utils.toHex(nonce),
             gasPrice:"0x098bca5a00",
-            gasLimit: `0x${parseFloat(gasValue).toString(16)}`,
+            gasLimit: `0x${gas.toString(16)}`,
             to: currentTokenAddress,
             value :"0x0",
             data: data,
