@@ -25,6 +25,7 @@ class AmountDatabase  {
             tx.executeSql('CREATE TABLE IF NOT EXISTS ACCOUNT(' +  
               'id INTEGER PRIMARY KEY  AUTOINCREMENT,' +  
               'account_name VARCHAR,'+  
+              'password_promp VARCHAR,'+  
               'mnemonic VARCHAR,'+
               'is_selected INTEGER,' + 
               'assets_total VARCHAR,' + 
@@ -230,12 +231,12 @@ class AmountDatabase  {
 
             return Promise.all(accountData.map(async (query,idx) => {
                 try {
-                    const { account_name, mnemonic, is_selected, assets_total, backup_status, address, kid, version, cipher, ciphertext, kdf, mac, dklen, salt, n,r,p,iv } = query
+                    const { account_name, mnemonic, is_selected, assets_total, backup_status, address, kid, version, cipher, ciphertext, kdf, mac, dklen, salt, n,r,p,iv, password_promp } = query
 
 
-                    let sql = "INSERT INTO account(account_name,mnemonic,is_selected,assets_total,backup_status,address,kid,version,cipher,ciphertext,kdf,mac,dklen,salt,n,r,p,iv)"+  
-                              "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
-                    await tx.executeSql(sql,[account_name,mnemonic,is_selected,assets_total,backup_status,address,kid,version,cipher,ciphertext,kdf,mac,dklen,salt,n,r,p,iv])
+                    let sql = "INSERT INTO account(account_name,mnemonic,is_selected,assets_total,backup_status,address,kid,version,cipher,ciphertext,kdf,mac,dklen,salt,n,r,p,iv,password_promp)"+  
+                              "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+                    await tx.executeSql(sql,[account_name,mnemonic,is_selected,assets_total,backup_status,address,kid,version,cipher,ciphertext,kdf,mac,dklen,salt,n,r,p,iv,password_promp])
 
                     insertSuccess = true
 

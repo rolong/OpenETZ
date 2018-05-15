@@ -4,7 +4,8 @@ import {
   Text,
   StyleSheet,
   StatusBar,
-  Platform
+  Platform,
+  Alert,
 } from 'react-native'
 
 import { pubS } from '../../../styles/'
@@ -47,11 +48,11 @@ class ImportAccount extends Component{
         Toast.showLongBottom(I18n.t('import_successful'))
           setTimeout(() => {
             toHome()
-          },100)
+          },1000)
         
       }else{
         if(nextProps.accountManageReducer.importStatus === 'fail'){
-          Toast.showLongBottom(I18n.t('import_fail'))
+          Alert.alert(nextProps.accountManageReducer.importFailMsg)
         }
       }
     }

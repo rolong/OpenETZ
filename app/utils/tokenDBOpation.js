@@ -167,7 +167,6 @@ async function onTokenRefresh(options){
 		sql: 'select * from token',
 		parame: []
 	})
-// <<<<<<< HEAD
 	
 	let balance = await web3.eth.getBalance(`0x${addr}`)
 	let res = web3.utils.fromWei(balance,'ether')
@@ -175,30 +174,18 @@ async function onTokenRefresh(options){
 	console.log('初次加载的etz数量res',res)
 	
 	refreshEtz(res)
-// =======
-
-// 	// if(selTokenRes.length !== 0){
-
-// 		let balance = await web3.eth.getBalance(`0x${addr}`)
-//     	let res = web3.utils.fromWei(balance,'ether')
-		
-// >>>>>>> origin/ios-baseversion
 
 	refreshSuccess(selTokenRes)
 
 	if(selTokenRes.length !== 0){
 
-// <<<<<<< HEAD
+
 	}else{
 		refreshFail()
 	}
-// =======
-// 		refreshSuccess(selTokenRes)
-// 	// }else{
-// 	// 	refreshFail()
-// 	// }
-// >>>>>>> origin/ios-baseversion
 }
+
+
 
 const tokenDBOpation = {
 	tokenRefresh: (options) => {
@@ -219,5 +206,6 @@ const tokenDBOpation = {
 	switchTokenList: (options) => {
 		onSwitchTokenList(options)
 	},
+	
 }
 export default tokenDBOpation

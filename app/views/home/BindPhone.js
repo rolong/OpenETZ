@@ -17,12 +17,13 @@ import { connect } from 'react-redux'
 import I18n from 'react-native-i18n'
 
 import CountryPicker, { getAllCountries } from 'react-native-country-picker-modal'
-import DeviceInfo from 'react-native-device-info'
+// import DeviceInfo from 'react-native-device-info'
 // import { isValidNumber } from 'libphonenumber-js/custom'
 class BindPhone extends Component{
 	constructor(props){
 		super(props)
-	    let userLocaleCountryCode = DeviceInfo.getDeviceCountry()
+		let userLocaleCountryCode
+	    // let userLocaleCountryCode = DeviceInfo.getDeviceCountry()
 	    const userCountryData = getAllCountries()
 	      .filter(country => coutryCode.includes(country.cca2))
 	      .filter(country => country.cca2 === userLocaleCountryCode)

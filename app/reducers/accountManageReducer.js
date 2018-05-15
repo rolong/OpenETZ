@@ -9,6 +9,7 @@ const initState = {
 	accountInfo: [],
 	currentAddr: '',
 	importStatus: '',
+	importFailMsg: '',
 	// deleteFinished: false,
 	updateBackupSucc: false,
 	isLoading: false,
@@ -25,6 +26,7 @@ const initState = {
 
 	scanAddress: '',
 	scanCurToken: '',
+	allAmoountAddress: [],
 }
 export default function accountManageReducer (state = initState,action) {
 	switch(action.type){
@@ -88,6 +90,9 @@ export default function accountManageReducer (state = initState,action) {
 			break
 		case types.PASS_SCAN_RECEIVE_ADDRESS:
 			return onPassScanAddr(state,action)
+			break
+		case types.REFERSH_MANEGE_BALANCE:
+			return onBalance(state,action)
 			break
 		default:
 			return state
@@ -305,9 +310,22 @@ const importSuc = (state,action) => {
 	}
 }
 const importFail = (state,action) => {
+	const { msg } = action.payload
 	return {
 		...state,
 		importStatus: 'fail',
+		importFailMsg: msg,
 		importLoading: false
 	}
 }
+const onBalance = (state,action) => {
+	const { data } = action.payload
+
+
+	let newState = Object.assign({},state)
+	for(let i = 0;i < data.balData.length; i ++){
+		newState.globalAccountsList[i].assets_total = data.balData[i]
+	}			
+	return newState
+}
+

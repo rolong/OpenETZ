@@ -24,15 +24,16 @@ class Mnemonic extends Component{
   constructor(props){
     super(props)
     this.state={
-      // mnemonicVal: 'rhythm example taxi leader divorce prosper arm add tower snake domain still',
-      mnemonicVal: '',
+      mnemonicVal: 'rhythm example taxi leader divorce prosper arm add tower snake domain still',
+      // mnemonicVal: '',
       mnemonicValWarning: '',
-      passwordVal: '',
+      passwordVal: 'zjc1234567',
       passwordWarning: '',
-      repeadPsdVal: '',
+      repeadPsdVal: 'zjc1234567',
       rePsdWarning: '',
-      userNameVal: '',
+      userNameVal: '助记词',
       userNameWarning: '',
+      hintValue: '',
     }
 
   }
@@ -83,7 +84,8 @@ class Mnemonic extends Component{
   }
   onPressImport = () => {
    const { mnemonicVal, mnemonicValWarning, passwordVal, passwordWarning, repeadPsdVal, rePsdWarning,userNameVal } = this.state
-   let psdReg = /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*.]+$)[a-zA-Z\d!@#$%^&*.]{8,}$/
+   // let psdReg = /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*.]+$)[a-zA-Z\d!@#$%^&*.]{8,}$/
+   let psdReg = /^(?![a-zA-z]+$)(?!\d+$)(?![!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]+$)[a-zA-Z\d!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{8,}$/
    if(userNameVal.length === 0){
       this.setState({
         userNameWarning: I18n.t('enter_account_name'),
@@ -112,7 +114,8 @@ class Mnemonic extends Component{
   }
 
   onImport = () => {
-    const { mnemonicVal, passwordVal, userNameVal} = this.state  
+    const { mnemonicVal, passwordVal, userNameVal, hintValue} = this.state  
+    const { globalAccountsList } = this.props.accountManageReducer
     this.props.dispatch(showImportLoadingAction(true))
     setTimeout(() => {
       if(bip39.validateMnemonic(mnemonicVal)){
@@ -121,7 +124,9 @@ class Mnemonic extends Component{
           mnemonicPsd: passwordVal,
           mnemonicUserName: userNameVal,
           type: 'mnemonic',
-          fromLogin: this.props.fromLogin === 'login' ? 'login' : 'accounts'
+          fromLogin: this.props.fromLogin === 'login' ? 'login' : 'accounts',
+          accountsList: globalAccountsList,
+          hintValue
         }))
       }else{
         this.props.dispatch(showImportLoadingAction(false))
@@ -134,11 +139,17 @@ class Mnemonic extends Component{
   onFocus = () => {   
     this._keyboardDidShow(true)
   }
+
+  onChangeHint = (val) => {
+    this.setState({
+      hintValue: val
+    })
+  }
   render(){
     isIphoneX() ?    //判断IPONEX
     this.state.DEFULT_IPONEX = 345
     : this.state.DEFULT_IPONEX = scaleSize(680);
-    const { mnemonicVal, mnemonicValWarning, passwordVal, passwordWarning, repeadPsdVal, rePsdWarning,userNameVal, userNameWarning,DEFULT_IPONEX } = this.state
+    const { mnemonicVal, mnemonicValWarning, passwordVal, passwordWarning, repeadPsdVal, rePsdWarning,userNameVal, userNameWarning,DEFULT_IPONEX,hintValue } = this.state
     return(
       <View style={styles.container}>
         <ScrollView
@@ -175,7 +186,11 @@ class Mnemonic extends Component{
             secureTextEntry={true}
             warningText={rePsdWarning}
           />
-
+          <TextInputComponent
+            placeholder={I18n.t('password_hint')}
+            value={hintValue}
+            onChangeText={this.onChangeHint}
+          />
           <Btn
             btnMarginTop={scaleSize(60)}
             btnPress={this.onPressImport}

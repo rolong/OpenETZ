@@ -3,16 +3,16 @@ const hdkey = require('ethereumjs-wallet/hdkey')
 const util = require('ethereumjs-util')
 const bip39 = require('bip39')
 const randomBytes = require('randombytes')
-
+import I18n from 'react-native-i18n'
 
 import accountDB from '../db/account_db'
 import {  ethWallet,EthereumHDKey } from './ethWallet'
-
+import { fromV3,toLowerCaseKeys } from './fromV3'
 
 async function onImportAccount(options){
 	const { importSuccess, importFailure, parames } = options
 
-	const { privateKey, privatePassword, privateUserName,type,mnemonicVal, mnemonicPsd, mnemonicUserName,keystoreVal, keystoreUserName, fromLogin } = parames
+	const { privateKey, privatePassword, privateUserName,type,mnemonicVal, mnemonicPsd, mnemonicUserName,keystoreVal, keystoreUserName, fromLogin, keystorePsd,accountsList, hintValue } = parames
 	let selected = 0
 	let keyStore = {}
 	let createFinished = false
@@ -40,10 +40,31 @@ async function onImportAccount(options){
 			    userName = mnemonicUserName
 			    createFinished = true
 			}else{
-				keyStore = JSON.parse(keystoreVal)
+				//keystore导入时  使用keystore+psd生成paivekey 再用paivekey+psd生成自己的keystore
+
+				let keyStore1 = JSON.parse(keystoreVal)
+				let keyStore2 = toLowerCaseKeys(keyStore1)
+				let newWallet 
+				try{
+					newWallet = fromV3(keyStore2,keystorePsd)//验证密码
+				} catch (err){
+					importFailure(err) 
+					return
+				}
+
+				if(keyStore2.crypto.kdfparams.n > 8193){
+	          		let ksPrivKey = newWallet.privKey.toString('hex')
+	          		let buf = new Buffer(ksPrivKey, 'hex')
+					let wal = ethWallet.fromPrivateKey(buf)
+				    let ksKeystore3 = wal.toV3(keystorePsd,{c:8192,n:8192})
+			   		keyStore = ksKeystore3
+					
+				}else{
+					keyStore = keyStore2
+				}
+				console.log('keyStore导入完成',keyStore)
 				userName = keystoreUserName
 				createFinished  = true
-				console.log('keyStore导入完成')
 			}
 		}
 	} catch (err){
@@ -61,6 +82,15 @@ async function onImportAccount(options){
 	       	accountDB.createTokenTable()
 	       	accountDB.createTradingTable()
 	   	}else{
+	   		//不能导入相同的账号
+
+	   		for(let i = 0; i < accountsList.length; i ++){
+	   			if(accountsList[i].address === keyStore.address){
+	   				importFailure(I18n.t('account_existed'))
+	   				return
+	   			}
+	   		}
+
 	   		selected = 0
 	   	}
 
@@ -68,6 +98,7 @@ async function onImportAccount(options){
     		user = {};
 
 	  	try {
+	  		user.password_promp= hintValue
 		    user.account_name = userName  
 		    user.backup_status = 0  
 		    user.is_selected = selected
@@ -76,29 +107,17 @@ async function onImportAccount(options){
 		    user.kid = keyStore.id 
 		    user.version = keyStore.version
 
-		    if(keyStore.crypto){
-		    	user.cipher = keyStore.crypto.cipher
-		    	user.ciphertext = keyStore.crypto.ciphertext
-		    	user.kdf = keyStore.crypto.kdf
-				user.mac = keyStore.crypto.mac
-				user.dklen = keyStore.crypto.kdfparams.dklen
-				user.salt = keyStore.crypto.kdfparams.salt
-				user.n = keyStore.crypto.kdfparams.n
-				user.r = keyStore.crypto.kdfparams.r
-				user.p = keyStore.crypto.kdfparams.p
-				user.iv = keyStore.crypto.cipherparams.iv
-		    }else{
-		    	user.cipher = keyStore.Crypto.cipher
-		    	user.ciphertext = keyStore.Crypto.ciphertext
-		    	user.kdf = keyStore.Crypto.kdf
-				user.mac = keyStore.Crypto.mac
-				user.dklen = keyStore.Crypto.kdfparams.dklen
-				user.salt = keyStore.Crypto.kdfparams.salt
-				user.n = keyStore.Crypto.kdfparams.n
-				user.r = keyStore.Crypto.kdfparams.r
-				user.p = keyStore.Crypto.kdfparams.p
-				user.iv = keyStore.Crypto.cipherparams.iv
-		    }
+	    	user.cipher = keyStore.crypto.cipher
+	    	user.ciphertext = keyStore.crypto.ciphertext
+	    	user.kdf = keyStore.crypto.kdf
+			user.mac = keyStore.crypto.mac
+			user.dklen = keyStore.crypto.kdfparams.dklen
+			user.salt = keyStore.crypto.kdfparams.salt
+			user.n = keyStore.crypto.kdfparams.n
+			user.r = keyStore.crypto.kdfparams.r
+			user.p = keyStore.crypto.kdfparams.p
+			user.iv = keyStore.crypto.cipherparams.iv
+
 		    userData.push(user) 
 
 		    let importInsertRes = await accountDB.insertToAccontTable(userData)
@@ -188,6 +207,7 @@ async function onCreateAccount(options){
 
     let userData = [],  
     	user = {};
+    user.password_promp = promptVal
     user.mnemonic = mnemonic
     user.account_name = userNameVal  
     user.backup_status = 0  
@@ -278,6 +298,21 @@ async function onSwitchAccount(options){
 		console.log('切换账号出错')
 	}
 }
+
+async function onGetManageBalance(options){
+	const { parames,getBalanceNum } = options
+	let ba = []
+	for(let i = 0; i < parames.list.length; i ++){
+		let balance = await web3.eth.getBalance(`0x${parames.list[i].address}`)
+		let idxBalance = web3.utils.fromWei(balance,'ether')
+		ba.push(idxBalance)		
+	}
+	getBalanceNum({
+		balData: ba,
+	})
+
+}
+
 const accountDBOpation = {
 	importAccount:(options) => {
 		onImportAccount(options)
@@ -298,6 +333,9 @@ const accountDBOpation = {
 	switchAccount:(options) =>{
 		onSwitchAccount(options)
 	},
+	getManageBalance: (options) => {
+		onGetManageBalance(options)
+	}
 }
 
 export default accountDBOpation

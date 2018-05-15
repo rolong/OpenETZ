@@ -131,4 +131,13 @@
   "transfer_detail":"In the transfer, the details page is being skipping for you",
   "enter":"Oh I see",
   "input_number":"please input number",
+  "bind_phone":"Bind Phone",
+  "verif_code":"verification code",
+  "Inv_code":"Invitation code(Not fill)",
+  "bind_btn":"Bind Now",
+  "recom_prize":"Recommended prize",
+  "select_coutry":"Mobile phone number attribution",
+  "phone_number":"phone number",
+  "account_existed":"This account already exists",
+  "pas_prompt":"password hint"
 }	

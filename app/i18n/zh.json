@@ -131,4 +131,13 @@
   "transfer_detail":"正在转账中,正在为你跳转详情页面...",
   "enter":"我知道了",
   "input_number":"请输入数字",
+  "bind_phone":"绑定手机",
+  "verif_code":"验证码",
+  "Inv_code":"邀请码(可不填)",
+  "bind_btn":"立即绑定",
+  "recom_prize":"推荐有奖",
+  "select_coutry":"手机号归属地",
+  "phone_number":"手机号",
+  "account_existed":"该账号已经存在",
+  "pas_prompt":"密码提示",
 }	

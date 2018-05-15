@@ -17,12 +17,13 @@ import I18n from 'react-native-i18n'
 import CountryPicker, {
   getAllCountries
 } from 'react-native-country-picker-modal'
-import DeviceInfo from 'react-native-device-info'
+// import DeviceInfo from 'react-native-device-info'
 class SelectCoutry extends Component{
 	constructor(props) {
     	// StatusBarIOS.setHidden(true)
     	super(props)
-	    let userLocaleCountryCode = DeviceInfo.getDeviceCountry()
+	    // let userLocaleCountryCode = DeviceInfo.getDeviceCountry()
+	    let userLocaleCountryCode
 	    const userCountryData = getAllCountries()
 	      .filter(country => coutryCode.includes(country.cca2))
 	      .filter(country => country.cca2 === userLocaleCountryCode)

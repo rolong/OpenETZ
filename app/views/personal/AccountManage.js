@@ -16,6 +16,7 @@ import { setScaleText, scaleSize,ifIphoneX } from '../../utils/adapter'
 import { connect } from 'react-redux'
 import { sliceAddress,splitDecimal } from '../../utils/splitNumber'
 import I18n from 'react-native-i18n'
+import { refreshManageBalanceAction } from '../../actions/accountManageAction'
 class AccountCard extends Component {
   render(){
     const { accountName, accountPsd, accountTotal, accountUnit, accountBackUp, backupState} = this.props
@@ -62,7 +63,11 @@ class AccountManage extends Component{
     } 
   }
 
-
+  componentWillMount(){
+    //更新balance数据
+    const { globalAccountsList } = this.props.accountManageReducer
+    this.props.dispatch(refreshManageBalanceAction(globalAccountsList))
+  }
 
   componentWillReceiveProps(nextProps){
     if(this.props.accountManageReducer.deleteSuc !== nextProps.accountManageReducer.deleteSuc && nextProps.accountManageReducer.deleteSuc){
@@ -73,7 +78,7 @@ class AccountManage extends Component{
     }
   }
 
-  toDetail = (address,name,id) => {
+  toDetail = (address,name,id,pro) => {
     const { currentAccount, globalAccountsList } = this.props.accountManageReducer
     this.props.navigator.push({
       screen: 'back_up_account',
@@ -87,7 +92,8 @@ class AccountManage extends Component{
         address: address,
         b_id: id,
         accountsNumber: globalAccountsList.length,
-        currentAccountId: currentAccount.id
+        currentAccountId: currentAccount.id,
+        psdPrompt: pro
       },
       // navigatorButtons: {
       //   rightButtons: [
@@ -119,31 +125,30 @@ class AccountManage extends Component{
     })
   }
 
-  renderItem = (item) => {
-    let res = item.item
-    // console.log('1111111111111111111111',res)
-    return(
-      <AccountCard
-        accountName={res.account_name}
-        accountPsd={sliceAddress(`0x${res.address}`,10)}
-        accountTotal={splitDecimal(res.assets_total)}
-        accountUnit={'ether'}
-        accountBackUp={() => this.toDetail(res.address,res.account_name,res.id)}
-        backupState={res.backup_status}
-      />
-    )
-  }
+ 
   render(){
     const { currentAccount, globalAccountsList } = this.props.accountManageReducer
-
     return(
       <View style={[pubS.container,{backgroundColor:'#F5F7FB'}]}>
         <View style={{marginBottom: scaleSize(96)}}>
-          <FlatList
-            data={globalAccountsList}
-            renderItem={this.renderItem}
-            keyExtractor = {(item, index) => index}
-          />
+          
+          <ScrollView showsVerticalScrollIndicator={false}>
+            {
+              globalAccountsList.map((res,index) => {
+                return(
+                  <AccountCard
+                    key={index}
+                    accountName={res.account_name}
+                    accountPsd={sliceAddress(`0x${res.address}`,10)}
+                    accountTotal={splitDecimal(res.assets_total)}
+                    accountUnit={'ether'}
+                    accountBackUp={() => this.toDetail(res.address,res.account_name,res.id,res.password_promp)}
+                    backupState={res.backup_status}
+                  />
+                )
+              })
+            }
+          </ScrollView>
         </View>
         <View style={[{width: '100%',bottom:0,position:'absolute'},pubS.rowCenter]}>
           <TouchableOpacity activeOpacity={.7} onPress={this.createAccountBtn} style={[styles.btnStyle,pubS.center,{backgroundColor:'#2B8AFF'}]}>

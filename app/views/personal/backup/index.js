@@ -317,10 +317,19 @@ class BackUpAccount extends Component{
         
         <Image source={require('../../../images/xhdpi/Penguin.png')} style={styles.avateStyle}/>
         <Text style={pubS.font26_5}>{sliceAddress(this.props.address,10)}</Text>
-        <View style={[styles.userNameViewStyle,pubS.rowCenterJus,pubS.bottomStyle]}>
+        <View style={[styles.userNameViewStyle,pubS.rowCenterJus,pubS.bottomStyle,{marginTop: scaleSize(80),}]}>
           <Text style={pubS.font26_4}>{I18n.t('account_name')}</Text>
           <Text style={pubS.font26_4}>{this.props.userName}</Text>
         </View>
+        {
+          this.props.psdPrompt.length > 0 ? 
+          <View style={[styles.userNameViewStyle,pubS.rowCenterJus,pubS.bottomStyle]}>
+            <Text style={pubS.font26_4}>{I18n.t('pas_prompt')}</Text>
+            <Text style={pubS.font26_4}>{this.props.psdPrompt}</Text>
+          </View>
+          : null
+        }
+
         <View style={{position:'absolute',bottom: scaleSize(40)}}>
           
           {
@@ -537,17 +546,15 @@ const styles = StyleSheet.create({
       {
         height:scaleSize(100),
         width: 345,
-        marginTop: scaleSize(80),
+        
       },
       {
         height:scaleSize(100),
         width: scaleSize(680),
-        marginTop: scaleSize(80),
       },
       {
         height:scaleSize(100),
         width: scaleSize(680),
-        marginTop: scaleSize(80),
       }
     )
 

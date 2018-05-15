@@ -35,6 +35,9 @@ import TradingRecordDetail from '../views/home/TradingRecordDetail'
 import TxWebView from '../views/home/TxWebView'
 import SwitchWallet from '../views/home/SwitchWallet'
 import AddAssets from '../views/home/AddAssets'
+import BindPhone from '../views/home/BindPhone'
+import PecomPrize from '../views/home/PecomPrize'
+import SelectCoutry from '../views/home/SelectCoutry'
 
 function registerScreens() {
   Navigation.registerComponent('splash', () => Splash,store,Provider)
@@ -63,6 +66,9 @@ function registerScreens() {
   Navigation.registerComponent('tx_web_view', () => TxWebView,store,Provider)
   Navigation.registerComponent('switch_wallet', () => SwitchWallet,store,Provider)
   Navigation.registerComponent('add_assets', () => AddAssets,store,Provider)
+  Navigation.registerComponent('bind_phone', () => BindPhone,store,Provider)
+  Navigation.registerComponent('recom_prize', () => PecomPrize,store,Provider)
+  Navigation.registerComponent('select_coutry', () => SelectCoutry,store,Provider)
 
 }
 

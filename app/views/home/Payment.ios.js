@@ -447,11 +447,11 @@ class Payment extends Component{
           console.log('receipt==',receipt)
           let sendResult = 1
           
-          if(receipt.status == true || receipt.status == 'true'){
+          if(receipt.status==="0x1" || receipt.status == true){
               //更新etz数量
             self.props.dispatch(refreshTokenAction(senderAddress,fetchTokenList))
             setTimeout(() => {
-              Toast.showLongBottom(I18n.t('send_successful'))
+              Alert.alert(I18n.t('send_successful'))
             },1000)
           }else{
             sendResult = 0
@@ -474,22 +474,13 @@ class Payment extends Component{
       // })
       .on('error', (error) => {
         console.log('error==',error)
-        Alert.alert(
-            '',
-            `${error}`,
-            [
-              {text: I18n.t('ok'), onPress:() => {console.log('1')}},
-            ],
-        )
-
+        Alert.alert(`${error}`)
         self.onPressClose()
         self.props.navigator.pop()
-        // alert(error)
       })
     }catch(error){
       this.onPressClose()
       Alert.alert(error)
-      // Toast.showLongBottom(I18n.t('password_is_wrong'))
     }
   }
   async makeTransactByToken(){
@@ -502,7 +493,6 @@ class Payment extends Component{
       let newWallet = fromV3(this.state.keyStore,txPsdVal)
       let privKey = newWallet.privKey.toString('hex')
 
-      // let txNumber = parseInt(parseFloat(txValue) *  Math.pow(10,currentTokenDecimals))
       let txNumber = parseFloat(txValue) *  Math.pow(10,currentTokenDecimals)
       let txNum = ''
       if(/e/.test(`${txNumber}`)){
@@ -587,21 +577,14 @@ class Payment extends Component{
         .on('receipt', function(receipt){
             console.log('receipt:', receipt)
             let sendResult = 0
-            if(receipt.status === true || receipt.status == 'true'){
+            if(receipt.status==="0x1" || receipt.status == true){
               sendResult = 1
               self.props.dispatch(refreshTokenAction(senderAddress,fetchTokenList))
               setTimeout(() => {
-                Toast.showLongBottom(I18n.t('send_successful'))
+                Alert.alert(I18n.t('send_successful'))
               },1000)
             }else{
-              
-              Alert.alert(
-                  '',
-                  I18n.t('send_failure'),
-                  [
-                    {text: I18n.t('ok'), onPress:() => {console.log('1')}},
-                  ],
-              )
+              Alert.alert(I18n.t('send_failure'))
             }
             
             
@@ -631,16 +614,13 @@ class Payment extends Component{
           console.log('error1111',error)
           self.onPressClose()
           self.props.navigator.pop()
-          // Alert.alert(`${error}`,)
-
-          // alert(error)
+          Alert.alert(`${error}`,)
         });
       })
 
     }catch (error) {
       this.onPressClose()
       Alert.alert(error)
-      // Toast.showLongBottom(I18n.t('password_is_wrong'))
     }
 
   }
