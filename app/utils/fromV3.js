@@ -79,4 +79,4 @@ function fromV3(input, password, nonStrict) {
 }
 
 
-export { fromV3 }
+export { fromV3,toLowerCaseKeys }

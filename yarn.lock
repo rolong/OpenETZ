@@ -378,6 +378,14 @@ babel-generator@^6.18.0, babel-generator@^6.24.1, babel-generator@^6.26.0:
     source-map "^0.5.7"
     trim-right "^1.0.1"
 
+babel-helper-builder-binary-assignment-operator-visitor@^6.24.1:
+  version "6.24.1"
+  resolved "https://registry.yarnpkg.com/babel-helper-builder-binary-assignment-operator-visitor/-/babel-helper-builder-binary-assignment-operator-visitor-6.24.1.tgz#cce4517ada356f4220bcae8a02c2b346f9a56664"
+  dependencies:
+    babel-helper-explode-assignable-expression "^6.24.1"
+    babel-runtime "^6.22.0"
+    babel-types "^6.24.1"
+
 babel-helper-builder-react-jsx@^6.24.1:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-helper-builder-react-jsx/-/babel-helper-builder-react-jsx-6.26.0.tgz#39ff8313b75c8b65dceff1f31d383e0ff2a408a0"
@@ -403,6 +411,14 @@ babel-helper-define-map@^6.24.1:
     babel-runtime "^6.26.0"
     babel-types "^6.26.0"
     lodash "^4.17.4"
+
+babel-helper-explode-assignable-expression@^6.24.1:
+  version "6.24.1"
+  resolved "https://registry.yarnpkg.com/babel-helper-explode-assignable-expression/-/babel-helper-explode-assignable-expression-6.24.1.tgz#f25b82cf7dc10433c55f70592d5746400ac22caa"
+  dependencies:
+    babel-runtime "^6.22.0"
+    babel-traverse "^6.24.1"
+    babel-types "^6.24.1"
 
 babel-helper-function-name@^6.24.1:
   version "6.24.1"
@@ -520,13 +536,37 @@ babel-plugin-syntax-async-functions@^6.5.0, babel-plugin-syntax-async-functions@
   version "6.13.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-syntax-async-functions/-/babel-plugin-syntax-async-functions-6.13.0.tgz#cad9cad1191b5ad634bf30ae0872391e0647be95"
 
+babel-plugin-syntax-class-constructor-call@^6.18.0:
+  version "6.18.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-syntax-class-constructor-call/-/babel-plugin-syntax-class-constructor-call-6.18.0.tgz#9cb9d39fe43c8600bec8146456ddcbd4e1a76416"
+
 babel-plugin-syntax-class-properties@^6.5.0, babel-plugin-syntax-class-properties@^6.8.0:
   version "6.13.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-syntax-class-properties/-/babel-plugin-syntax-class-properties-6.13.0.tgz#d7eb23b79a317f8543962c505b827c7d6cac27de"
 
+babel-plugin-syntax-decorators@^6.1.18:
+  version "6.13.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-syntax-decorators/-/babel-plugin-syntax-decorators-6.13.0.tgz#312563b4dbde3cc806cee3e416cceeaddd11ac0b"
+
+babel-plugin-syntax-do-expressions@^6.8.0:
+  version "6.13.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-syntax-do-expressions/-/babel-plugin-syntax-do-expressions-6.13.0.tgz#5747756139aa26d390d09410b03744ba07e4796d"
+
+babel-plugin-syntax-exponentiation-operator@^6.8.0:
+  version "6.13.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-syntax-exponentiation-operator/-/babel-plugin-syntax-exponentiation-operator-6.13.0.tgz#9ee7e8337290da95288201a6a57f4170317830de"
+
+babel-plugin-syntax-export-extensions@^6.8.0:
+  version "6.13.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-syntax-export-extensions/-/babel-plugin-syntax-export-extensions-6.13.0.tgz#70a1484f0f9089a4e84ad44bac353c95b9b12721"
+
 babel-plugin-syntax-flow@^6.18.0, babel-plugin-syntax-flow@^6.5.0, babel-plugin-syntax-flow@^6.8.0:
   version "6.18.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-syntax-flow/-/babel-plugin-syntax-flow-6.18.0.tgz#4c3ab20a2af26aa20cd25995c398c4eb70310c8d"
+
+babel-plugin-syntax-function-bind@^6.8.0:
+  version "6.13.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-syntax-function-bind/-/babel-plugin-syntax-function-bind-6.13.0.tgz#48c495f177bdf31a981e732f55adc0bdd2601f46"
 
 babel-plugin-syntax-jsx@^6.5.0, babel-plugin-syntax-jsx@^6.8.0:
   version "6.18.0"
@@ -548,6 +588,14 @@ babel-plugin-transform-async-to-generator@6.16.0:
     babel-plugin-syntax-async-functions "^6.8.0"
     babel-runtime "^6.0.0"
 
+babel-plugin-transform-class-constructor-call@^6.6.5:
+  version "6.24.1"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-class-constructor-call/-/babel-plugin-transform-class-constructor-call-6.24.1.tgz#80dc285505ac067dcb8d6c65e2f6f11ab7765ef9"
+  dependencies:
+    babel-plugin-syntax-class-constructor-call "^6.18.0"
+    babel-runtime "^6.22.0"
+    babel-template "^6.24.1"
+
 babel-plugin-transform-class-properties@^6.18.0, babel-plugin-transform-class-properties@^6.5.0, babel-plugin-transform-class-properties@^6.6.0, babel-plugin-transform-class-properties@^6.8.0:
   version "6.24.1"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-class-properties/-/babel-plugin-transform-class-properties-6.24.1.tgz#6a79763ea61d33d36f37b611aa9def81a81b46ac"
@@ -556,6 +604,21 @@ babel-plugin-transform-class-properties@^6.18.0, babel-plugin-transform-class-pr
     babel-plugin-syntax-class-properties "^6.8.0"
     babel-runtime "^6.22.0"
     babel-template "^6.24.1"
+
+babel-plugin-transform-decorators-legacy@^1.3.4:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-decorators-legacy/-/babel-plugin-transform-decorators-legacy-1.3.4.tgz#741b58f6c5bce9e6027e0882d9c994f04f366925"
+  dependencies:
+    babel-plugin-syntax-decorators "^6.1.18"
+    babel-runtime "^6.2.0"
+    babel-template "^6.3.0"
+
+babel-plugin-transform-do-expressions@^6.5.0:
+  version "6.22.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-do-expressions/-/babel-plugin-transform-do-expressions-6.22.0.tgz#28ccaf92812d949c2cd1281f690c8fdc468ae9bb"
+  dependencies:
+    babel-plugin-syntax-do-expressions "^6.8.0"
+    babel-runtime "^6.22.0"
 
 babel-plugin-transform-es2015-arrow-functions@^6.22.0, babel-plugin-transform-es2015-arrow-functions@^6.5.0, babel-plugin-transform-es2015-arrow-functions@^6.5.2, babel-plugin-transform-es2015-arrow-functions@^6.8.0:
   version "6.22.0"
@@ -737,11 +800,33 @@ babel-plugin-transform-es3-property-literals@^6.5.0, babel-plugin-transform-es3-
   dependencies:
     babel-runtime "^6.22.0"
 
+babel-plugin-transform-exponentiation-operator@^6.5.0:
+  version "6.24.1"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-exponentiation-operator/-/babel-plugin-transform-exponentiation-operator-6.24.1.tgz#2ab0c9c7f3098fa48907772bb813fe41e8de3a0e"
+  dependencies:
+    babel-helper-builder-binary-assignment-operator-visitor "^6.24.1"
+    babel-plugin-syntax-exponentiation-operator "^6.8.0"
+    babel-runtime "^6.22.0"
+
+babel-plugin-transform-export-extensions@^6.5.0:
+  version "6.22.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-export-extensions/-/babel-plugin-transform-export-extensions-6.22.0.tgz#53738b47e75e8218589eea946cbbd39109bbe653"
+  dependencies:
+    babel-plugin-syntax-export-extensions "^6.8.0"
+    babel-runtime "^6.22.0"
+
 babel-plugin-transform-flow-strip-types@^6.21.0, babel-plugin-transform-flow-strip-types@^6.5.0, babel-plugin-transform-flow-strip-types@^6.7.0, babel-plugin-transform-flow-strip-types@^6.8.0:
   version "6.22.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-flow-strip-types/-/babel-plugin-transform-flow-strip-types-6.22.0.tgz#84cb672935d43714fdc32bce84568d87441cf7cf"
   dependencies:
     babel-plugin-syntax-flow "^6.18.0"
+    babel-runtime "^6.22.0"
+
+babel-plugin-transform-function-bind@^6.5.2:
+  version "6.22.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-function-bind/-/babel-plugin-transform-function-bind-6.22.0.tgz#c6fb8e96ac296a310b8cf8ea401462407ddf6a97"
+  dependencies:
+    babel-plugin-syntax-function-bind "^6.8.0"
     babel-runtime "^6.22.0"
 
 babel-plugin-transform-object-assign@^6.5.0:
@@ -910,7 +995,20 @@ babel-preset-jest@^20.0.3:
   dependencies:
     babel-plugin-jest-hoist "^20.0.3"
 
-babel-preset-react-native@^1.9.1, babel-preset-react-native@^1.9.2:
+babel-preset-react-native-stage-0@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/babel-preset-react-native-stage-0/-/babel-preset-react-native-stage-0-1.0.1.tgz#d5f5f685575471ef756a49f191b193269f74306e"
+  dependencies:
+    babel-plugin-syntax-trailing-function-commas "^6.5.0"
+    babel-plugin-transform-class-constructor-call "^6.6.5"
+    babel-plugin-transform-decorators-legacy "^1.3.4"
+    babel-plugin-transform-do-expressions "^6.5.0"
+    babel-plugin-transform-exponentiation-operator "^6.5.0"
+    babel-plugin-transform-export-extensions "^6.5.0"
+    babel-plugin-transform-function-bind "^6.5.2"
+    babel-preset-react-native "^1.5.6"
+
+babel-preset-react-native@^1.5.6, babel-preset-react-native@^1.9.1, babel-preset-react-native@^1.9.2:
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/babel-preset-react-native/-/babel-preset-react-native-1.9.2.tgz#b22addd2e355ff3b39671b79be807e52dfa145f2"
   dependencies:
@@ -990,14 +1088,14 @@ babel-register@^6.24.1, babel-register@^6.26.0:
     mkdirp "^0.5.1"
     source-map-support "^0.4.15"
 
-babel-runtime@^6.0.0, babel-runtime@^6.18.0, babel-runtime@^6.22.0, babel-runtime@^6.23.0, babel-runtime@^6.26.0:
+babel-runtime@^6.0.0, babel-runtime@^6.18.0, babel-runtime@^6.2.0, babel-runtime@^6.22.0, babel-runtime@^6.23.0, babel-runtime@^6.26.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
   dependencies:
     core-js "^2.4.0"
     regenerator-runtime "^0.11.0"
 
-babel-template@^6.16.0, babel-template@^6.24.1, babel-template@^6.26.0:
+babel-template@^6.16.0, babel-template@^6.24.1, babel-template@^6.26.0, babel-template@^6.3.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-template/-/babel-template-6.26.0.tgz#de03e2d16396b069f46dd9fff8521fb1a0e35e02"
   dependencies:
@@ -1099,6 +1197,10 @@ big-integer@^1.6.7:
 big-number@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/big-number/-/big-number-0.4.0.tgz#ca84d674402009da76eac9ff6f9f04baf2a95c47"
+
+bignumber.js@^4.0.2:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-4.1.0.tgz#db6f14067c140bd46624815a7916c92d9b6c24b1"
 
 binary-extensions@^1.0.0:
   version "1.11.0"
@@ -2768,6 +2870,10 @@ fstream@^1.0.0, fstream@^1.0.10, fstream@^1.0.2, fstream@^1.0.8:
     mkdirp ">=0.5 0"
     rimraf "2"
 
+fuse.js@2.6.2:
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-2.6.2.tgz#d5d994fda96f543b5a51df38b72cec9cc60d9dea"
+
 fwd-stream@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/fwd-stream/-/fwd-stream-1.0.4.tgz#ed281cabed46feecf921ee32dc4c50b372ac7cfa"
@@ -3053,6 +3159,14 @@ hdkey@^0.7.0:
   resolved "https://registry.yarnpkg.com/hdkey/-/hdkey-0.7.1.tgz#caee4be81aa77921e909b8d228dd0f29acaee632"
   dependencies:
     coinstring "^2.0.0"
+    secp256k1 "^3.0.1"
+
+hdkey@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/hdkey/-/hdkey-0.8.0.tgz#08c9a9fcb6a42d9724d669f81c53a3c507f87bf1"
+  dependencies:
+    coinstring "^2.0.0"
+    safe-buffer "^5.1.1"
     secp256k1 "^3.0.1"
 
 hmac-drbg@^1.0.0:
@@ -4132,6 +4246,14 @@ lodash.templatesettings@^3.0.0:
     lodash._reinterpolate "^3.0.0"
     lodash.escape "^3.0.0"
 
+lodash.toarray@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/lodash.toarray/-/lodash.toarray-4.4.0.tgz#24c4bfcd6b2fba38bfd0594db1179d8e9b656561"
+
+lodash@4.12.0:
+  version "4.12.0"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.12.0.tgz#2bd6dc46a040f59e686c972ed21d93dc59053258"
+
 lodash@4.x.x, lodash@^4.14.0, lodash@^4.16.6, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.1, lodash@^4.3.0, lodash@^4.6.1:
   version "4.17.10"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
@@ -4518,6 +4640,12 @@ negotiator@0.5.3:
 negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
+
+node-emoji@1.8.1:
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/node-emoji/-/node-emoji-1.8.1.tgz#6eec6bfb07421e2148c75c6bba72421f8530a826"
+  dependencies:
+    lodash.toarray "^4.4.0"
 
 node-fetch@^1.0.1, node-fetch@^1.3.3, node-fetch@^1.6.3:
   version "1.7.3"
@@ -5055,6 +5183,14 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
+prop-types@15.6.0:
+  version "15.6.0"
+  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.0.tgz#ceaf083022fc46b4a35f69e13ef75aed0d639856"
+  dependencies:
+    fbjs "^0.8.16"
+    loose-envify "^1.3.1"
+    object-assign "^4.1.1"
+
 prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1:
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.1.tgz#36644453564255ddda391191fb3a125cbdf654ca"
@@ -5147,7 +5283,7 @@ randomatic@^1.1.3:
     is-number "^3.0.0"
     kind-of "^4.0.0"
 
-randombytes@^2.0.0, randombytes@^2.0.1, randombytes@^2.0.5:
+randombytes@^2.0.0, randombytes@^2.0.1, randombytes@^2.0.3, randombytes@^2.0.5:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/randombytes/-/randombytes-2.0.6.tgz#d302c522948588848a8d300c932b44c24231da80"
   dependencies:
@@ -5225,12 +5361,23 @@ react-native-animatable@^1.2.4:
   dependencies:
     prop-types "^15.5.10"
 
-react-native-camera@^1.0.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-1.1.2.tgz#a93c389c522c8909c564f04c4a86072909259d07"
+react-native-camera@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-1.0.2.tgz#490e75b14196af0ec972a759bb6027693ad4aad6"
   dependencies:
     lodash "^4.17.4"
     prop-types "^15.5.10"
+
+react-native-country-picker-modal@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/react-native-country-picker-modal/-/react-native-country-picker-modal-0.5.1.tgz#44a2f2767a1573040f7452d1415de3ce75adbad3"
+  dependencies:
+    babel-preset-react-native-stage-0 "1.0.1"
+    fuse.js "2.6.2"
+    lodash "4.12.0"
+    node-emoji "1.8.1"
+    prop-types "15.6.0"
+    world-countries "1.8.0"
 
 react-native-crypto@^2.0.2:
   version "2.1.2"
@@ -5245,6 +5392,10 @@ react-native-crypto@^2.0.2:
     inherits "^2.0.1"
     pbkdf2 "3.0.8"
     public-encrypt "^4.0.0"
+
+react-native-device-info@0.21.5:
+  version "0.21.5"
+  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-0.21.5.tgz#99478a2d68182e012297f2d63f2bd1b788106dee"
 
 react-native-drawer@^2.5.0:
   version "2.5.0"
@@ -5266,16 +5417,22 @@ react-native-i18n@^2.0.12:
   dependencies:
     i18n-js "^3.0.3"
 
+react-native-input-scroll-view@^1.6.5:
+  version "1.6.5"
+  resolved "https://registry.yarnpkg.com/react-native-input-scroll-view/-/react-native-input-scroll-view-1.6.5.tgz#156e2a0284fb9cce37033d0409182e7ec1c38cde"
+  dependencies:
+    prop-types "^15.5.10"
+
+react-native-launch-image@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-launch-image/-/react-native-launch-image-1.0.3.tgz#8ad383fec15ae7b74c51025128d84ad58205f614"
+
 react-native-level-fs@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/react-native-level-fs/-/react-native-level-fs-3.0.1.tgz#f3054614c2bc1a379dcb3d3ee51b6a1b66123283"
   dependencies:
     level-filesystem "^1.0.1"
     levelup "^0.18.2"
-
-react-native-mail@^3.0.6:
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/react-native-mail/-/react-native-mail-3.0.6.tgz#5e7b4a89bcbe2218e44331465596966a7ff743ab"
 
 react-native-modal@^5.3.0:
   version "5.4.0"
@@ -5361,9 +5518,15 @@ react-native-udp@^1.2.9:
     ip-regex "^1.0.3"
     util "^0.10.3"
 
-react-native@0.46.0:
-  version "0.46.0"
-  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.46.0.tgz#07dd7045ad905433fe5256d32023bbd794f7d1f5"
+react-native-uuid@^1.4.9:
+  version "1.4.9"
+  resolved "https://registry.yarnpkg.com/react-native-uuid/-/react-native-uuid-1.4.9.tgz#a526742f8fddfe6414500655212ca8d109c40229"
+  dependencies:
+    randombytes "^2.0.3"
+
+react-native@0.46.4:
+  version "0.46.4"
+  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.46.4.tgz#281bbcc165e5c36b4c8eaa868e6768543e811bcb"
   dependencies:
     absolute-path "^0.0.0"
     art "^0.10.0"
@@ -5896,6 +6059,10 @@ scryptsy@^1.2.1:
   resolved "https://registry.yarnpkg.com/scryptsy/-/scryptsy-1.2.1.tgz#a3225fa4b2524f802700761e2855bdf3b2d92163"
   dependencies:
     pbkdf2 "^3.0.3"
+
+scryptsy@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/scryptsy/-/scryptsy-2.0.0.tgz#262c36f0231cfa7654e2363fa394cd2dec66f378"
 
 secp256k1@^3.0.1:
   version "3.5.0"
@@ -7188,6 +7355,10 @@ worker-farm@^1.3.1:
   resolved "https://registry.yarnpkg.com/worker-farm/-/worker-farm-1.6.0.tgz#aecc405976fab5a95526180846f0dba288f3a4a0"
   dependencies:
     errno "~0.1.7"
+
+world-countries@1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/world-countries/-/world-countries-1.8.0.tgz#17f48e7e8470ac5a2136ad6938dfc656fc2bcb95"
 
 wrap-ansi@^2.0.0:
   version "2.1.0"

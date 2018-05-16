@@ -16,14 +16,16 @@ import { setScaleText, scaleSize } from '../../utils/adapter'
 import {ArrowToDetail} from '../../components/'
 import I18n from 'react-native-i18n'
 import Toast from 'react-native-toast'
+// import DeviceInfo from 'react-native-device-info'
 class Personal extends Component{
   constructor(props){
     super(props)
     this.state={
-        
     }
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
   }
+
+  
   onNavigatorEvent(event) {
     switch (event.id) {
       case 'willAppear':
@@ -107,6 +109,7 @@ class Personal extends Component{
     })
   }
   render(){
+    
     return(
       <View style={[pubS.container,{backgroundColor:'#F5F7FB',}]}>
         {
@@ -131,11 +134,13 @@ class Personal extends Component{
               arrowIcon={require('../../images/xhdpi/ico_personalcenter_helpcenter_def.png')}
               arrowOnPress={this.toHelpCenter}
             />
-            <ArrowToDetail
-              arrowText={`${I18n.t('support')} v1.0.8`}
-              arrowIcon={require('../../images/xhdpi/ico_personalcenter_contact_def.png')}
-              arrowOnPress={this.toContactService}
-            />
+            {
+            // <ArrowToDetail
+            //   arrowText={`${I18n.t('support')}`}//${DeviceInfo.getVersion()}
+            //   arrowIcon={require('../../images/xhdpi/ico_personalcenter_contact_def.png')}
+            //   arrowOnPress={this.toContactService}
+            // />
+            }
           </View>
       </View>
     )

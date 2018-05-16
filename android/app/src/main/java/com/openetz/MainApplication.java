@@ -19,9 +19,9 @@ import com.bitgo.randombytes.RandomBytesPackage;
 import org.reactnative.camera.RNCameraPackage;
 import io.realm.react.RealmReactPackage;
 import org.pgsqlite.SQLitePluginPackage;
-import com.chirag.RNMail.*;
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 import com.remobile.toast.RCTToastPackage; 
+// import com.learnium.RNDeviceInfo.RNDeviceInfo;
 public class MainApplication extends NavigationApplication {
 
     @Override
@@ -36,8 +36,8 @@ public class MainApplication extends NavigationApplication {
           new RNCameraPackage(),
           new RealmReactPackage(),
           new SQLitePluginPackage(),
-          new RNMail(),
           new RNI18nPackage(),
+          // new RNDeviceInfo(),
           new RCTToastPackage()
         );
     }

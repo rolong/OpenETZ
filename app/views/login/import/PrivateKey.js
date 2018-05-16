@@ -24,15 +24,15 @@ class PrivateKey extends Component{
   constructor(props){
     super(props)
     this.state = {
-      privKeyVal: '',
-      psdVal: '',
-      repeadPsdVal: '',
-      promptVal: '',
+      privKeyVal: 'f35510189927bd15f2a9235df439945ef10c715dfde44c19615bd2d01028ad84',
+      psdVal: 'zjc1234567',
+      repeadPsdVal: 'zjc1234567',
       privKeyWarning: '',
       psdWarning: '',
       rePsdWarning: '',
-      userNameVal: '',
+      userNameVal: '私钥导入',
       userNameWarning: '',
+      hintValue: ''
     }
   }
   componentWillMount(){
@@ -75,17 +75,14 @@ class PrivateKey extends Component{
       rePsdWarning: ''
     })
   }
-  onChangePromptText = (val) => {
-    this.setState({
-      promptVal: val
-    })
-  }
+  
   onPressImport = () => {
     const { privKeyWarning, psdWarning, rePsdWarning, privKeyVal, psdVal, repeadPsdVal,userNameVal, userNameWarning} = this.state
     let privReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{64}$/
 
     // let psdReg = /^(?=.*[a-z])(?=.)(?=.*\d)[a-z\d]{8,}$/
-    let psdReg = /^(?![a-zA-z]+$)(?!\d+$)(?![.!@#$%^&*.]+$)[a-zA-Z\d.!@#$%^&*.]{8,}$/
+    // let psdReg = /^(?![a-zA-z]+$)(?!\d+$)(?![.!@#$%^&*.]+$)[a-zA-Z\d.!@#$%^&*.]{8,}$/
+    let psdReg = /^(?![a-zA-z]+$)(?!\d+$)(?![!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]+$)[a-zA-Z\d!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{8,}$/
     if(userNameVal.length === 0){
       this.setState({
         userNameWarning: I18n.t('enter_account_name'),
@@ -114,8 +111,8 @@ class PrivateKey extends Component{
   }
 
   onImport = () => {
-    const { privKeyVal, psdVal,userNameVal } = this.state  
-    
+    const { privKeyVal, psdVal,userNameVal,hintValue } = this.state  
+    const { globalAccountsList } = this.props.accountManageReducer
     this.props.dispatch(showImportLoadingAction(true))
 
     setTimeout(() => {
@@ -124,7 +121,9 @@ class PrivateKey extends Component{
         privatePassword: psdVal,
         privateUserName: userNameVal,
         type: 'private',
-        fromLogin: this.props.fromLogin === 'login' ? 'login' : 'accounts'
+        fromLogin: this.props.fromLogin === 'login' ? 'login' : 'accounts',
+        accountsList: globalAccountsList,
+        hintValue,
       }))
     },1000)
   }
@@ -137,11 +136,16 @@ class PrivateKey extends Component{
   onFocus = () => {   
     this._keyboardDidShow(true)
   }
+  onChangeHint = (value) => {
+    this.setState({
+      hintValue: value
+    })
+  }
   render(){
     isIphoneX() ?    //判断IPONEX
     this.state.DEFULT_IPONEX = 345
     : this.state.DEFULT_IPONEX = scaleSize(680);
-    const { privKeyVal, psdVal, repeadPsdVal, promptVal, privKeyWarning, psdWarning, rePsdWarning,userNameVal, userNameWarning,DEFULT_IPONEX } = this.state
+    const { privKeyVal, psdVal, repeadPsdVal, privKeyWarning, psdWarning, rePsdWarning,userNameVal, userNameWarning,DEFULT_IPONEX,hintValue } = this.state
     return(
       <View>
         <ScrollView
@@ -176,14 +180,12 @@ class PrivateKey extends Component{
             secureTextEntry={true}
             warningText={rePsdWarning}
           />
-          {
-            // <TextInputComponent
-            //   placeholder={'password hint (Optional)'}
-            //   value={promptVal}
-            //   onChangeText={this.onChangePromptText}
-            // />
-            
-          }
+                  
+          <TextInputComponent
+            placeholder={I18n.t('password_hint')}
+            value={hintValue}
+            onChangeText={this.onChangeHint}
+          />
           <Btn
             btnMarginTop={scaleSize(60)}
             btnPress={this.onPressImport}

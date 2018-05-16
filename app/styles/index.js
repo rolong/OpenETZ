@@ -211,15 +211,31 @@ const pubS = {
     flexDirection:'row',
     alignItems:'flex-end',
   },
+  textInputWH: {
+    height: scaleSize(99),
+    width: scaleSize(664),
+    alignSelf:'center'
+  },
   rowAround: {
     flexDirection: 'row',
     justifyContent: 'space-around'
+  },
+  arrowViewStyle:{
+    width: scaleSize(45),
+    height: scaleSize(43),
+    alignItems:'flex-end',
+    position:'absolute',
+    right:4,
+    top:scaleSize(32)
   },
   rowAlignCenter: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-
+  bottomStyle1:{
+    borderColor:'#DBDFE6',
+    borderBottomWidth:1,
+  },
   bottomStyle: {
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor:'#dce4e6',
@@ -308,6 +324,10 @@ const pubS = {
   font26_6:{
     color:'#000',
     fontSize: setScaleText(26)
+  },
+  font26_7:{
+      color:'#2B8AFF',
+      fontSize: setScaleText(26)
   },
   font28_1:{
       color:'#95C4FF',

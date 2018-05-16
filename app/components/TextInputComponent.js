@@ -56,7 +56,7 @@ export default class TextInputComponent extends Component{
           />
         {
           toMore ?
-          <View style={[{width: scaleSize(45),height: scaleSize(43),alignItems:'flex-end',position:'absolute',right:4,top:scaleSize(32)}]}>
+          <View style={pubS.arrowViewStyle}>
             <Image source={require('../images/xhdpi/btn_ico_payment_select_def.png')} style={{width: scaleSize(16),height: scaleSize(30)}}/>
           </View>
           : null
@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
       {
         borderColor:'#DBDFE6',
         // borderWidth:1,
+        padding: 0,
         alignSelf:'center',
         width: scaleSize(680),
         backgroundColor: '#fff',
@@ -102,6 +103,7 @@ const styles = StyleSheet.create({
         borderColor:'#DBDFE6',
         // borderWidth:1,
         alignSelf:'center',
+        padding: 0,
         width: scaleSize(680),
         backgroundColor: '#fff',
       }

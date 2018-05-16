@@ -28,6 +28,7 @@ import { contractAbi } from '../../utils/contractAbi'
 import I18n from 'react-native-i18n'
 import { getTokenGas, getGeneralGas } from '../../utils/getGas'
 import { fromV3 } from '../../utils/fromV3'
+import { scientificToNumber } from '../../utils/splitNumber'
 const EthUtil = require('ethereumjs-util')
 const Wallet = require('ethereumjs-wallet')
 const EthereumTx = require('ethereumjs-tx')
@@ -42,7 +43,7 @@ class Payment extends Component{
   constructor(props){
     super(props)
     this.state={
-      receiverAddress: '',
+      receiverAddress: '0x1ec79157f606d942ac19ce21231c1572aef8bb5d',
       txValue: '',
       noteVal: '',
       txAddrWarning: '',
@@ -101,9 +102,11 @@ class Payment extends Component{
     const { fetchTokenList } = this.props.tokenManageReducer 
 
     const { currentAccount } = this.props.accountManageReducer
-    this.setState({
-      receiverAddress: this.props.scanSucAddr,
-    })
+    if(this.props.scanSucAddr){
+       this.setState({
+        receiverAddress: this.props.scanSucAddr,
+       })
+    }
     if(this.props.curToken !== 'ETZ'){
       this.setState({
         isToken: true,
@@ -236,15 +239,20 @@ class Payment extends Component{
     this.getGasValue()
   }  
   onChangeTxValue = (val) => {
+    const { currentTokenDecimals,txValue } = this.state
+
     if(!isNaN(val)){
+      //不能小于规定的小数位
       this.setState({
         txValue: val,
         txValueWarning: ''
       })
+        
       setTimeout(() => {
-        this.getGasValue()
+          this.getGasValue()
       },500)
-    }else{
+
+      }else{
       Alert.alert(I18n.t('input_number'))
     }
   }
@@ -257,24 +265,32 @@ class Payment extends Component{
   async getGasValue(){
     const { receiverAddress,txValue,senderAddress, currentTokenName, currentTokenDecimals, currentTokenAddress } = this.state
 
-    if(receiverAddress.length === 42 && txValue.length > 0){
-      if(this.state.currentTokenName === 'ETZ'){
+    // let numVal = parseFloat(txValue)
+    // let ruleNum = Math.pow(0.1,currentTokenDecimals).toFixed(currentTokenDecimals)//最小的值
+    // if(numVal < ruleNum){
+    //   // Alert.alert('不能小于规定的小数位')
+    //   return
+    // }else{
+      if(receiverAddress.length === 42 && txValue.length > 0){
+        if(this.state.currentTokenName === 'ETZ'){
 
-        let genGasValue = await getGeneralGas(txValue,senderAddress,receiverAddress)
+          let genGasValue = await getGeneralGas(txValue,senderAddress,receiverAddress)
 
-        // console.log('genGasValue==',genGasValue)
-        this.setState({
-          gasValue: genGasValue,
-        })
+          // console.log('genGasValue==',genGasValue)
+          this.setState({
+            gasValue: genGasValue,
+          })
 
-      }else{
-        let tokenGasValue = await getTokenGas(senderAddress,receiverAddress,currentTokenName,currentTokenDecimals,txValue,currentTokenAddress)
-        // console.log('tokenGasValue==',tokenGasValue)
-        this.setState({
-          gasValue: tokenGasValue,
-        })
+        }else{
+          let tokenGasValue = await getTokenGas(senderAddress,receiverAddress,currentTokenName,currentTokenDecimals,txValue,currentTokenAddress)
+          // console.log('tokenGasValue==',tokenGasValue)
+          this.setState({
+            gasValue: tokenGasValue,
+          })
+        }
       }
-    }
+    // }
+
   }
   onNextStep = () => {
     const { receiverAddress, txValue, noteVal, } = this.state
@@ -464,11 +480,11 @@ class Payment extends Component{
       .on('receipt', function(receipt){
           console.log('receipt==',receipt)
           let sendResult = 1
-          if(receipt.status==="0x1"){
+          if(receipt.status==="0x1" || receipt.status == true){
               //更新etz数量
                self.props.dispatch(refreshTokenAction(senderAddress,fetchTokenList))
                setTimeout(() => {
-                 Toast.showLongBottom(I18n.t('send_successful'))
+                 Alert.alert(I18n.t('send_successful'))
                },1000)
            }else{
              sendResult = 0
@@ -499,7 +515,6 @@ class Payment extends Component{
     }catch(error){
       this.onPressClose()
       Alert.alert(error)
-      // Toast.showLongBottom(I18n.t('password_is_wrong'))
     }
   }
   async makeTransactByToken(){
@@ -510,21 +525,30 @@ class Payment extends Component{
     try{
       let newWallet = fromV3(this.state.keyStore,txPsdVal)
       let privKey = newWallet.privKey.toString('hex')
-     
-      let txNumber = parseInt(parseFloat(txValue) *  Math.pow(10,currentTokenDecimals))
-
-      let hex16 = parseInt(txNumber).toString(16)      
-
+      
+      let txNumber = parseFloat(txValue) *  Math.pow(10,currentTokenDecimals)
+      
+      let txNum = ''
+      if(/e/.test(`${txNumber}`)){
+        let t = scientificToNumber(`${txNumber}`.replace('+',''))
+        txNum = `${t}0`
+      }else{
+        txNum = `${txNumber}`
+      }
+      console.log('txNum==',txNum)
+      
+      let hex16 = parseInt(txNum).toString(16)      
+      console.log('hex16',hex16)
       let myContract = new web3.eth.Contract(contractAbi, currentTokenAddress)
 
       let data = myContract.methods.transfer(receiverAddress, `0x${hex16}`).encodeABI()
 
       web3.eth.getTransactionCount(`0x${senderAddress}`, function(error, nonce) {
-
+        let gas = parseFloat(gasValue) + 500
         const txParams = {
             nonce: web3.utils.toHex(nonce),
             gasPrice:"0x098bca5a00",
-            gasLimit: `0x${parseFloat(gasValue).toString(16)}`,
+            gasLimit: `0x${gas.toString(16)}`,
             to: currentTokenAddress,
             value :"0x0",
             data: data,
@@ -581,11 +605,11 @@ class Payment extends Component{
         .on('receipt', function(receipt){
             console.log('receipt:', receipt)
             let sendResult = 0
-            if(receipt.status==="0x1"){
+            if(receipt.status==="0x1" || receipt.status == true){
               sendResult = 1
               self.props.dispatch(refreshTokenAction(senderAddress,fetchTokenList))
               setTimeout(() => {
-                Toast.showLongBottom(I18n.t('send_successful'))
+                Alert.alert(I18n.t('send_successful'))
               },1000)
             }else{
               Alert.alert(I18n.t('send_failure'))
@@ -626,7 +650,6 @@ class Payment extends Component{
     }catch (error) {
       this.onPressClose()
       Alert.alert(error)
-      // Toast.showLongBottom(I18n.t('password_is_wrong'))
     }
 
   }

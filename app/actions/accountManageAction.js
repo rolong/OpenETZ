@@ -69,7 +69,10 @@ const importAccountAction = (data) => {
 				mnemonicUserName: data.mnemonicUserName,
 				keystoreVal: data.keystoreVal,
 				keystoreUserName: data.keystoreUserName,
-				fromLogin: data.fromLogin
+				keystorePsd: data.keystorePsd,
+				fromLogin: data.fromLogin,
+				accountsList: data.accountsList,
+				hintValue: data.hintValue
 			},
 			importSuccess: (data) => {dispatch(importSuc(data))},
 			importFailure: (msg) => {dispatch(importFail(msg))}
@@ -285,6 +288,24 @@ const passReceiveAddressAction = (addr,token) => {
 	}
 }
 
+const refreshManageBalanceAction = (list) => {
+	const getBal = (data) => {
+		return{
+			type: types.REFERSH_MANEGE_BALANCE,
+			payload: {
+				data,
+			}
+		}
+	}
+	return (dispatch,getState) => {
+		accountDBOpation.getManageBalance({
+			parames: {
+				list
+			},
+			getBalanceNum: (data) => {dispatch(getBal(data))}
+		})
+	}
+}
 export {
 	switchAccountAction,
 	importAccountAction,
@@ -298,5 +319,5 @@ export {
 	changeBackupModalTimesAction,
 	showImportLoadingAction,
 	passReceiveAddressAction,
-
+	refreshManageBalanceAction
 }

@@ -21,7 +21,7 @@ import { connect } from 'react-redux'
 import SwitchWallet from './SwitchWallet'
 import { switchDrawer } from '../../utils/switchDrawer'
 
-import { splitDecimal } from '../../utils/splitNumber'
+import { splitDecimal, scientificToNumber} from '../../utils/splitNumber'
 import {Scan} from '../../components/'
 
 import { insertToTokenAction,initSelectedListAction,refreshTokenAction,fetchTokenAction } from '../../actions/tokenManageAction'
@@ -50,9 +50,9 @@ class Assets extends Component{
   }
 
   componentWillMount(){
-    Navigation.dismissAllModals({
-      animationType: 'slide-down' // 'none' / 'slide-down' , dismiss animation for the modal (optional, default 'slide-down')
-    })
+    // Navigation.dismissAllModals({
+    //   animationType: 'slide-down' // 'none' / 'slide-down' , dismiss animation for the modal (optional, default 'slide-down')
+    // })
     this.props.navigator.setTabButton({
       tabIndex: 0,
       label: I18n.t('assets')
@@ -194,10 +194,11 @@ class Assets extends Component{
           break
     }
     
-    //删除了当前账号
+    //删除了当前账号  需要更新reducers里的当前账号
     const { globalAccountsList, currentAccount } = nextProps.accountManageReducer
-
     if(this.props.accountManageReducer.deleteCurrentAccount !== nextProps.accountManageReducer.deleteCurrentAccount && nextProps.accountManageReducer.deleteCurrentAccount){
+      this.props.dispatch(globalCurrentAccountInfoAction(globalAccountsList[0]))
+      this.props.dispatch(refreshTokenAction(globalAccountsList[0].address,fetchTokenList))
       this.setState({
         navTitle: globalAccountsList[0].account_name
       })
@@ -350,6 +351,16 @@ class Assets extends Component{
     //这里的下拉刷新  更新etz和代币的余额
     this.props.dispatch(refreshTokenAction(this.state.curAddr,fetchTokenList))
   }
+
+  onBindPhone = () => {
+    this.props.navigator.push({
+      screen: 'bind_phone',
+      title:I18n.t('bind_phone'),
+      navigatorStyle: DetailNavigatorStyle,
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
+    })
+  }
   render(){
     const { selectedAssetsList, isRefreshing, currencySymbol} = this.state
     
@@ -390,13 +401,16 @@ class Assets extends Component{
               />
             }
           >
-            <View style={[styles.navbarStyle,pubS.center,{paddingLeft: scaleSize(24),paddingRight: scaleSize(24)}]}>
+            <View style={[styles.navbarStyle,pubS.rowCenterJus,{paddingLeft: scaleSize(24),paddingRight: scaleSize(24)}]}>
               {
                 // <TouchableOpacity activeOpacity={.6} onPress={this.onLeftDrawer}>
                 //   <Image source={require('../../images/xhdpi/nav_ico_home_message_def.png')}style={styles.navImgStyle}/>
                 // </TouchableOpacity>
                 
               }
+              <TouchableOpacity activeOpacity={.6} onPress={this.onBindPhone}>
+                <Text style={pubS.font26_1}>{I18n.t('bind_phone')}</Text>
+              </TouchableOpacity>
               <Text style={pubS.font30_1}>{this.state.navTitle}</Text>
               <TouchableOpacity activeOpacity={.6} onPress={() => this.onRightDrawer()} style={styles.drawerStyle}>
                 <Image source={require('../../images/xhdpi/nav_ico_home_more_def.png')} style={styles.navImgStyle}/>
@@ -447,7 +461,7 @@ class Assets extends Component{
                       key={index}
                       shortName={res.tk_symbol}
                       fullName={res.tk_name}
-                      coinNumber={splitDecimal(res.tk_number)}
+                      coinNumber={scientificToNumber(splitDecimal(res.tk_number)) }
                       //price2rmb={0}
                       symbol={this.state.currencySymbol}
                       onPressItem={() => this.toAssetsDetail(res.tk_symbol,splitDecimal(res.tk_number),res.tk_symbol,res.tk_decimals)}
@@ -514,9 +528,9 @@ const styles = StyleSheet.create({
     // borderWidth:1,
     height: scaleSize(87),
     width: scaleSize(160),
-    position:"absolute",
-    top: 0,
-    right:scaleSize(24),
+    // position:"absolute",
+    // top: 0,
+    // right:scaleSize(24),
     alignItems:'flex-end',
     justifyContent:'center'
   },

@@ -76,7 +76,8 @@ class CreateAccount extends Component{
 
   onPressBtn = () => {
     const { userNameVal, psdVal, repeadPsdVal, promptVal, } = this.state
-    let reg = /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*.]+$)[a-zA-Z\d!@#$%^&*.]{8,}$/
+
+    let reg = /^(?![a-zA-z]+$)(?!\d+$)(?![!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]+$)[a-zA-Z\d!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{8,}$/
     if(userNameVal.length === 0){
       this.setState({
         userNameWarning: I18n.t('enter_account_name')

@@ -27,6 +27,7 @@ import { contractAbi } from '../../utils/contractAbi'
 import I18n from 'react-native-i18n'
 import { getTokenGas, getGeneralGas } from '../../utils/getGas'
 import { fromV3 } from '../../utils/fromV3'
+import { scientificToNumber } from '../../utils/splitNumber'
 import InputScrollView from 'react-native-input-scroll-view';
 const EthUtil = require('ethereumjs-util')
 const Wallet = require('ethereumjs-wallet')
@@ -42,7 +43,7 @@ class Payment extends Component{
   constructor(props){
     super(props)
     this.state={
-      receiverAddress: '',
+      receiverAddress: '0x1ec79157f606d942ac19ce21231c1572aef8bb5d',
       txValue: '',
       noteVal: '',
       txAddrWarning: '',
@@ -84,10 +85,12 @@ class Payment extends Component{
 
     const { currentAccount } = this.props.accountManageReducer
 
-    this.setState({
-      receiverAddress: this.props.scanSucAddr,
-    })
-
+    
+    if(this.props.scanSucAddr){
+       this.setState({
+        receiverAddress: this.props.scanSucAddr,
+       })
+    }
     if(this.props.curToken !== 'ETZ'){
       this.setState({
         isToken: true,
@@ -441,11 +444,11 @@ class Payment extends Component{
           console.log('receipt==',receipt)
           let sendResult = 1
           
-          if(receipt.status == true || receipt.status == 'true'){
+          if(receipt.status==="0x1" || receipt.status == true){
               //更新etz数量
             self.props.dispatch(refreshTokenAction(senderAddress,fetchTokenList))
             setTimeout(() => {
-              Toast.showLongBottom(I18n.t('send_successful'))
+              Alert.alert(I18n.t('send_successful'))
             },1000)
           }else{
             sendResult = 0
@@ -476,12 +479,9 @@ class Payment extends Component{
             ],
         )
 
-        
         self.props.navigator.pop()
-        // alert(error)
       })
-    }catch(error){
-      
+    }catch(error){      
       Alert.alert(
           I18n.t('title_error'),
           `${error}`,
@@ -489,8 +489,6 @@ class Payment extends Component{
             {text:I18n.t('ok'),onPress:() => this.onPressClose()}
           ]
         ) 
-      
-      // Toast.showLongBottom(I18n.t('password_is_wrong'))
     }
   }
   async makeTransactByToken(){
@@ -503,20 +501,32 @@ class Payment extends Component{
       let newWallet = fromV3(this.state.keyStore,txPsdVal)
       let privKey = newWallet.privKey.toString('hex')
 
-      let txNumber = parseInt(parseFloat(txValue) *  Math.pow(10,currentTokenDecimals))
+      let txNumber = parseFloat(txValue) *  Math.pow(10,currentTokenDecimals)
+      let txNum = ''
+      if(/e/.test(`${txNumber}`)){
+        let t = scientificToNumber(`${txNumber}`.replace('+',''))
+        txNum = `${t}0`
+      }else{
+        txNum = `${txNumber}`
+      }
+      // console.log('txNum==',txNum)
 
-      let hex16 = parseInt(txNumber).toString(16)      
+      let hex16 = parseInt(txNum).toString(16)
+      
+      // console.log('hex16',hex16)
+
+      // let hex16 = parseInt(txNumber).toString(16)      
 
       let myContract = new web3.eth.Contract(contractAbi, currentTokenAddress)
 
       let data = myContract.methods.transfer(receiverAddress, `0x${hex16}`).encodeABI()
 
       web3.eth.getTransactionCount(`0x${senderAddress}`, function(error, nonce) {
-        let gasValue1 = parseFloat(gasValue) + 100
+        let gas = parseFloat(gasValue) + 500
         const txParams = {
             nonce: web3.utils.toHex(nonce),
             gasPrice:"0x098bca5a00",
-            gasLimit: `0x${parseFloat(gasValue1).toString(16)}`,
+            gasLimit: `0x${gas.toString(16)}`,
             to: currentTokenAddress,
             value :"0x0",
             data: data,
@@ -575,16 +585,15 @@ class Payment extends Component{
         .on('receipt', function(receipt){
             console.log('receipt:', receipt)
             let sendResult = 0
-            if(receipt.status === true || receipt.status == 'true'){
+            if(receipt.status==="0x1" || receipt.status == true){
               sendResult = 1
               self.props.dispatch(refreshTokenAction(senderAddress,fetchTokenList))
               setTimeout(() => {
-                Toast.showLongBottom(I18n.t('send_successful'))
+                Alert.alert(I18n.t('send_successful'))
               },1000)
-            }else{
-              
+            }else{              
               Alert.alert(
-                  I18n.t('title_error'),,
+                  I18n.t('title_error'),
                   I18n.t('send_failure'),
                   [
                     
@@ -620,9 +629,7 @@ class Payment extends Component{
           console.log('error1111',error)
           self.onPressClose()
           self.props.navigator.pop()
-          // Alert.alert(`${error}`,)
-
-          // alert(error)
+          Alert.alert(`${error}`,)
         });
       })
 
