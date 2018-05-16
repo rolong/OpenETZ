@@ -8,7 +8,7 @@
   "password_hint":"password hint (optional)",
   "enter_account_name":"please enter the account name",
   "password_verification":"password needs to contain both letters and numbers, and at least 8 digits.",
-  "create_account_prompt":"If you don't store user password, you cannot use retrieving or reset function, The password must be backed up by yourself. the password is to protect the private key, so it would be better if it is more complicated.",
+  "create_account_prompt":"The system will not store user passwords, nor can you provide password recovery or reset functions. Please backup your password and set the strength according to the prompts.",
   "create_account_successful_2":"It is highly recommended that you make backup before use, export mnemonic phrase or keystore and then stored them in a safe place.",
   "create_account_successful_1":"New account has been created successfully ",
   "backup_account":"Backup account",

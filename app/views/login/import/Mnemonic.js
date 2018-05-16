@@ -24,14 +24,14 @@ class Mnemonic extends Component{
   constructor(props){
     super(props)
     this.state={
-      mnemonicVal: 'rhythm example taxi leader divorce prosper arm add tower snake domain still',
-      // mnemonicVal: '',
+      // mnemonicVal: 'rhythm example taxi leader divorce prosper arm add tower snake domain still',
+      mnemonicVal: '',
       mnemonicValWarning: '',
-      passwordVal: 'zjc1234567',
+      passwordVal: '',
       passwordWarning: '',
-      repeadPsdVal: 'zjc1234567',
+      repeadPsdVal: '',
       rePsdWarning: '',
-      userNameVal: '助记词',
+      userNameVal: '',
       userNameWarning: '',
       hintValue: '',
     }

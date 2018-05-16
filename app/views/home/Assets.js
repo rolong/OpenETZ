@@ -408,11 +408,11 @@ class Assets extends Component{
                 // </TouchableOpacity>
                 
               }
-              <TouchableOpacity activeOpacity={.6} onPress={this.onBindPhone}>
+              <TouchableOpacity activeOpacity={.6} onPress={this.onBindPhone} style={{width: scaleSize(160),height: scaleSize(87),justifyContent:'center'}}> 
                 <Text style={pubS.font26_1}>{I18n.t('bind_phone')}</Text>
               </TouchableOpacity>
-              <Text style={pubS.font30_1}>{this.state.navTitle}</Text>
-              <TouchableOpacity activeOpacity={.6} onPress={() => this.onRightDrawer()} style={styles.drawerStyle}>
+              <Text style={[pubS.font30_1,{}]}>{this.state.navTitle}</Text>
+              <TouchableOpacity activeOpacity={.6} onPress={() => this.onRightDrawer()} style={[styles.drawerStyle,{}]}>
                 <Image source={require('../../images/xhdpi/nav_ico_home_more_def.png')} style={styles.navImgStyle}/>
               </TouchableOpacity>
             </View>
