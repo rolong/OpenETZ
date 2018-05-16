@@ -43,7 +43,7 @@ class Payment extends Component{
   constructor(props){
     super(props)
     this.state={
-      receiverAddress: '',
+      receiverAddress: '0x1ec79157f606d942ac19ce21231c1572aef8bb5d',
       txValue: '',
       noteVal: '',
       txAddrWarning: '',
@@ -85,11 +85,12 @@ class Payment extends Component{
 
     const { currentAccount } = this.props.accountManageReducer
 
-    this.setState({
-      receiverAddress: this.props.scanSucAddr,
-    })
-
     
+    if(this.props.scanSucAddr){
+       this.setState({
+        receiverAddress: this.props.scanSucAddr,
+       })
+    }
     if(this.props.curToken !== 'ETZ'){
       this.setState({
         isToken: true,
@@ -206,17 +207,13 @@ class Payment extends Component{
     this.getGasValue()
   }  
   onChangeTxValue = (val) => {
-    if(!isNaN(val)){
-      this.setState({
-        txValue: val,
-        txValueWarning: ''
-      })
-      setTimeout(() => {
-        this.getGasValue()
-      },500)
-    }else{
-      Alert.alert(I18n.t('input_number'))
-    }
+    this.setState({
+      txValue: val,
+      txValueWarning: ''
+    })
+    setTimeout(() => {
+      this.getGasValue()
+    },500)
   }
 
   onChangeNoteText = (val) => {
@@ -474,13 +471,24 @@ class Payment extends Component{
       // })
       .on('error', (error) => {
         console.log('error==',error)
-        Alert.alert(`${error}`)
-        self.onPressClose()
+        Alert.alert(
+            I18n.t('title_error'),
+            `${error}`,
+            [
+              {text: I18n.t('ok'), onPress:() => self.onPressClose()},
+            ],
+        )
+
         self.props.navigator.pop()
       })
-    }catch(error){
-      this.onPressClose()
-      Alert.alert(error)
+    }catch(error){      
+      Alert.alert(
+          I18n.t('title_error'),
+          `${error}`,
+          [
+            {text:I18n.t('ok'),onPress:() => this.onPressClose()}
+          ]
+        ) 
     }
   }
   async makeTransactByToken(){
@@ -583,8 +591,15 @@ class Payment extends Component{
               setTimeout(() => {
                 Alert.alert(I18n.t('send_successful'))
               },1000)
-            }else{
-              Alert.alert(I18n.t('send_failure'))
+            }else{              
+              Alert.alert(
+                  I18n.t('title_error'),
+                  I18n.t('send_failure'),
+                  [
+                    
+                    {text:I18n.t('ok'),onPress:() => this.onPressClose()}
+                  ],
+              )
             }
             
             
@@ -619,8 +634,13 @@ class Payment extends Component{
       })
 
     }catch (error) {
-      this.onPressClose()
-      Alert.alert(error)
+      Alert.alert(
+          I18n.t('title_error'),
+          `${error}`,
+          [
+            {text:I18n.t('ok'),onPress:() => this.onPressClose()}
+          ]
+      ) 
     }
 
   }

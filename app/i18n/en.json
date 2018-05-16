@@ -131,6 +131,7 @@
   "transfer_detail":"In the transfer, the details page is being skipping for you",
   "enter":"Oh I see",
   "input_number":"please input number",
+  "title_error":"Operation failed",
   "bind_phone":"Bind Phone",
   "verif_code":"verification code",
   "Inv_code":"Invitation code(Not fill)",

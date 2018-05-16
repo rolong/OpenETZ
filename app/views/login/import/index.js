@@ -44,17 +44,19 @@ class ImportAccount extends Component{
       this.setState({
         visible: false
       })
-      if(nextProps.accountManageReducer.importStatus === 'success'){
-        Toast.showLongBottom(I18n.t('import_successful'))
-          setTimeout(() => {
-            toHome()
-          },1000)
-        
-      }else{
-        if(nextProps.accountManageReducer.importStatus === 'fail'){
-          Alert.alert(nextProps.accountManageReducer.importFailMsg)
+      setTimeout(() => {
+        if(nextProps.accountManageReducer.importStatus === 'success'){
+          Toast.showLongBottom(I18n.t('import_successful'))
+            setTimeout(() => {
+              toHome()
+            },1000)
+          
+        }else{
+          if(nextProps.accountManageReducer.importStatus === 'fail'){
+            Alert.alert(nextProps.accountManageReducer.importFailMsg)
+          }
         }
-      }
+      },500)
     }
   }
 
@@ -68,7 +70,7 @@ class ImportAccount extends Component{
           : null
         }
 
-        <Loading loadingVisible={this.state.visible} loadingText={'importing'}/>
+        <Loading loadingVisible={this.state.visible} loadingText={I18n.t('loading_importing_account')}/>
           
         <ScrollableTabView
           style={styles.TabViewStyle}

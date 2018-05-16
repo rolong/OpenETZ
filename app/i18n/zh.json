@@ -131,6 +131,7 @@
   "transfer_detail":"正在转账中,正在为你跳转详情页面...",
   "enter":"我知道了",
   "input_number":"请输入数字",
+  "title_error":"操作失败",
   "bind_phone":"绑定手机",
   "verif_code":"验证码",
   "Inv_code":"邀请码(可不填)",
