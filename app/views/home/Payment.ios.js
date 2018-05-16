@@ -88,7 +88,6 @@ class Payment extends Component{
       receiverAddress: this.props.scanSucAddr,
     })
 
-    
     if(this.props.curToken !== 'ETZ'){
       this.setState({
         isToken: true,
@@ -205,17 +204,13 @@ class Payment extends Component{
     this.getGasValue()
   }  
   onChangeTxValue = (val) => {
-    if(!isNaN(val)){
-      this.setState({
-        txValue: val,
-        txValueWarning: ''
-      })
-      setTimeout(() => {
-        this.getGasValue()
-      },500)
-    }else{
-      Alert.alert(I18n.t('input_number'))
-    }
+    this.setState({
+      txValue: val,
+      txValueWarning: ''
+    })
+    setTimeout(() => {
+      this.getGasValue()
+    },500)
   }
 
   onChangeNoteText = (val) => {
@@ -474,20 +469,27 @@ class Payment extends Component{
       .on('error', (error) => {
         console.log('error==',error)
         Alert.alert(
-            '',
+            I18n.t('title_error'),
             `${error}`,
             [
-              {text: I18n.t('ok'), onPress:() => {console.log('1')}},
+              {text: I18n.t('ok'), onPress:() => self.onPressClose()},
             ],
         )
 
-        self.onPressClose()
+        
         self.props.navigator.pop()
         // alert(error)
       })
     }catch(error){
-      this.onPressClose()
-      Alert.alert(error)
+      
+      Alert.alert(
+          I18n.t('title_error'),
+          `${error}`,
+          [
+            {text:I18n.t('ok'),onPress:() => this.onPressClose()}
+          ]
+        ) 
+      
       // Toast.showLongBottom(I18n.t('password_is_wrong'))
     }
   }
@@ -582,10 +584,11 @@ class Payment extends Component{
             }else{
               
               Alert.alert(
-                  '',
+                  I18n.t('title_error'),,
                   I18n.t('send_failure'),
                   [
-                    {text: I18n.t('ok'), onPress:() => {console.log('1')}},
+                    
+                    {text:I18n.t('ok'),onPress:() => this.onPressClose()}
                   ],
               )
             }
@@ -624,9 +627,13 @@ class Payment extends Component{
       })
 
     }catch (error) {
-      this.onPressClose()
-      Alert.alert(error)
-      // Toast.showLongBottom(I18n.t('password_is_wrong'))
+      Alert.alert(
+          I18n.t('title_error'),
+          `${error}`,
+          [
+            {text:I18n.t('ok'),onPress:() => this.onPressClose()}
+          ]
+      ) 
     }
 
   }

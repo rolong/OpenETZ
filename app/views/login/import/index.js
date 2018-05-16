@@ -67,7 +67,7 @@ class ImportAccount extends Component{
           : null
         }
 
-        <Loading loadingVisible={this.state.visible} loadingText={'importing'}/>
+        <Loading loadingVisible={this.state.visible} loadingText={I18n.t('loading_importing_account')}/>
           
         <ScrollableTabView
           style={styles.TabViewStyle}

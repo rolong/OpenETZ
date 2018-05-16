@@ -165,6 +165,7 @@ class BackUpAccount extends Component{
     })
   }
   onPressConfirmDel = () => {
+    console.log('onPressConfirmDel1111')
     this.setState({
       dVisible: false,
       visible: true,
@@ -209,6 +210,7 @@ class BackUpAccount extends Component{
       iptPsdVisible: false,
     })
     setTimeout(() => {
+      console.log('onConfirm222222')
       this.setState({
         visible: true,
       })
@@ -250,13 +252,20 @@ class BackUpAccount extends Component{
         }
         this.onHide()
       } catch (err) {
-        Alert.alert(err)       
-
-        this.setState({
-          psdVal: '',
-          visible: false,
-          loadingText: '',
-        })
+        
+        Alert.alert(
+          I18n.t('title_error'),
+          `${err}`,
+          [
+            {text:'OK',onPress:() => 
+            this.setState({
+              psdVal: '',
+              loadingText: '',
+              visible: false,
+            })
+          }
+          ]
+        ) 
       }
     },1000)
   }
