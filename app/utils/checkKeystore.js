@@ -1,6 +1,5 @@
 import { toLowerCaseKeys } from './fromV3'
 function checkKeystore(keys){
-
 	let jk = JSON.parse(keys)
 	let newK = toLowerCaseKeys(jk)
 	if((newK.version || newK.version !== 3) || (newK.address || newK.address.length !== 40) || (newK.crypto.ciphertext || newK.crypto.ciphertext.length !== 64) || (newK.crypto.cipherparams.iv || newK.crypto.cipherparams.iv.length !==32) || 

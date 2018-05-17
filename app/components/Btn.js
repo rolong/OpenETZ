@@ -13,13 +13,14 @@ export default class Btn extends Component {
     btnWidth: isIphoneX() ? 345 : scaleSize(680),
     bgColor: '#2B8AFF',
     btnMarginTop: 0,
-    opacity: .7
+    opacity: .7,
+    textStyle: pubS.font26_1
   }
   render () {
-    const {  btnWidth, btnPress, btnText,btnMarginTop,bgColor,opacity } = this.props    
+    const {  btnWidth, btnPress, btnText,btnMarginTop,bgColor,opacity,textStyle } = this.props    
     return (
       <TouchableOpacity style={[{width: btnWidth ,marginTop: btnMarginTop,backgroundColor:bgColor,}, pubS.center, styles.btnView]} activeOpacity={opacity} onPress={btnPress}>
-        <Text style={pubS.font26_1}>{btnText}</Text>
+        <Text style={textStyle}>{btnText}</Text>
       </TouchableOpacity>
     )
   }

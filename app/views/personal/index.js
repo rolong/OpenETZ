@@ -130,13 +130,13 @@ class Personal extends Component{
           />
           <View style={{marginTop:scaleSize(40)}}>
             <ArrowToDetail
-              arrowText={I18n.t('help_center')}
+              arrowText={`${I18n.t('help_center')} 1.0.9`}//${DeviceInfo.getVersion()}
               arrowIcon={require('../../images/xhdpi/ico_personalcenter_helpcenter_def.png')}
               arrowOnPress={this.toHelpCenter}
             />
             {
             // <ArrowToDetail
-            //   arrowText={`${I18n.t('support')}`}//${DeviceInfo.getVersion()}
+            //   arrowText={`${I18n.t('support')}`}//}
             //   arrowIcon={require('../../images/xhdpi/ico_personalcenter_contact_def.png')}
             //   arrowOnPress={this.toContactService}
             // />
