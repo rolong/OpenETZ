@@ -207,14 +207,25 @@ class Payment extends Component{
     this.getGasValue()
   }  
   onChangeTxValue = (val) => {
-    this.setState({
-      txValue: val,
-      txValueWarning: ''
-    })
-    setTimeout(() => {
-      this.getGasValue()
-    },500)
+    const { currentTokenDecimals,txValue } = this.state
+
+    if(!isNaN(val)){
+      //不能小于规定的小数位
+      this.setState({
+        txValue: val,
+        txValueWarning: ''
+      })
+        
+      setTimeout(() => {
+          this.getGasValue()
+      },500)
+
+      }else{
+
+      Alert.alert(I18n.t('input_number'))
+    }
   }
+
 
   onChangeNoteText = (val) => {
     this.setState({

@@ -39,7 +39,7 @@ class KeyStore extends Component{
     // let im = '{"version":3,"crypto":{"mac":"4889f12528d852754c2f9877372a612de64c0710ee352bf21f192c572c08adca","cipherparams":{"iv":"4781627ee1f671726babaca08551e9f0"},"kdfparams":{"dklen":32,"r":8,"salt":"f6a0530bdd39b668167cbefbc0acee57d63d0534ee62faa7ed5a852ab9492b9d","p":1,"n":262144},"cipher":"aes-128-ctr","ciphertext":"85ac5a616f5593f4fd574e49ea777df2b9b44d3fd4fd2935c0ffd62ac38af750","kdf":"scrypt"},"id":"a922295f-ee97-46ef-b1f3-155cd9ca80b8","address":"f2ea22b3c5fd625f42c4a77a3d17b246900f0117"}'
     // let local = '{"version":3,"id":"962c6028-12c2-4f94-8662-3b3bea6d567e","address":"ec80a9fe89b05e337efa9c801c07c8444d9cb32e","crypto":{"ciphertext":"747c915f231a508735d9ebad6ab70bf379c30d52e78a964c6b396867ab5f5b8e","cipherparams":{"iv":"38fef4acfe68ad225f05d2afc5c22837"},"cipher":"aes-128-ctr","kdf":"scrypt","kdfparams":{"dklen":32,"salt":"c74436c3871b5959b1e5483a53fd7d1b37778840474f7b8c8298012a251e8888","n":8192,"r":8,"p":1},"mac":"6c1ca62cf63bc8a0098c46e007df429c93fad5155916fcf08d137af05a9c4e71"}}'
     // this.setState({
-    //   keystoreVal: local
+    //   keystoreVal: im
     // })
   }
 
@@ -71,13 +71,14 @@ class KeyStore extends Component{
   }
 
   onPressImport = () => {
+
     const { keystoreVal, keystoreWarning,userNameVal,userNameWarning,passwordVal } = this.state
     if(userNameVal.length === 0){
       this.setState({
         userNameWarning: I18n.t('enter_account_name'),
       })
     }else{
-      if(keystoreVal || typeof keys !== 'object' || checkKeystore(keystoreVal)){
+      if(!keystoreVal || checkKeystore(keystoreVal)){
         this.setState({
           keystoreWarning: I18n.t('keystore_warning'),
         })

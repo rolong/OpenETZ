@@ -53,6 +53,7 @@ class Assets extends Component{
     // Navigation.dismissAllModals({
     //   animationType: 'slide-down' // 'none' / 'slide-down' , dismiss animation for the modal (optional, default 'slide-down')
     // })
+
     this.props.navigator.setTabButton({
       tabIndex: 0,
       label: I18n.t('assets')
@@ -76,7 +77,7 @@ class Assets extends Component{
 
     this.getAllAccounts()
   }
-
+  
   onNavigatorEvent(event) {
     if (event.id === 'bottomTabSelected') {
         this.onCloseDrawer()
@@ -407,6 +408,8 @@ class Assets extends Component{
                 //   <Image source={require('../../images/xhdpi/nav_ico_home_message_def.png')}style={styles.navImgStyle}/>
                 // </TouchableOpacity>
                 
+              // <View style={{width: scaleSize(160),height: scaleSize(87),justifyContent:'center'}}>
+              // </View>
               }
               <TouchableOpacity activeOpacity={.6} onPress={this.onBindPhone} style={{width: scaleSize(160),height: scaleSize(87),justifyContent:'center'}}> 
                 <Text style={pubS.font26_1}>{I18n.t('bind_phone')}</Text>

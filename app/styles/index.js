@@ -157,6 +157,10 @@ const SingleScreenAppNavigatorStyle = {
 }
 
 const pubS = {
+  posCenter: {
+    position: 'absolute',
+    alignSelf: 'center',
+  },
   logoStyle:{
     width: scaleSize(44),
     height:scaleSize(44),
@@ -301,6 +305,10 @@ const pubS = {
     color:'#A1A4A8',
     fontSize: setScaleText(24)
   },
+  font24_6:{
+    color:'#fff',
+    fontSize: setScaleText(24)
+  },
   font26_1:{
     color:'#fff',
     fontSize: setScaleText(26)
@@ -361,6 +369,10 @@ const pubS = {
     color:'#FEFEFE',
     fontSize: setScaleText(30)
   },
+  font30_4:{
+    color:'#FFF422',
+    fontSize: setScaleText(30)
+  },
   font32_1:{
     color:'#2B8AFF',
     fontSize: setScaleText(32)
@@ -397,12 +409,20 @@ const pubS = {
     color:'#FFF',
     fontSize: setScaleText(36)
   },
+  font36_5:{
+    color:'#B92B31',
+    fontSize: setScaleText(36)
+  },
   font54_1:{
     color:'#fff',
     fontSize: setScaleText(54)
   },
   font60_1:{
     color:'#657CAB',
+    fontSize: setScaleText(60)
+  },
+  font60_2:{
+    color:'#4C69FF',
     fontSize: setScaleText(60)
   },
   font72_1:{
