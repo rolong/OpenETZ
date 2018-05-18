@@ -309,6 +309,10 @@ const pubS = {
     color:'#fff',
     fontSize: setScaleText(24)
   },
+  font24_7:{
+      color:'#2B8AFF',
+      fontSize: setScaleText(24)
+  },
   font26_1:{
     color:'#fff',
     fontSize: setScaleText(26)

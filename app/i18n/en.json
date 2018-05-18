@@ -140,5 +140,17 @@
   "select_coutry":"Mobile phone number attribution",
   "phone_number":"phone number",
   "account_existed":"This account already exists",
-  "pas_prompt":"password hint"
+  "pas_prompt":"password hint",
+  "get_v_code":"verify code",
+  "v_code_invalid":"Invalid verification code",
+  "binding":"binding...",
+  "search_country":"search country",
+  "download_app":"Download App",
+  "download_etz_app":"Download ETZ Wallet",
+  "get_5_etz":"Get 5 ETZ now",
+  "inv_friends":"invite friends",
+  "my_inv_code":"My invitation code",
+  "int_friends_down":"Download one friend per recommendation",
+  "1_5_etz":"Recommender can get 1 up to 5",
+  "rest_time":"remaining"
 }	

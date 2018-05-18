@@ -141,4 +141,16 @@
   "phone_number":"手机号",
   "account_existed":"该账号已经存在",
   "pas_prompt":"密码提示",
+  "get_v_code":"获取验证码",
+  "v_code_invalid":"验证码无效",
+  "binding":"正在绑定...",
+  "search_country":"搜索国家",
+  "download_app":"下载App",
+  "download_etz_app":"下载ETZ钱包",
+  "get_5_etz":"立得5个ETZ",
+  "inv_friends":"邀请好友",
+  "my_inv_code":"我的邀请码",
+  "int_friends_down":"每推荐一个好友下载注册",
+  "1_5_etz":"推荐人可获得1ETZ,最高可获得5ETZ",
+  "rest_time":"剩余"
 }	
