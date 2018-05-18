@@ -80,7 +80,10 @@ const bindAddressAction = (info) => {
 				country_code: info.callingCode,
 				invite_code: info.invCode,
 				random: info.verifCode,
-				receiveaddress: info.address
+				receiveaddress: info.address,
+				uniqueId: info.uniqueId,
+				systemName: info.systemName,
+				systemVersion: info.systemVersion,
 			},
 			success: (sucdata) => {dispatch(suc(sucdata))},
 			fail: (msg) => {dispatch(fail(msg))}

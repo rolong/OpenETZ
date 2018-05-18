@@ -8,7 +8,8 @@ import {
   StyleSheet,
   StatusBar,
   Platform,
-  BackHandler
+  BackHandler,
+  ScrollView
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../styles/'
@@ -16,7 +17,7 @@ import { setScaleText, scaleSize } from '../../utils/adapter'
 import {ArrowToDetail} from '../../components/'
 import I18n from 'react-native-i18n'
 import Toast from 'react-native-toast'
-// import DeviceInfo from 'react-native-device-info'
+import DeviceInfo from 'react-native-device-info'
 class Personal extends Component{
   constructor(props){
     super(props)
@@ -130,7 +131,7 @@ class Personal extends Component{
           />
           <View style={{marginTop:scaleSize(40)}}>
             <ArrowToDetail
-              arrowText={`${I18n.t('help_center')} 1.0.9`}//${DeviceInfo.getVersion()}
+              arrowText={`${I18n.t('help_center')}  ${DeviceInfo.getVersion()}`}
               arrowIcon={require('../../images/xhdpi/ico_personalcenter_helpcenter_def.png')}
               arrowOnPress={this.toHelpCenter}
             />

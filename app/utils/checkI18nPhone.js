@@ -16,7 +16,7 @@ function checkI18nPhone(cca2,callingCode,phone){
 				}
 			}else{
 				// i18n
-				throw '国际手机号'
+				// throw '国际手机号'
 			}
 		}
 	}

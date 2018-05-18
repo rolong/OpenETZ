@@ -4,12 +4,14 @@ import {
 	Text,
 	Image,
 	StyleSheet,
-	ART
+	ART,
+	Platform
 } from 'react-native'
 import { pubS, DetailNavigatorStyle, } from '../../styles/'
 import { scaleSize } from '../../utils/adapter'
 import { Btn } from '../../components/'
 import QRCode from 'react-native-qrcode'
+import I18n from 'react-native-i18n'
 const { Surface, Shape, Path } = ART
 const path = new Path()
       .moveTo(0, 0)
@@ -28,36 +30,38 @@ export default class RecomPrize extends Component{
 
 		}
 	}
-	// componentWillMount(){
-	// 	this.props.inviteCode
-	// }
 
 	onBtn = () => {
-		
+		this.props.navigator.push({
+	      screen: 'download_app',
+	      title:I18n.t('download_app'),
+	      backButtonTitle:I18n.t('back'),
+	      backButtonHidden:false,
+	      navigatorStyle: DetailNavigatorStyle,
+	    })
 	}	
 	render(){
-		console.log('this.props.inviteCode==',this.props.inviteCode)
 		return(
 			<View style={{flex:1}}>
 				<Image source={require('../../images/xhdpi/inv_bg.png')} style={[pubS.fullWH,{position:'relative'}]}/>
 				<Image source={require('../../images/xhdpi/inv_pkg.png')} style={[styles.pkgStyle,pubS.posCenter]}/>
 				<View style={[styles.qrStyle,pubS.posCenter]}>
 					<QRCode
-			            value={'wallet address'}
+			            value={Platform.OS === 'ios' ? 'https://www.pgyer.com/1C9W' : 'https://www.pgyer.com/NgAH'}//下载地址的链接
 			            size={scaleSize(210)}
 			            bgColor='#000'
 			            fgColor='#fff'
 			        />
 				</View>
 				<View style={[styles.pkgTextStyle,pubS.posCenter]}>
-					<Text style={[pubS.font30_4,{textAlign: 'center'}]}>下载ETZ钱包</Text>
-					<Text style={[pubS.font30_4,{textAlign: 'center'}]}>立得5ETZ奖励</Text>
+					<Text style={[pubS.font30_4,{textAlign: 'center'}]}>{I18n.t('download_etz_app')}</Text>
+					<Text style={[pubS.font30_4,{textAlign: 'center'}]}>{I18n.t('get_5_etz')}</Text>
 				</View>
 				<View style={[styles.btnStyle,pubS.posCenter]}>
 					<Btn
 						btnWidth={scaleSize(430)}
 						bgColor={'#FFF422'}
-						btnText={'邀请好友'}
+						btnText={I18n.t('inv_friends')}
 						btnPress={this.onBtn}
 						textStyle={pubS.font36_5}
 					/>
@@ -71,11 +75,11 @@ export default class RecomPrize extends Component{
 		            </Surface>
 				</View>
 				<View style={[styles.invTextStyle,pubS.posCenter]}>
-					<Text style={[pubS.font28_4,{textAlign:'center'}]}>我的邀请码</Text>
+					<Text style={[pubS.font28_4,{textAlign:'center'}]}>{I18n.t('my_inv_code')}</Text>
 				</View>
 				<View style={[styles.bottomTextStyle,pubS.posCenter]}>
-					<Text style={[pubS.font24_6,{textAlign: 'center'}]}>每推荐一个好友下载注册</Text>
-					<Text style={[pubS.font24_6,{textAlign: 'center',marginTop: 5}]}>推荐人可获得1ETZ,最高可获得5ETZ</Text>
+					<Text style={[pubS.font24_6,{textAlign: 'center'}]}>{I18n.t('int_friends_down')}</Text>
+					<Text style={[pubS.font24_6,{textAlign: 'center',marginTop: 5}]}>{I18n.t('1_5_etz')}</Text>
 				</View>
 			</View>
 		)

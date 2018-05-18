@@ -106,8 +106,8 @@ android {
         applicationId "com.openetz"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 8
-        versionName "1.0.8"
+        versionCode 9
+        versionName "1.0.9"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -175,7 +175,7 @@ dependencies {
     compile project(':react-native-sqlite-storage')
     compile project(':react-native-i18n')
     compile project(':react-native-toast')
-    // compile project(':react-native-device-info')
+    compile project(':react-native-device-info')
 }
 
 // Run this once to be able to run the application with BUCK

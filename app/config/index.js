@@ -38,6 +38,7 @@ import AddAssets from '../views/home/AddAssets'
 import BindPhone from '../views/home/BindPhone'
 import RecomPrize from '../views/home/RecomPrize'
 import SelectCoutry from '../views/home/SelectCoutry'
+import DownLoadApp from '../views/home/DownLoadApp'
 
 function registerScreens() {
   Navigation.registerComponent('splash', () => Splash,store,Provider)
@@ -69,6 +70,7 @@ function registerScreens() {
   Navigation.registerComponent('bind_phone', () => BindPhone,store,Provider)
   Navigation.registerComponent('recom_prize', () => RecomPrize,store,Provider)
   Navigation.registerComponent('select_coutry', () => SelectCoutry,store,Provider)
+  Navigation.registerComponent('download_app', () => DownLoadApp,store,Provider)
 
 }
 

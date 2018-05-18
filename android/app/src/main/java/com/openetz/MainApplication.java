@@ -21,7 +21,7 @@ import io.realm.react.RealmReactPackage;
 import org.pgsqlite.SQLitePluginPackage;
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 import com.remobile.toast.RCTToastPackage; 
-// import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 public class MainApplication extends NavigationApplication {
 
     @Override
@@ -37,7 +37,7 @@ public class MainApplication extends NavigationApplication {
           new RealmReactPackage(),
           new SQLitePluginPackage(),
           new RNI18nPackage(),
-          // new RNDeviceInfo(),
+          new RNDeviceInfo(),
           new RCTToastPackage()
         );
     }
