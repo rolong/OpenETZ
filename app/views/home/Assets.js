@@ -361,6 +361,16 @@ class Assets extends Component{
       backButtonTitle:I18n.t('back'),
       backButtonHidden:false,
     })
+    // this.props.navigator.push({
+    //         screen: 'recom_prize',
+    //         title:I18n.t('recom_prize'),
+    //         navigatorStyle: DetailNavigatorStyle,
+    //         backButtonTitle:I18n.t('back'),
+    //         backButtonHidden:false,
+    //         passProps: {
+    //           inviteCode: '12345678'
+    //         }
+    //     })
   }
   render(){
     const { selectedAssetsList, isRefreshing, currencySymbol} = this.state

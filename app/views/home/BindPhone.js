@@ -24,7 +24,6 @@ import { checkI18nPhone } from '../../utils/checkI18nPhone'
 import { sendVerifCodeAction,bindAddressAction,resetActivityStatusAction } from '../../actions/activityAction'
 import DeviceInfo from 'react-native-device-info'
 import Toast from 'react-native-toast'
-import CountryCodeList from 'react-native-country-code-list'
 class BindPhone extends Component{
 	constructor(props){
 		super(props)
