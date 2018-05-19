@@ -362,6 +362,16 @@ class Assets extends Component{
       backButtonHidden:false,
     })
   }
+
+  onReceiveCandy = () => {
+    this.props.navigator.push({
+      screen: 'receive_candy',
+      title:'领取',
+      navigatorStyle: DetailNavigatorStyle,
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
+    })
+  }
   render(){
     const { selectedAssetsList, isRefreshing, currencySymbol} = this.state
     
@@ -411,8 +421,8 @@ class Assets extends Component{
               // <View style={{width: scaleSize(160),height: scaleSize(87),justifyContent:'center'}}>
               // </View>
               }
-              <TouchableOpacity activeOpacity={.6} onPress={this.onBindPhone} style={{width: scaleSize(160),height: scaleSize(87),justifyContent:'center'}}> 
-                <Text style={pubS.font26_1}>{I18n.t('bind_phone')}</Text>
+              <TouchableOpacity activeOpacity={.6} onPress={this.onReceiveCandy} style={{width: scaleSize(160),height: scaleSize(87),justifyContent:'center'}}> 
+                <Text style={pubS.font26_1}>领取</Text>
               </TouchableOpacity>
               <Text style={[pubS.font30_1,{}]}>{this.state.navTitle}</Text>
               <TouchableOpacity activeOpacity={.6} onPress={() => this.onRightDrawer()} style={[styles.drawerStyle,{}]}>
