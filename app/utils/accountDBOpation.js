@@ -313,6 +313,66 @@ async function onGetManageBalance(options){
 
 }
 
+async function onModifyPassword(options){
+	const { parames, modifySuccess, modifyFail, } = options
+	//判断是哪个账号  判断原密码是否正确  重新生成keystore  重新存储该账号下的信息
+	const { keys, oldPsd, newPsd, currentList,} = parames 
+	try {
+		//解密出私钥
+		const newWallet = fromV3(keys,oldPsd)
+
+        let priv = newWallet.privKey.toString('hex')
+        //私钥+新密码 算出新的keystore
+        let buf = new Buffer(priv, 'hex')
+		let wal = ethWallet.fromPrivateKey(buf)
+	    let newKeys = wal.toV3(newPsd,{c:8192,n:8192})
+
+	    updateRes = await accountDB.updateTable({
+			sql: 'update account set address=?,kid=?,version=?,cipher=?,ciphertext=?,kdf=?,mac=?,dklen=?,salt=?,n=?,r=?,p=?,iv=? where id = ?',
+			parame: [
+					newKeys.address,
+					newKeys.id,
+					newKeys.version,
+					newKeys.crypto.cipher,
+					newKeys.crypto.ciphertext,
+					newKeys.crypto.kdf,
+					newKeys.crypto.mac,
+					newKeys.crypto.kdfparams.dklen,
+					newKeys.crypto.kdfparams.salt,
+					newKeys.crypto.kdfparams.n,
+					newKeys.crypto.kdfparams.r,
+					newKeys.crypto.kdfparams.p,
+					newKeys.crypto.cipherparams.iv,
+					currentList.id
+				]
+		})
+
+		if(updateRes === 'success'){
+			let selectRes = await accountDB.selectTable({
+				sql: 'select * from account where id = ?',
+				parame: [currentList.id]
+			})
+
+			console.log('selectRes[0]111111',selectRes[0])
+			if(selectRes.length !==0){
+				modifySuccess({
+					modifyText:I18n.t('modify_suc'),
+					modifyResult:selectRes
+				})
+			}else{
+				console.log('select语句出错')
+			}
+		}else{
+			if(updateRes === 'fail'){
+				modifyFail(I18n.t('modify_err'))
+			}
+		}
+
+	} catch (err) {
+		//psd err
+		modifyFail(err)
+	}
+}
 const accountDBOpation = {
 	importAccount:(options) => {
 		onImportAccount(options)
@@ -335,7 +395,10 @@ const accountDBOpation = {
 	},
 	getManageBalance: (options) => {
 		onGetManageBalance(options)
-	}
+	},
+	modifyPassword:(options) => {
+		onModifyPassword(options)
+	},
 }
 
 export default accountDBOpation

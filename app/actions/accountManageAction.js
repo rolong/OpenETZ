@@ -306,6 +306,64 @@ const refreshManageBalanceAction = (list) => {
 		})
 	}
 }
+
+
+
+const passPropsAction = (data) => {
+	const pass = () => {
+		return {
+			type: types.PASS_PROPS,
+			payload:{
+				currentList: data.currentList,
+				keyStore: data.keyStore
+			}
+		}
+	}
+	return (dispatch,getState) => {
+		dispatch(pass())
+	}
+}
+
+const modifyPasswordAction = (info) => {
+	const modifyStart = () => {
+		return {
+			type: types.MODIFY_PASSWORD_START	
+		}
+	}
+
+	const suc = (data) => {
+		return {
+			type: types.MODIFY_PASSWORD_SUC,
+			payload: {
+				modifyText: data.modifyText,
+				modifyResult: data.modifyResult,
+			}
+		}
+	}
+	
+	const err = (msg) => {
+		return {
+			type: types.MODIFY_PASSWORD_FAIL,
+			payload:{
+				msg
+			}
+		}
+	}
+	
+	return (dispatch,getState) => {
+		dispatch(modifyStart())
+		accountDBOpation.modifyPassword({
+			parames: {
+				currentList: info.currentList,
+				keys: info.keys,
+				oldPsd: info.oldPsd,
+				newPsd: info.newPsd,
+			},
+			modifySuccess: (data) => {dispatch(suc(data))},
+			modifyFail: (msg) => {dispatch(err(msg))}
+		})
+	}
+}
 export {
 	switchAccountAction,
 	importAccountAction,
@@ -319,5 +377,7 @@ export {
 	changeBackupModalTimesAction,
 	showImportLoadingAction,
 	passReceiveAddressAction,
-	refreshManageBalanceAction
+	refreshManageBalanceAction,
+	modifyPasswordAction,
+	passPropsAction
 }

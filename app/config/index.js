@@ -15,6 +15,7 @@ import CreateAccountSuccess from '../views/login/CreateAccountSuccess'
 
 import Personal from '../views/personal/'
 import Support from '../views/personal/Support'
+import ModifyPassword from '../views/personal/ModifyPassword'
 import HelpCenter from '../views/personal/HelpCenter'
 import AccountManage from '../views/personal/AccountManage'
 import Setting from '../views/personal/setting/'
@@ -73,6 +74,7 @@ function registerScreens() {
   Navigation.registerComponent('select_coutry', () => SelectCoutry,store,Provider)
   Navigation.registerComponent('download_app', () => DownLoadApp,store,Provider)
   Navigation.registerComponent('receive_candy', () => ReceiveCandy,store,Provider)
+  Navigation.registerComponent('modify_password', () => ModifyPassword,store,Provider)
 
 }
 

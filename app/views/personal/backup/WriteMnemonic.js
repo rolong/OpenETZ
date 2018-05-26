@@ -13,7 +13,6 @@ import { setScaleText, scaleSize } from '../../../utils/adapter'
 import { connect } from 'react-redux'
 import { Btn } from '../../../components/'
 import I18n from 'react-native-i18n'
-
 class WriteMnemonic extends Component{
 	constructor(props){
 		super(props)

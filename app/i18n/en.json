@@ -4,6 +4,9 @@
   "import":"Import",
   "account_name":"account name",
   "password":"password",
+  "cur_password":"current password",
+  "new_password":"new password",
+  "re_new_password":"repeat new password",
   "repeat_password":"repeat password",
   "password_hint":"password hint (optional)",
   "enter_account_name":"please enter the account name",
@@ -16,6 +19,8 @@
   "mnemonic_phrase_1":"mnemonic",
   "mnemonic_phrase_warning":"wrong mnemonic",
   "passwords_different":"two passwords are different.",
+  "password_text":"Forgot your password? Import mnemonics or private keys to reset your password",
+  "import_now":"Import immediately",
   "private_key":"Private key",
   "keystore_content":"keystore content",
   "keystore_warning":"wrong keystore",
@@ -152,5 +157,11 @@
   "my_inv_code":"My invitation code",
   "int_friends_down":"Download one friend per recommendation",
   "1_5_etz":"Recommender can get 1 up to 5",
-  "rest_time":"remaining"
+  "rest_time":"remaining",
+  "modify_psd_btn":"Confirm",
+  "change_psd":"Change password",
+  "modifying":"changing password",
+  "modify_err":"There was an error modifying your password. Please try again",
+  "modify_suc":"password has been updated",
+  
 }	

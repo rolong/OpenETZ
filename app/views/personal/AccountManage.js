@@ -93,16 +93,16 @@ class AccountManage extends Component{
         b_id: id,
         accountsNumber: globalAccountsList.length,
         currentAccountId: currentAccount.id,
-        psdPrompt: pro
+        psdPrompt: pro || ''
       },
-      // navigatorButtons: {
-      //   rightButtons: [
-      //     {
-      //       title: 'save',
-      //       id: 'save_back_up_info'
-      //     }
-      //   ]
-      // }
+      navigatorButtons: {
+        rightButtons: [
+          {
+            title: 'save',
+            id: 'save_change'
+          }
+        ]
+      }
     })
   }
 

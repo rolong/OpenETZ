@@ -418,12 +418,12 @@ class Assets extends Component{
                 //   <Image source={require('../../images/xhdpi/nav_ico_home_message_def.png')}style={styles.navImgStyle}/>
                 // </TouchableOpacity>
                 
-              // <View style={{width: scaleSize(160),height: scaleSize(87),justifyContent:'center'}}>
-              // </View>
+              // <TouchableOpacity activeOpacity={.6} onPress={this.onReceiveCandy} style={{width: scaleSize(160),height: scaleSize(87),justifyContent:'center'}}> 
+              //   <Text style={pubS.font26_1}>领取</Text>
+              // </TouchableOpacity>
               }
-              <TouchableOpacity activeOpacity={.6} onPress={this.onReceiveCandy} style={{width: scaleSize(160),height: scaleSize(87),justifyContent:'center'}}> 
-                <Text style={pubS.font26_1}>领取</Text>
-              </TouchableOpacity>
+              <View style={{width: scaleSize(160),height: scaleSize(87),justifyContent:'center'}}>
+              </View>
               <Text style={[pubS.font30_1,{}]}>{this.state.navTitle}</Text>
               <TouchableOpacity activeOpacity={.6} onPress={() => this.onRightDrawer()} style={[styles.drawerStyle,{}]}>
                 <Image source={require('../../images/xhdpi/nav_ico_home_more_def.png')} style={styles.navImgStyle}/>
