@@ -60,7 +60,9 @@ function fromHDKey (hdkey) {
 EthereumHDKey.fromMasterSeed = function (seedBuffer) {
   return fromHDKey(HDKey.fromMasterSeed(seedBuffer))
 }
-
+// EthereumHDKey.prototype.publicExtendedKey = function () {
+//   return this._hdkey.publicExtendedKey
+// }
 ethWallet.prototype.toV3 = function(password, opts) {
     opts = opts || {}
     var salt = opts.salt || crypto.randomBytes(32)

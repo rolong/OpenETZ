@@ -27,6 +27,18 @@ const initState = {
 	scanAddress: '',
 	scanCurToken: '',
 	allAmoountAddress: [],
+
+	modifyStatus: 0,
+	modifyText: '',
+
+	pass_currentList: {},
+	pass_keyStore: {},
+
+	mnemonicValue: '',
+	create_usernane: '',
+	create_psd: '',
+	create_prompt: '',
+	create_from: '',
 }
 export default function accountManageReducer (state = initState,action) {
 	switch(action.type){
@@ -94,10 +106,108 @@ export default function accountManageReducer (state = initState,action) {
 		case types.REFERSH_MANEGE_BALANCE:
 			return onBalance(state,action)
 			break
+		case types.MODIFY_PASSWORD_SUC:
+			return onModifySuc(state,action)
+			break
+		case types.MODIFY_PASSWORD_FAIL:
+			return onModifyFail(state,action)
+			break	
+		case types.MODIFY_PASSWORD_START:
+			return onModifyStart(state,action)
+			break	
+		case types.PASS_PROPS:
+			return onPassProps(state,action)
+			break
+		case types.GEN_MNEMONIC_START:
+			return genMneStart(state,action)
+			break
+		case types.GEN_MNEMONIC_SUC:
+			return genMneSuc(state,action)
+			break
 		default:
 			return state
 			break
 
+	}
+}
+const genMneStart = (state,action) => {
+	return {
+		...state,
+		mnemonicValue: '',
+		create_usernane: '',
+		create_psd: '',
+		create_prompt: '',
+		create_from: ''
+	}
+}
+const genMneSuc = (state,action) => {
+	const { mne,userNameVal, psdVal, promptVal,fromLogin }  = action.payload
+
+	return {
+		...state,
+		mnemonicValue: mne,
+		create_usernane: userNameVal,
+		create_psd: psdVal,
+		create_prompt: promptVal,
+		create_from: fromLogin
+	}
+}
+const onPassProps = (state,action) => {
+	const { currentList, keyStore} = action.payload	
+	return {
+		...state,
+		pass_currentList: currentList,
+		pass_keyStore: keyStore
+	}
+}
+
+const onModifyStart = (state,action) => {
+
+	console.log('777777777777globalAccountsList',state.globalAccountsList)
+	return {
+		...state,
+		modifyStatus: 0,
+		modifyText: '',
+	}
+}
+
+const onModifySuc = (state,action) => {
+	const { modifyText,modifyResult } = action.payload
+	console.log('modifyResult===',modifyResult[0])
+	const { kid, ciphertext, mac, salt, iv, address} = modifyResult[0]
+
+	let newState = Object.assign({},state)
+
+	console.log('newState.globalAccountsList===',newState.globalAccountsList)
+	newState.globalAccountsList.map((value,index) => {
+		if(value.address === address){
+
+			 newState.globalAccountsList[index].ciphertext = ciphertext
+
+			 newState.globalAccountsList[index].mac = mac
+
+			 newState.globalAccountsList[index].salt = salt
+
+			 newState.globalAccountsList[index].iv = iv
+
+
+			 newState.globalAccountsList[index].kid = kid
+		}
+	})
+
+	return {
+		...newState,
+		modifyStatus: 1,
+		modifyText: modifyText,
+	}
+}
+
+const onModifyFail = (state,action) => {
+	const { msg } = action.payload
+	return {
+		...state,
+		modifyStatus: 2,
+		modifyText:msg
 	}
 }
 const onPassScanAddr = (state,action) => {
@@ -191,7 +301,6 @@ const onUpateBackupSuc = (state,action) => {
 			newState.globalAccountsList[index].backup_status = 1
 		}
 	})
-
 	return {
 		...newState,
 		updateBackupSucc: data
@@ -270,7 +379,7 @@ const onSwitchStart = (state,action) => {
 const onSwitchEnd = (state,action) => {
 	const { switchAddr } = action.payload
 
-	const newState = Object.assign({},state)
+	let newState = Object.assign({},state)
 
 	newState.globalAccountsList.map((list,index) => {
 		console.log('list.address==',list.address)

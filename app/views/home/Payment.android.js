@@ -398,7 +398,7 @@ class Payment extends Component{
       this.makeTransact()
 
     } catch(err){
-      console.error('psd error',err)
+      console.log('psd error',err)
       this.setState({
         visible: false,
         modalSetp1: true,
@@ -638,7 +638,7 @@ class Payment extends Component{
             }))
 
         }).on('error', (error) => {
-          console.error(error)
+          console.log(error)
           self.onPressClose()
           self.props.navigator.pop()
           Alert.alert(`${error}`,)

@@ -24,7 +24,7 @@ import Modal from 'react-native-modal'
 import { connect } from 'react-redux'
 
 
-import { deleteAccountAction,resetDeleteStatusAction,updateBackupStatusAction } from '../../../actions/accountManageAction'
+import { deleteAccountAction,resetDeleteStatusAction,updateBackupStatusAction,passPropsAction } from '../../../actions/accountManageAction'
 const Wallet = require('ethereumjs-wallet')
 
 import { toLogin } from '../../../root'
@@ -51,6 +51,7 @@ class BackUpAccount extends Component{
       loadingText: '',
       visible: false,
       localMnemonic: '',
+      currentList: {}
     }
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
   }
@@ -62,7 +63,8 @@ class BackUpAccount extends Component{
     globalAccountsList.map((list,index) => {
       if(list.address === this.props.address){
         this.setState({
-          localMnemonic: list.mnemonic
+          localMnemonic: list.mnemonic,
+          currentList: list
         })
         if(list.backup_status === 1){
           this.setState({
@@ -74,28 +76,9 @@ class BackUpAccount extends Component{
             mncBackuped: true,
           })
         }
-        let keyStore = {
-          "version":list.version,
-          "id":list.kid,
-          "address":list.address,
-          "crypto":{
-            "ciphertext":list.ciphertext,
-            "cipherparams":{
-                "iv":list.iv
-            },
-            "cipher":list.cipher,
-            "kdf":list.kdf,
-            "kdfparams":{
-              "dklen":list.dklen,
-              "salt":list.salt,
-              "n":list.n,
-              "r":list.r,
-              "p":list.p
-            },
-            "mac":list.mac
-          }
-        }
-        this.setState({ keyStore })
+        let keys = this.getKeys(list)
+
+        this.setState({ keyStore:keys })
       }
     })
   }
@@ -129,29 +112,76 @@ class BackUpAccount extends Component{
       })
     }
 
+    //修改密码成功后  keystore需要使用reducer中的
+    const { globalAccountsList } = nextProps.accountManageReducer
+
+    console.log('修改密码成功后  keystore需要使用reducer中的',globalAccountsList)
+    globalAccountsList.map((list,index) => {
+      if(list.address === this.props.address){
+        this.setState({
+          currentList: list
+        })
+        
+        let keys = this.getKeys(list)
+        this.setState({ keyStore:keys })
+      }
+    })
   }
 
-
-  onNavigatorEvent(event){
-    if (event.type == 'NavBarButtonPress') {
-      switch(event.id){
-        case 'save_back_up_info':
-          alert('save')
-          break
-        // case 'backPress':
-        //   this.props.navigator.resetTo({
-        //     screen: 'account_manage',
-        //     title:'Manage wallets',
-        //     overrideBackPress: true,
-        //     navigatorStyle: DetailNavigatorStyle,
-        // })
-          break
-        default:
-          break
+  getKeys(list){
+    let keys = {
+      "version":list.version,
+      "id":list.kid,
+      "address":list.address,
+      "crypto":{
+        "ciphertext":list.ciphertext,
+        "cipherparams":{
+            "iv":list.iv
+        },
+        "cipher":list.cipher,
+        "kdf":list.kdf,
+        "kdfparams":{
+          "dklen":list.dklen,
+          "salt":list.salt,
+          "n":list.n,
+          "r":list.r,
+          "p":list.p
+        },
+        "mac":list.mac
       }
     }
+    return keys
   }
 
+  onNavigatorEvent(event){
+
+    if (event.type == 'NavBarButtonPress') {
+      if(event.id === 'save_change'){
+        this.saveUserName()
+      }
+    }
+     switch (event.id) {
+      case 'willAppear':
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+        break;
+      case 'willDisappear':
+        this.backPressed = 0;
+        this.backHandler.remove();
+        break;
+      default:
+        break
+     }
+  }
+  handleBackPress = () => {
+    if (this.backPressed && this.backPressed > 0) {
+      this.props.navigator.popToRoot({ animated: false })
+      return false
+    }
+    this.backPressed = 1
+  }
+  saveUserName = () => {
+
+  }
   deleteAccount = () => {
     this.setState({
       iptPsdVisible: true,
@@ -309,12 +339,23 @@ class BackUpAccount extends Component{
   }
 
 
-
+  modifyPsd = () => {
+    const { currentList, keyStore} = this.state
+    this.props.dispatch(passPropsAction({
+      currentList,
+      keyStore
+    }))
+    this.props.navigator.push({
+      screen: 'modify_password',
+      title:I18n.t('change_psd'),
+      backButtonTitle:I18n.t('back'),
+      backButtonHidden:false,
+      navigatorStyle: DetailNavigatorStyle,
+    })
+  }
   render(){
     const { iptPsdVisible,psdVal,pKeyVisible,privKey,privBackuped,mncBackuped,keyStore,dVisible, visible } = this.state
     const { isLoading,delMnemonicSuc } = this.props.accountManageReducer
-
-    console.log('visible===',visible)
     return(
       <View style={[pubS.container,{backgroundColor:'#fff',alignItems:'center'}]}>
         <Loading loadingVisible={visible} loadingText={this.state.loadingText}/>
@@ -338,7 +379,10 @@ class BackUpAccount extends Component{
           </View>
           : null
         }
-
+        <TouchableOpacity style={[styles.userNameViewStyle,pubS.rowCenterJus,pubS.bottomStyle]} onPress={this.modifyPsd} activeOpacity={.7} >
+          <Text style={pubS.font26_4}>{I18n.t('change_psd')}</Text>
+          <Image source={require('../../../images/xhdpi/btn_ico_payment_select_def.png')} style={{width:scaleSize(16),height: scaleSize(30)}}/>
+        </TouchableOpacity>
         <View style={{position:'absolute',bottom: scaleSize(40)}}>
           
           {

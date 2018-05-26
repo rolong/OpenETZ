@@ -180,12 +180,45 @@ const createAccountAction = (par) => {
 		dispatch(onStart())
 		accountDBOpation.createAccount({
 			parames: {
+				userNameVal:par.userNameVal,
+				psdVal: par.psdVal,
+				promptVal: par.promptVal,
+				fromLogin: par.from,
+				mnemonicValue: par.mnemonicValue
+			},
+			createSuccess: (data) => {dispatch(createSucc(data))},
+		})
+	}
+}
+const genMnemonicAction = (par) => {
+	const genStart = () => {
+		return {
+			type: types.GEN_MNEMONIC_START,
+			payload: {
+				
+			}
+		}
+	}
+	const genSucc = (mne) => {
+		return {
+			type: types.GEN_MNEMONIC_SUC,
+			payload: {
+				mne,
 				userNameVal: par.userNameVal,
 				psdVal: par.psdVal,
 				promptVal: par.promptVal,
 				fromLogin: par.from,
+			}
+		}
+	}
+
+	return(dispatch,getState) => {
+		dispatch(genStart())
+		accountDBOpation.genMnemonic({
+			parames: {
+				fromLogin: par.from,
 			},
-			createSuccess: (data) => {dispatch(createSucc(data))},
+			genSuccess: (mne) => {dispatch(genSucc(mne))},
 		})
 	}
 }
@@ -306,6 +339,64 @@ const refreshManageBalanceAction = (list) => {
 		})
 	}
 }
+
+
+
+const passPropsAction = (data) => {
+	const pass = () => {
+		return {
+			type: types.PASS_PROPS,
+			payload:{
+				currentList: data.currentList,
+				keyStore: data.keyStore
+			}
+		}
+	}
+	return (dispatch,getState) => {
+		dispatch(pass())
+	}
+}
+
+const modifyPasswordAction = (info) => {
+	const modifyStart = () => {
+		return {
+			type: types.MODIFY_PASSWORD_START	
+		}
+	}
+
+	const suc = (data) => {
+		return {
+			type: types.MODIFY_PASSWORD_SUC,
+			payload: {
+				modifyText: data.modifyText,
+				modifyResult: data.modifyResult,
+			}
+		}
+	}
+	
+	const err = (msg) => {
+		return {
+			type: types.MODIFY_PASSWORD_FAIL,
+			payload:{
+				msg
+			}
+		}
+	}
+	
+	return (dispatch,getState) => {
+		dispatch(modifyStart())
+		accountDBOpation.modifyPassword({
+			parames: {
+				currentList: info.currentList,
+				keys: info.keys,
+				oldPsd: info.oldPsd,
+				newPsd: info.newPsd,
+			},
+			modifySuccess: (data) => {dispatch(suc(data))},
+			modifyFail: (msg) => {dispatch(err(msg))}
+		})
+	}
+}
 export {
 	switchAccountAction,
 	importAccountAction,
@@ -319,5 +410,8 @@ export {
 	changeBackupModalTimesAction,
 	showImportLoadingAction,
 	passReceiveAddressAction,
-	refreshManageBalanceAction
+	refreshManageBalanceAction,
+	modifyPasswordAction,
+	passPropsAction,
+	genMnemonicAction
 }

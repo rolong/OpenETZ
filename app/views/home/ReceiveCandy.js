@@ -10,12 +10,13 @@ export default class ReceiveCandy extends Component {
 		let url = 'https://t.me/Wisdomcoinofficials'
 
 		Linking.canOpenURL(url).then(supported => {
+			console.log('supported===',supported)
 		  if (!supported) {
 		    console.log('Can\'t handle url: ' + url);
 		  } else {
 		    return Linking.openURL(url);
 		  }
-		}).catch(err => console.error('An error occurred', err));
+		}).catch(err => console.log('An error occurred', err));
 	}
 
 	render(){

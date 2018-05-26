@@ -370,7 +370,7 @@ class Payment extends Component{
       this.makeTransact()
 
     } catch(err){
-      console.error('psd error',err)
+      console.log('psd error',err)
       this.setState({
         visible: false,
         modalSetp1: true,

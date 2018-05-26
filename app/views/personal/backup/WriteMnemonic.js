@@ -13,7 +13,6 @@ import { setScaleText, scaleSize } from '../../../utils/adapter'
 import { connect } from 'react-redux'
 import { Btn } from '../../../components/'
 import I18n from 'react-native-i18n'
-
 class WriteMnemonic extends Component{
 	constructor(props){
 		super(props)
@@ -24,21 +23,24 @@ class WriteMnemonic extends Component{
 		}
 	}
 	componentWillMount(){
+    	// this.setState({
+    	// 	mnemonicText: this.props.localMnemonic.split(" "),
+	    //     originMneStr: this.props.localMnemonic    		
+    	// })
     	this.setState({
-    		mnemonicText: this.props.localMnemonic.split(" "),
-	        originMneStr: this.props.localMnemonic    		
+    		mnemonicText: this.props.mnemonicValue.split(" "),
+    		originMneStr: this.props.mnemonicValue
     	})
-
 	}
 	componentWillReceiveProps(nextProps){
-		if(this.props.accountManageReducer.delMnemonicSuc !== nextProps.accountManageReducer.delMnemonicSuc && nextProps.accountManageReducer.delMnemonicSuc){
-	      this.setState({
-	        touchable: false
-	      })
-	    }
+		// if(this.props.accountManageReducer.delMnemonicSuc !== nextProps.accountManageReducer.delMnemonicSuc && nextProps.accountManageReducer.delMnemonicSuc){
+	 //      this.setState({
+	 //        touchable: false
+	 //      })
+	 //    }
 	}
 	onNextStep = () => {
-		const { mnemonicText,originMneStr } = this.state
+		const { originMneStr } = this.state
 		this.props.navigator.push({
 	      screen: 'verify_mnemonic',
 		  title: I18n.t('verify_mnemonic'),
@@ -47,7 +49,6 @@ class WriteMnemonic extends Component{
 	      navigatorStyle: DetailNavigatorStyle,
 	      passProps: {
 	      	mnemonicText: originMneStr,
-	      	currentAddress: this.props.currentAddress
 	      }
 	    })
 	}
@@ -70,11 +71,21 @@ class WriteMnemonic extends Component{
 		      		}
 	      		</View>
 	      	</View>
+	      	{
+	   //    	<Btn
+	   //    		btnMarginTop={scaleSize(80)}
+		  //       btnPress={touchable ? () => this.onNextStep() : () => {return}}
+		  //       bgColor={touchable ? '#2B8AFF':'#BDC0C6' }
+				// opacity={touchable ? .7 : 1}
+		  //       btnText={I18n.t('next')}
+	   //    	/>
+	      		
+	      	}
 	      	<Btn
 	      		btnMarginTop={scaleSize(80)}
-		        btnPress={touchable ? () => this.onNextStep() : () => {return}}
-		        bgColor={touchable ? '#2B8AFF':'#BDC0C6' }
-				opacity={touchable ? .7 : 1}
+		        btnPress={this.onNextStep}
+		        bgColor={'#2B8AFF'}
+				opacity={.7}
 		        btnText={I18n.t('next')}
 	      	/>
 	      </View>

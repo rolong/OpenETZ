@@ -4,6 +4,9 @@
   "import":"导入账户",
   "account_name":"账户名",
   "password":"密码",
+  "cur_password":"当前密码",
+  "new_password":"新密码",
+  "re_new_password":"重复新密码",
   "repeat_password":"重复密码",
   "password_hint":"密码提示信息（可不填）",
   "enter_account_name":"请输入账户名称",
@@ -16,6 +19,8 @@
   "mnemonic_phrase_1":"助记词",
   "mnemonic_phrase_warning":"助记词有误",
   "passwords_different":"两次输入密码不一致",
+  "password_text":"忘记密码?导入助记词或私钥可重置密码.",
+  "import_now":"马上导入",
   "private_key":"私钥",
   "keystore_content":"Keystore文本内容",
   "keystore_warning":"Keystore文本有误",
@@ -152,5 +157,11 @@
   "my_inv_code":"我的邀请码",
   "int_friends_down":"每推荐一个好友下载注册",
   "1_5_etz":"推荐人可获得1ETZ,最高可获得5ETZ",
-  "rest_time":"剩余"
-}	
+  "rest_time":"剩余",
+  "modify_psd_btn":"确认修改",
+  "change_psd":"修改密码",
+  "modifying":"正在修改密码",
+  "modify_err":"修改密码出错,请重试",
+  "modify_suc":"修改密码成功",
+  
+}	  

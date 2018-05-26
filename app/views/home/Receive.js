@@ -148,7 +148,7 @@ class Receive extends Component{
     })
   }
   backupBtn = () => {
-    const { currentAccount } = this.props.accountManageReducer
+    const { currentAccount,globalAccountsList } = this.props.accountManageReducer
 
     this.setState({
       visible: false
@@ -164,15 +164,18 @@ class Receive extends Component{
         userName: currentAccount.account_name,
         address: currentAccount.address,
         b_id: currentAccount.id,
+        accountsNumber: globalAccountsList.length,
+        currentAccountId: currentAccount.id,
+        psdPrompt: currentAccount.password_promp || ''
       },
-      // navigatorButtons: {
-      //   rightButtons: [
-      //     {
-      //       title: 'Save',
-      //       id: 'save_back_up_info'
-      //     }
-      //   ]
-      // }
+      navigatorButtons: {
+        rightButtons: [
+          {
+            title: 'Save',
+            id: 'save_change'
+          }
+        ]
+      }
     })
   }
 

@@ -33,7 +33,7 @@ class HelpCenter extends Component{
           : null
         }
         <WebView  
-          source={{uri:'https://mp.weixin.qq.com/s/8RQ8GOi0d2z03vYcTjsCrw'}}
+          source={{uri:'https://mp.weixin.qq.com/s/vj9ZTq3uNBeHL6W5PuhEnQ'}}
           style={styles.webViewStyle}
           startInLoadingState={true}
           renderLoading={this.renderLoading }

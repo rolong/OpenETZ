@@ -25,6 +25,9 @@ class Mnemonic extends Component{
     super(props)
     this.state={
       // mnemonicVal: 'rhythm example taxi leader divorce prosper arm add tower snake domain still',
+      // mnemonicVal: 'ladder woman buffalo assist image seat inflict voyage among image rate pencil',
+      // mnemonicVal: 'lizard length acid stem sleep route receive rich crowd clog settle series',
+      // mnemonicVal: 'symptom network trash absent run crack outdoor cry frame simple violin orphan' , //imtoken
       mnemonicVal: '',
       mnemonicValWarning: '',
       passwordVal: '',
@@ -85,17 +88,18 @@ class Mnemonic extends Component{
   onPressImport = () => {
    const { mnemonicVal, mnemonicValWarning, passwordVal, passwordWarning, repeadPsdVal, rePsdWarning,userNameVal } = this.state
    // let psdReg = /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*.]+$)[a-zA-Z\d!@#$%^&*.]{8,}$/
-   let psdReg = /^(?![a-zA-z]+$)(?!\d+$)(?![!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]+$)[a-zA-Z\d!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{8,}$/
+   let psdReg = /^(?![a-zA-z]+$)(?!\d+$)(?![!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]+$)[a-zA-Z\d!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{8,}$/   
    if(userNameVal.length === 0){
       this.setState({
         userNameWarning: I18n.t('enter_account_name'),
       })
     }else{
-      if(mnemonicVal.length === 0){
+      if(!bip39.validateMnemonic(mnemonicVal)){
         this.setState({
           mnemonicValWarning: I18n.t('mnemonic_phrase_warning'),
         })
       }else{
+        
         if(!psdReg.test(passwordVal)){
           this.setState({
             passwordWarning: I18n.t('password_verification'),
