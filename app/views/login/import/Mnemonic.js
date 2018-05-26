@@ -27,7 +27,8 @@ class Mnemonic extends Component{
       // mnemonicVal: 'rhythm example taxi leader divorce prosper arm add tower snake domain still',
       // mnemonicVal: 'ladder woman buffalo assist image seat inflict voyage among image rate pencil',
       // mnemonicVal: 'lizard length acid stem sleep route receive rich crowd clog settle series',
-      mnemonicVal: 'symptom network trash absent run crack outdoor cry frame simple violin orphan' , //imtoken
+      // mnemonicVal: 'symptom network trash absent run crack outdoor cry frame simple violin orphan' , //imtoken
+      mnemonicVal: '',
       mnemonicValWarning: '',
       passwordVal: '',
       passwordWarning: '',

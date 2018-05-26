@@ -25,10 +25,10 @@ class CreateAccount extends Component{
   constructor(props){
       super(props)
       this.state = {
-        userNameVal: 'Create',
-        psdVal: '1111111q',
-        repeadPsdVal: '1111111q',
-        promptVal: '1111111q',
+        userNameVal: '',
+        psdVal: '',
+        repeadPsdVal: '',
+        promptVal: '',
 
         userNameWarning: '',
         psdWarning: '',
