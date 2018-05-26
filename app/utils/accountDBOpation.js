@@ -30,11 +30,25 @@ async function onImportAccount(options){
 		    createFinished = true
 		}else{
 			if(type === 'mnemonic'){
-				console.log('需要导入的助记词',mnemonicVal)
+
 				let seed = bip39.mnemonicToSeed(mnemonicVal)
-			    let hdWallet = EthereumHDKey.fromMasterSeed(seed)
-			    let w = hdWallet.getWallet()
-			    let m_keystore = w.toV3(mnemonicPsd,{c:8192,n:8192})
+				 
+				let hdWallet = hdkey.fromMasterSeed(seed,mnemonicPsd)
+
+				var key1 = hdWallet.derivePath("m/44'/60'/0'/0/0")
+
+				// var address1 = util.privateToAddress(key1._hdkey._privateKey)
+
+				let privateKey = key1._hdkey._privateKey
+
+				const buf = Buffer.from(privateKey, 'hex');
+
+				// console.log(buf.toString('hex'));
+
+				let wal = ethWallet.fromPrivateKey(buf)
+
+				let m_keystore = wal.toV3(mnemonicPsd,{c:8192,n:8192})
+
 			    console.log('助记词导入',m_keystore)
 			    keyStore = m_keystore
 			    userName = mnemonicUserName
@@ -176,16 +190,21 @@ async function onDelAccount(options){
 	}
 }
 
+async function onGenMnemonic(options){
+	const { parames,genSuccess } = options
+	let mne = await bip39.generateMnemonic()
+	genSuccess(mne)
+}
 
 async function onCreateAccount(options){
 	const { parames, createSuccess, } = options
-	const { userNameVal, psdVal, promptVal, fromLogin} = parames
+	const { userNameVal, psdVal, promptVal, fromLogin, mnemonicValue} = parames
 	
     let selected = 0 
-	let mnemonic = await bip39.generateMnemonic();
-    console.log('创建时生成的mnemonic==',mnemonic)
+	// let mnemonic = await bip39.generateMnemonic();
+ //    console.log('创建时生成的mnemonic==',mnemonic)
     
-    let seed = await bip39.mnemonicToSeed(mnemonic)
+    let seed = await bip39.mnemonicToSeed(mnemonicValue)
 
     let hdWallet = EthereumHDKey.fromMasterSeed(seed)
 
@@ -208,7 +227,7 @@ async function onCreateAccount(options){
     let userData = [],  
     	user = {};
     user.password_promp = promptVal
-    user.mnemonic = mnemonic
+    user.mnemonic = ''
     user.account_name = userNameVal  
     user.backup_status = 0  
     user.assets_total = '0'
@@ -399,6 +418,9 @@ const accountDBOpation = {
 	modifyPassword:(options) => {
 		onModifyPassword(options)
 	},
+	genMnemonic: (options) => {
+		onGenMnemonic(options)
+	}
 }
 
 export default accountDBOpation

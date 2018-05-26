@@ -48,33 +48,7 @@ class CreateAccountSuccess extends Component{
 
 
   onPressBackUp = () => {
-    // const { currentAccount,globalAccountsList } = this.props.accountManageReducer
     toHome()
-    //备份助记词
-    // this.props.navigator.push({
-    //   screen: 'back_up_account',
-    //   title: 'currentAccount.account_name',
-    //   backButtonTitle:I18n.t('back'),
-    //   backButtonHidden:false,
-    //   navigatorStyle: DetailNavigatorStyle,
-    //   passProps: {
-    //     userName: currentAccount.account_name,
-    //     address: currentAccount.address,
-    //     b_id: currentAccount.id,
-    //     accountsNumber: globalAccountsList.length,
-    //     currentAccountId: currentAccount.id,
-    //     psdPrompt: currentAccount.password_promp
-    //   },
-    //   navigatorButtons: {
-    //     rightButtons: [
-    //       {
-    //         title: 'Save',
-    //         id: 'save_change'
-    //       }
-    //     ]
-    //   }
-    // })
-
   }
   render(){
     return(

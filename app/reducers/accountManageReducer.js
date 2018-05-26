@@ -34,6 +34,11 @@ const initState = {
 	pass_currentList: {},
 	pass_keyStore: {},
 
+	mnemonicValue: '',
+	create_usernane: '',
+	create_psd: '',
+	create_prompt: '',
+	create_from: '',
 }
 export default function accountManageReducer (state = initState,action) {
 	switch(action.type){
@@ -113,13 +118,40 @@ export default function accountManageReducer (state = initState,action) {
 		case types.PASS_PROPS:
 			return onPassProps(state,action)
 			break
+		case types.GEN_MNEMONIC_START:
+			return genMneStart(state,action)
+			break
+		case types.GEN_MNEMONIC_SUC:
+			return genMneSuc(state,action)
+			break
 		default:
 			return state
 			break
 
 	}
 }
+const genMneStart = (state,action) => {
+	return {
+		...state,
+		mnemonicValue: '',
+		create_usernane: '',
+		create_psd: '',
+		create_prompt: '',
+		create_from: ''
+	}
+}
+const genMneSuc = (state,action) => {
+	const { mne,userNameVal, psdVal, promptVal,fromLogin }  = action.payload
 
+	return {
+		...state,
+		mnemonicValue: mne,
+		create_usernane: userNameVal,
+		create_psd: psdVal,
+		create_prompt: promptVal,
+		create_from: fromLogin
+	}
+}
 const onPassProps = (state,action) => {
 	const { currentList, keyStore} = action.payload	
 	return {

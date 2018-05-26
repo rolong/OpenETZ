@@ -17,7 +17,7 @@ import { pubS,DetailNavigatorStyle } from '../../styles/'
 import { setScaleText, scaleSize } from '../../utils/adapter'
 import { TextInputComponent,Btn,Loading } from '../../components/'
 import { connect } from 'react-redux'
-import { createAccountAction } from '../../actions/accountManageAction'
+import { createAccountAction,genMnemonicAction } from '../../actions/accountManageAction'
 
 import I18n from 'react-native-i18n'
 import Toast from 'react-native-toast'
@@ -25,10 +25,10 @@ class CreateAccount extends Component{
   constructor(props){
       super(props)
       this.state = {
-        userNameVal: '',
-        psdVal: '',
-        repeadPsdVal: '',
-        promptVal: '',
+        userNameVal: 'Create',
+        psdVal: '1111111q',
+        repeadPsdVal: '1111111q',
+        promptVal: '1111111q',
 
         userNameWarning: '',
         psdWarning: '',
@@ -48,22 +48,28 @@ class CreateAccount extends Component{
   }
 
   componentWillReceiveProps(nextProps){
-    if(this.props.accountManageReducer.createSucc !== nextProps.accountManageReducer.createSucc && nextProps.accountManageReducer.createSucc){
+    
+    const { mnemonicValue } = nextProps.accountManageReducer
+    if(this.props.accountManageReducer.mnemonicValue !== mnemonicValue && mnemonicValue.length > 0){
       this.setState({
         visible: false
       })
-      Toast.showLongBottom(I18n.t('create_account_successfully'))
+      // Toast.showLongBottom(I18n.t('create_account_successfully'))
       this.props.navigator.push({
-        screen: 'create_account_success',
-        navigatorStyle: DetailNavigatorStyle,
+        screen: 'write_mnemonic',
+        title: I18n.t('backup_mnemonic'),
         backButtonTitle:I18n.t('back'),
         backButtonHidden:false,
-        overrideBackPress: true,
+        navigatorStyle: DetailNavigatorStyle,
+        passProps:{
+          mnemonicValue
+        }
       })
     }
+
   }
  
-   componentWillUnmount () {
+  componentWillUnmount () {
     this.keyboardDidShowListener.remove();
   }
   onChangeUserNameText = (val) => {
@@ -109,13 +115,14 @@ class CreateAccount extends Component{
     })
 
     setTimeout(() => {
-      this.props.dispatch(createAccountAction({
+      this.props.dispatch(genMnemonicAction({
+        from: this.props.fromLogin === 'login' ? 'login' : 'accounts',
         userNameVal,
         psdVal,
         promptVal,
-        from: this.props.fromLogin === 'login' ? 'login' : 'accounts'
       }))
     },1000)
+
     
   }
   onChangPsdText = (val) => {

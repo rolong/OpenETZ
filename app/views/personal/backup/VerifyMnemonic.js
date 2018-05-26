@@ -6,12 +6,13 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  BackHandler,
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle } from '../../../styles/'
 import { setScaleText, scaleSize } from '../../../utils/adapter'
-import { Btn } from '../../../components/'
-import { deleteMnemonicAction, resetDeleteStatusAction } from '../../../actions/accountManageAction'
+import { Btn,Loading } from '../../../components/'
+import { deleteMnemonicAction, resetDeleteStatusAction,createAccountAction } from '../../../actions/accountManageAction'
 import Modal from 'react-native-modal'
 import { connect } from 'react-redux' 
 import I18n from 'react-native-i18n'
@@ -26,7 +27,9 @@ class VerifyMnemonic extends Component{
 			selectedContainer: [],
 			selectedString: '',
 			compareString: '',
+			loadingVisible: false
 		}
+		this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
 	}
 
 	componentDidMount(){
@@ -49,29 +52,53 @@ class VerifyMnemonic extends Component{
 	}
 	
 	componentWillReceiveProps(nextProps){
-		if(this.props.accountManageReducer.delMnemonicSuc !== nextProps.accountManageReducer.delMnemonicSuc && nextProps.accountManageReducer.delMnemonicSuc){
-			this.props.dispatch(resetDeleteStatusAction())
-			this.props.navigator.pop()
-		}
+		// if(this.props.accountManageReducer.delMnemonicSuc !== nextProps.accountManageReducer.delMnemonicSuc && nextProps.accountManageReducer.delMnemonicSuc){
+		// 	this.props.dispatch(resetDeleteStatusAction())
+		// 	this.props.navigator.pop()
+		// }
+		if(this.props.accountManageReducer.createSucc !== nextProps.accountManageReducer.createSucc && nextProps.accountManageReducer.createSucc){
+	      this.setState({
+	        loadingVisible: false
+	      })
+	      Toast.showLongBottom(I18n.t('create_account_successfully'))
+	      this.props.navigator.push({
+	        screen: 'create_account_success',
+	        navigatorStyle: DetailNavigatorStyle,
+	        backButtonTitle:I18n.t('back'),
+	        backButtonHidden:false,
+	        overrideBackPress: true,
+	      })
+	    }
 	}	
-	
+	onNavigatorEvent(event){
+		switch (event.id) {
+	      case 'willAppear':
+	        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress)
+	        break
+	      case 'willDisappear':
+	        this.backHandler.remove()
+	        break
+	      default:
+	        break
+	    }
+	}
+	handleBackPress = () => {
+		BackHandler.exitApp()
+	}
 	shuffle = (array) => {
 	  var currentIndex = array.length, temporaryValue, randomIndex;
 
-	  // While there remain elements to shuffle...
 	  while (0 !== currentIndex) {
 
-	    // Pick a remaining element...
-	    randomIndex = Math.floor(Math.random() * currentIndex);
-	    currentIndex -= 1;
+	    randomIndex = Math.floor(Math.random() * currentIndex)
+	    currentIndex -= 1
 
-	    // And swap it with the current element.
-	    temporaryValue = array[currentIndex];
-	    array[currentIndex] = array[randomIndex];
-	    array[randomIndex] = temporaryValue;
+	    temporaryValue = array[currentIndex]
+	    array[currentIndex] = array[randomIndex]
+	    array[randomIndex] = temporaryValue
 	  }
 
-	  return array;
+	  return array
 	}
 
 
@@ -113,9 +140,12 @@ class VerifyMnemonic extends Component{
 
 	onConfirm = () => {
 		const { selectedContainer, compareString} = this.state
+		this.setState({
+			loadingVisible: false
+		})
 		if(this.props.mnemonicText.split(" ").toString() === compareString.slice(1,)){
 			this.setState({
-				visible: true
+				visible: true,
 			})
 		}else{
 			Alert.alert(
@@ -138,22 +168,33 @@ class VerifyMnemonic extends Component{
 		})
 	}
 	onModalBtn = () => {
+		const { mnemonicValue, create_usernane, create_psd, create_prompt,create_from } = this.props.accountManageReducer
 		this.onHide()
+		this.setState({
+			loadingVisible: true
+		})
+	    setTimeout(() => {
+	      this.props.dispatch(createAccountAction({
+	      	mnemonicValue: mnemonicValue,
+	        userNameVal: create_usernane,
+	        psdVal: create_psd,
+	        promptVal: create_prompt,
+	        from: create_from
+	      }))
+	    },1000)
 
-		setTimeout(() => {
-			this.props.dispatch(deleteMnemonicAction(this.props.currentAddress))
-		},1000)
-
+		// this.props.navigator.popToRoot({ animated: false })
 		
 
 	}
     render(){
-    	const { isEmpty, mnemonicArr, visible, selectedContainer, selectedString} = this.state
+    	const { isEmpty, mnemonicArr, visible, selectedContainer, selectedString, loadingVisible} = this.state
     	let selected = false
     	const { delMnemonicSuc } = this.props.accountManageReducer
     	console.log('delMnemonicSuc===',delMnemonicSuc)
 	    return(
 	    	<View style={[{flex:1,backgroundColor:'#F5F7FB',alignItems:'center'},pubS.paddingRow35]}>
+	    		<Loading loadingVisible={loadingVisible} loadingText={I18n.t('creating')}/>
 	    		<View style={[styles.selectViewBox,pubS.center,pubS.paddingRow35]}>
 	    			{
 	    				isEmpty ? 

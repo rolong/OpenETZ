@@ -95,14 +95,14 @@ class AccountManage extends Component{
         currentAccountId: currentAccount.id,
         psdPrompt: pro || ''
       },
-      navigatorButtons: {
-        rightButtons: [
-          {
-            title: 'save',
-            id: 'save_change'
-          }
-        ]
-      }
+      // navigatorButtons: {
+      //   rightButtons: [
+      //     {
+      //       title: 'save',
+      //       id: 'save_change'
+      //     }
+      //   ]
+      // }
     })
   }
 

@@ -180,12 +180,45 @@ const createAccountAction = (par) => {
 		dispatch(onStart())
 		accountDBOpation.createAccount({
 			parames: {
+				userNameVal:par.userNameVal,
+				psdVal: par.psdVal,
+				promptVal: par.promptVal,
+				fromLogin: par.from,
+				mnemonicValue: par.mnemonicValue
+			},
+			createSuccess: (data) => {dispatch(createSucc(data))},
+		})
+	}
+}
+const genMnemonicAction = (par) => {
+	const genStart = () => {
+		return {
+			type: types.GEN_MNEMONIC_START,
+			payload: {
+				
+			}
+		}
+	}
+	const genSucc = (mne) => {
+		return {
+			type: types.GEN_MNEMONIC_SUC,
+			payload: {
+				mne,
 				userNameVal: par.userNameVal,
 				psdVal: par.psdVal,
 				promptVal: par.promptVal,
 				fromLogin: par.from,
+			}
+		}
+	}
+
+	return(dispatch,getState) => {
+		dispatch(genStart())
+		accountDBOpation.genMnemonic({
+			parames: {
+				fromLogin: par.from,
 			},
-			createSuccess: (data) => {dispatch(createSucc(data))},
+			genSuccess: (mne) => {dispatch(genSucc(mne))},
 		})
 	}
 }
@@ -379,5 +412,6 @@ export {
 	passReceiveAddressAction,
 	refreshManageBalanceAction,
 	modifyPasswordAction,
-	passPropsAction
+	passPropsAction,
+	genMnemonicAction
 }
