@@ -463,7 +463,13 @@ class Payment extends Component{
             },1000)
           }else{
             sendResult = 0
-            Alert.alert(I18n.t('send_failure'))
+            Alert.alert(
+              I18n.t('title_error'),
+              I18n.t('send_failure'),
+              [
+                {text: I18n.t('ok'), onPress:() => self.onPressClose()},
+              ],
+            )
           }
 
           self.props.dispatch(insert2TradingDBAction({
@@ -482,24 +488,33 @@ class Payment extends Component{
       // })
       .on('error', (error) => {
         console.log('error==',error)
-        Alert.alert(
+        self.onPressClose()
+
+        self.props.navigator.pop()
+
+        setTimeout(() => {
+          Alert.alert(
             I18n.t('title_error'),
             `${error}`,
             [
               {text: I18n.t('ok'), onPress:() => self.onPressClose()},
             ],
-        )
+          )
+        },1000)
 
-        self.props.navigator.pop()
+        
       })
     }catch(error){      
-      Alert.alert(
+      this.onPressClose()
+      setTimeout(() => {
+        Alert.alert(
           I18n.t('title_error'),
           `${error}`,
           [
             {text:I18n.t('ok'),onPress:() => this.onPressClose()}
           ]
         ) 
+      },1000)
     }
   }
   async makeTransactByToken(){
@@ -602,8 +617,10 @@ class Payment extends Component{
               setTimeout(() => {
                 Alert.alert(I18n.t('send_successful'))
               },1000)
-            }else{              
-              Alert.alert(
+            }else{        
+              this.onPressClose()      
+              setTimeout(() => {
+                Alert.alert(
                   I18n.t('title_error'),
                   I18n.t('send_failure'),
                   [
@@ -611,6 +628,7 @@ class Payment extends Component{
                     {text:I18n.t('ok'),onPress:() => this.onPressClose()}
                   ],
               )
+              },1000)
             }
             
             
@@ -640,18 +658,29 @@ class Payment extends Component{
           console.log('error1111',error)
           self.onPressClose()
           self.props.navigator.pop()
-          Alert.alert(`${error}`,)
+          setTimeout(() => {
+            Alert.alert(
+            I18n.t('title_error'),
+            `${error}`,
+            [
+              {text:I18n.t('ok'),onPress:() => self.onPressClose()}
+            ]
+          ) 
+          },1000)
         });
       })
 
     }catch (error) {
-      Alert.alert(
+      this.onPressClose()
+      setTimeout(() => {
+        Alert.alert(
           I18n.t('title_error'),
           `${error}`,
           [
             {text:I18n.t('ok'),onPress:() => this.onPressClose()}
           ]
       ) 
+      },1000)
     }
 
   }

@@ -28,7 +28,7 @@ class Mnemonic extends Component{
       // mnemonicVal: 'ladder woman buffalo assist image seat inflict voyage among image rate pencil',
       // mnemonicVal: 'lizard length acid stem sleep route receive rich crowd clog settle series',
       // mnemonicVal: 'symptom network trash absent run crack outdoor cry frame simple violin orphan' , //imtoken
-      mnemonicVal: '',
+      mnemonicVal: 'turn glide region ramp imitate perfect broccoli lake better immune blade impact',
       mnemonicValWarning: '',
       passwordVal: '',
       passwordWarning: '',
