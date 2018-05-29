@@ -11,7 +11,9 @@ import {
   RefreshControl,
   Button,
   BackHandler,
-  StatusBar
+  StatusBar,
+  AppState,
+
 } from 'react-native'
 
 import { pubS,DetailNavigatorStyle,MainThemeNavColor,ScanNavStyle } from '../../styles/'
@@ -45,6 +47,7 @@ class Assets extends Component{
       isRefreshing: false,
       curAddr: '',
       currencySymbol: '',
+      currentAppState: AppState.currentState,
     }
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
   }
@@ -77,7 +80,9 @@ class Assets extends Component{
 
     this.getAllAccounts()
   }
-  
+  componentDidMount(){
+    AppState.addEventListener('change', this._handleAppStateChange);
+  }
   onNavigatorEvent(event) {
     if (event.id === 'bottomTabSelected') {
         this.onCloseDrawer()
@@ -216,8 +221,15 @@ class Assets extends Component{
 
   componentWillUnmount(){
     this.onCloseDrawer()
+    AppState.removeEventListener('change', this._handleAppStateChange);
+
   }
- 
+  _handleAppStateChange = (nextAppState) => {
+    if(nextAppState === 'active'){
+      console.log('开始刷新',nextAppState)
+      this.getAllAccounts()
+    }
+  }
   toAssetsDetail = (title,balance,token,deci) => {
     this.props.navigator.push({
       screen: 'tx_record_list',

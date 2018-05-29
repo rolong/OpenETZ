@@ -34,7 +34,8 @@ class ModifyPassword extends Component {
 			this.setState({
 				visible: false
 			})
-			if(nextProps.accountManageReducer.modifyStatus === 1){
+			setTimeout(() => {
+				if(nextProps.accountManageReducer.modifyStatus === 1){
 				//成功
 				// Alert.alert(nextProps.accountManageReducer.modifyText)
 				
@@ -46,12 +47,13 @@ class ModifyPassword extends Component {
 		          ]
 		        ) 
 
-			}else{
-				if(nextProps.accountManageReducer.modifyStatus === 2){
-					//失敗
-					Alert.alert(nextProps.accountManageReducer.modifyText)
+				}else{
+					if(nextProps.accountManageReducer.modifyStatus === 2){
+						//失敗
+						Alert.alert(nextProps.accountManageReducer.modifyText)
+					}
 				}
-			}
+			},1000)
 		}
 	}
 

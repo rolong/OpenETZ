@@ -208,7 +208,7 @@ class Payment extends Component{
   }  
   onChangeTxValue = (val) => {
     const { currentTokenDecimals,txValue } = this.state
-
+    console.log('11111111',isNaN(val))
     if(!isNaN(val)){
       //不能小于规定的小数位
       this.setState({
@@ -221,7 +221,6 @@ class Payment extends Component{
       },500)
 
       }else{
-
       Alert.alert(I18n.t('input_number'))
     }
   }

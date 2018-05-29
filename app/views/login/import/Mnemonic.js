@@ -24,11 +24,7 @@ class Mnemonic extends Component{
   constructor(props){
     super(props)
     this.state={
-      // mnemonicVal: 'rhythm example taxi leader divorce prosper arm add tower snake domain still',
-      // mnemonicVal: 'ladder woman buffalo assist image seat inflict voyage among image rate pencil',
-      // mnemonicVal: 'lizard length acid stem sleep route receive rich crowd clog settle series',
-      // mnemonicVal: 'symptom network trash absent run crack outdoor cry frame simple violin orphan' , //imtoken
-      mnemonicVal: 'turn glide region ramp imitate perfect broccoli lake better immune blade impact',
+      mnemonicVal: '',
       mnemonicValWarning: '',
       passwordVal: '',
       passwordWarning: '',
