@@ -56,19 +56,35 @@ class Receive extends Component{
         visible: true
       })
     }
-
-    switch(I18n.currentLocale()){
-      case 'zh-CN':
-        this.onZh()
-        break
-      case 'en-US':
-        this.onEn()
-        break
-      case 'ru-RU':
-        this.onRu()
-        break
-      default:
-        break
+    console.log('I18n.currentLoca=====',I18n.currentLocale())
+    if(Platform.OS === 'ios'){
+      switch(I18n.currentLocale()){
+        case 'zh-Hans-US':
+          this.onZh()
+          break
+        case 'en':
+          this.onEn()
+          break
+        case 'ru-RU':
+          this.onRu()
+          break
+        default:
+          break
+      }
+    }else{
+      switch(I18n.currentLocale()){
+        case 'zh-CN':
+          this.onZh()
+          break
+        case 'en-US':
+          this.onEn()
+          break
+        case 'ru-RU':
+          this.onRu()
+          break
+        default:
+          break
+      }
     }
     this.props.dispatch(changeBackupModalTimesAction(1))
   }
@@ -89,7 +105,7 @@ class Receive extends Component{
     this.setState({
       backupBtnStyle_height: scaleSize(70),
       backupBtnStyle_width: scaleSize(500),
-      whileView_height:scaleSize(356) ,
+      whileView_height: scaleSize(356) ,
       blueView_height: scaleSize(260),
       modalView_width: scaleSize(560),
       modalView_height: scaleSize(700),

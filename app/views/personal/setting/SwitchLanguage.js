@@ -73,7 +73,7 @@ class SwitchLanguage extends Component{
 	  	}
 	}
 	componentWillMount(){
-		// console.log('languages======',I18n.currentLocale())
+		console.log('languages======',I18n.currentLocale())
 
   // 		localStorage.load({
   // 			key:'lang',
@@ -83,20 +83,35 @@ class SwitchLanguage extends Component{
   // 		}).catch( err => {
 
   // 		})
-
-  		switch(I18n.currentLocale()){
-			case 'zh-CN':
-				this.onSelectZh()
-				break
-			case 'en-US':
-				this.onSelectEn()
-				break
-			case 'ru-RU':
-				this.onSelectRu()
-				break
-			default:
-				break
-		}
+  		if(Platform.OS === 'ios'){
+	  		switch(I18n.currentLocale()){
+				case 'zh-Hans-US':
+					this.onSelectZh()
+					break
+				case 'en':
+					this.onSelectEn()
+					break
+				case 'ru-RU':
+					this.onSelectRu()
+					break
+				default:
+					break
+			}
+  		}else{
+  			switch(I18n.currentLocale()){
+				case 'zh-CN':
+					this.onSelectZh()
+					break
+				case 'en-US':
+					this.onSelectEn()
+					break
+				case 'ru-RU':
+					this.onSelectRu()
+					break
+				default:
+					break
+			}
+  		}
   			
   	}
 
