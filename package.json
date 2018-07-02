@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "jest",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "dependencies": {
     "@remobile/react-native-toast": "^1.0.7",
@@ -65,7 +67,8 @@
     "url": "^0.10.3",
     "util": "^0.10.3",
     "vm-browserify": "0.0.4",
-    "web3": "^1.0.0-beta.33"
+    "web3": "^1.0.0-beta.33",
+    "snyk": "^1.88.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -128,5 +131,6 @@
     "tty": "tty-browserify",
     "net": "react-native-tcp",
     "vm": "vm-browserify"
-  }
+  },
+  "snyk": true
 }
