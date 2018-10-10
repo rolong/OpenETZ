@@ -1,0 +1,25 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.12.0
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:hoek:20180212':
+    - realm > node-pre-gyp > hawk > hoek:
+        patched: '2018-10-10T22:32:29.132Z'
+    - realm > node-pre-gyp > hawk > boom > hoek:
+        patched: '2018-10-10T22:32:29.132Z'
+    - realm > node-pre-gyp > hawk > sntp > hoek:
+        patched: '2018-10-10T22:32:29.132Z'
+    - realm > node-pre-gyp > request > hawk > hoek:
+        patched: '2018-10-10T22:32:29.132Z'
+    - realm > node-pre-gyp > hawk > cryptiles > boom > hoek:
+        patched: '2018-10-10T22:32:29.132Z'
+    - realm > node-pre-gyp > request > hawk > boom > hoek:
+        patched: '2018-10-10T22:32:29.132Z'
+    - realm > node-pre-gyp > request > hawk > sntp > hoek:
+        patched: '2018-10-10T22:32:29.132Z'
+    - realm > node-pre-gyp > request > hawk > cryptiles > boom > hoek:
+        patched: '2018-10-10T22:32:29.132Z'
+  'npm:stringstream:20180511':
+    - web3 > web3-bzz > swarm-js > eth-lib > servify > request > stringstream:
+        patched: '2018-10-10T22:32:29.132Z'
