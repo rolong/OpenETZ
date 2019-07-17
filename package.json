@@ -50,7 +50,7 @@
     "react-native-qrcode-scanner": "0.0.30",
     "react-native-randombytes": "^2.2.0",
     "react-native-scrollable-tab-view": "^0.8.0",
-    "react-native-sqlite-storage": "^3.3.4",
+    "react-native-sqlite-storage": "^3.3.11",
     "react-native-storage": "^0.2.2",
     "react-native-tcp": "^2.0.4",
     "react-native-toast": "^1.0.1",
